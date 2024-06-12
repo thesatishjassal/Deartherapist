@@ -188,6 +188,67 @@ const InvoicePage = () => {
                         </Typography>
                       </Box>
                       <Box className="spacer" sx={{ flexGrow: 1 }}></Box>
+                      <Box className="spacer" sx={{ flexGrow: 1 }}></Box>
+                      <Box>
+                        <Typography component="p" className="grey_light">
+                          Gender
+                        </Typography>
+                        <Typography component="strong" variant="h6">
+                          Male
+                        </Typography>
+                      </Box>
+                    </Box>
+                  </Grid>
+                  <Grid item xs={12} sm={5}>
+                    <Box
+                      className="grey_box"
+                      sx={{
+                        display: "flex",
+                        flexDirection: "column",
+                        justifyContent: "space-between",
+                        alignItems: "flex-start",
+                        height: "100%",
+                      }}
+                    >
+                      <Box>
+                        <Typography component="p" className="grey_light">
+                          Occupation
+                        </Typography>
+                        <Typography component="strong" variant="h6">
+                          Self-Employed
+                        </Typography>
+                      </Box>
+                      <Box className="spacer" sx={{ flexGrow: 1 }}></Box>
+                      <Box>
+                        <Typography component="p" className="grey_light">
+                          Marital Status
+                        </Typography>
+                        <Typography component="strong" variant="h6">
+                          Single
+                        </Typography>
+                      </Box>
+                    </Box>
+                  </Grid>
+                  <Grid item xs={12} sm={4}>
+                    <Box
+                      className="grey_box"
+                      sx={{
+                        display: "flex",
+                        flexDirection: "column",
+                        justifyContent: "space-between",
+                        alignItems: "flex-start",
+                        height: "100%",
+                      }}
+                    >
+                      <Box>
+                        <Typography component="p" className="grey_light">
+                          Medical/Psychiatric History
+                        </Typography>
+                        <Typography component="strong" variant="h6">
+                          28
+                        </Typography>
+                      </Box>
+                      <Box className="spacer" sx={{ flexGrow: 1 }}></Box>
                       <Box>
                         <Typography component="p" className="grey_light">
                           Personal History
@@ -263,7 +324,7 @@ const InvoicePage = () => {
                     <Typography component="p">
                       <strong>Diagnouse: </strong> simply dummy text of
                       the printing and typesetting industry. Lorem Ipsum has
-                      been the industry's standard dummy text ever since the
+                      been the industry&apos;s standard dummy text ever since the
                       1500s, when an unknown printer took a galley of type and
                       scrambled it to make a type specimen book. It has survived
                       not only five centuries,
@@ -278,7 +339,7 @@ const InvoicePage = () => {
                     <Typography component="p">
                       <strong>Presenting Problem: </strong> simply dummy
                       text of the printing and typesetting industry. Lorem Ipsum
-                      has been the industry's standard dummy text ever since the
+                      has been the industry&apos;s standard dummy text ever since the
                       1500s, when an unknown printer took a galley of type and
                       scrambled it to make a type specimen book. It has survived
                       not only five centuries,
@@ -293,7 +354,7 @@ const InvoicePage = () => {
                     <Typography component="p">
                       <strong>Suggestions: </strong> simply dummy text of
                       the printing and typesetting industry. Lorem Ipsum has
-                      been the industry's standard dummy text ever since the
+                      been the industry&apos;s standard dummy text ever since the
                       1500s, when an unknown printer took a galley of type and
                       scrambled it to make a type specimen book. It has survived
                       not only five centuries,
@@ -308,7 +369,7 @@ const InvoicePage = () => {
                     <Typography component="p">
                       <strong>Follow-up: </strong> simply dummy text of
                       the printing and typesetting industry. Lorem Ipsum has
-                      been the industry's standard dummy text ever since the
+                      been the industry&apos;s standard dummy text ever since the
                       1500s, when an unknown printer took a galley of type and
                       scrambled it to make a type specimen book. It has survived
                       not only five centuries,
