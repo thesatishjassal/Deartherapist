@@ -15,8 +15,8 @@ import MenuItem from "@mui/material/MenuItem";
 import Image from "next/image";
 import Link from "next/link";
 import Button from "@mui/material/Button";
-import { useRouter } from 'next/router';
-
+import { useRouter } from 'next/navigation'
+ 
 const pages = [
   { name: "Dashboard", href: "/dashboard" },
   { name: "Generate Report", href: "/report" },
