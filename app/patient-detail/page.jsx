@@ -13,13 +13,10 @@ import AccordionDetails from "@mui/material/AccordionDetails";
 import AccordionSummary from "@mui/material/AccordionSummary";
 import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
 import Divider from "@mui/material/Divider";
-import { useRouter } from "next/navigation";
 
 const InvoicePage = () => {
   const invoiceRef = useRef();
   const [expanded, setExpanded] = React.useState(false);
-  const router = useRouter();
-  const { slugid } = router.query;
 
   const handleChange = (panel) => (event, isExpanded) => {
     setExpanded(isExpanded ? panel : false);
@@ -70,7 +67,7 @@ const InvoicePage = () => {
                 margin: 3,
               }}
             >
-              <strong>Page Details - {slugid}</strong> 
+              <strong>Page Details x</strong> 
             </Typography>
             <Divider />
             <Box
