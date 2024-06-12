@@ -188,7 +188,6 @@ const InvoicePage = () => {
                         </Typography>
                       </Box>
                       <Box className="spacer" sx={{ flexGrow: 1 }}></Box>
-                      <Box className="spacer" sx={{ flexGrow: 1 }}></Box>
                       <Box>
                         <Typography component="p" className="grey_light">
                           Gender
@@ -324,7 +323,7 @@ const InvoicePage = () => {
                     <Typography component="p">
                       <strong>Diagnouse: </strong> simply dummy text of
                       the printing and typesetting industry. Lorem Ipsum has
-                      been the industry&apos;s standard dummy text ever since the
+                      been the industry's standard dummy text ever since the
                       1500s, when an unknown printer took a galley of type and
                       scrambled it to make a type specimen book. It has survived
                       not only five centuries,
@@ -339,7 +338,7 @@ const InvoicePage = () => {
                     <Typography component="p">
                       <strong>Presenting Problem: </strong> simply dummy
                       text of the printing and typesetting industry. Lorem Ipsum
-                      has been the industry&apos;s standard dummy text ever since the
+                      has been the industry's standard dummy text ever since the
                       1500s, when an unknown printer took a galley of type and
                       scrambled it to make a type specimen book. It has survived
                       not only five centuries,
@@ -354,7 +353,7 @@ const InvoicePage = () => {
                     <Typography component="p">
                       <strong>Suggestions: </strong> simply dummy text of
                       the printing and typesetting industry. Lorem Ipsum has
-                      been the industry&apos;s standard dummy text ever since the
+                      been the industry's standard dummy text ever since the
                       1500s, when an unknown printer took a galley of type and
                       scrambled it to make a type specimen book. It has survived
                       not only five centuries,
@@ -369,7 +368,7 @@ const InvoicePage = () => {
                     <Typography component="p">
                       <strong>Follow-up: </strong> simply dummy text of
                       the printing and typesetting industry. Lorem Ipsum has
-                      been the industry&apos;s standard dummy text ever since the
+                      been the industry's standard dummy text ever since the
                       1500s, when an unknown printer took a galley of type and
                       scrambled it to make a type specimen book. It has survived
                       not only five centuries,
