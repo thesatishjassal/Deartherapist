@@ -67,7 +67,7 @@ const InvoicePage = () => {
                 margin: 3,
               }}
             >
-              <strong>Page Details x</strong> 
+              <strong>Page Details x</strong>
             </Typography>
             <Divider />
             <Box
@@ -207,19 +207,18 @@ const InvoicePage = () => {
                 justifyContent: "space-between",
               }}
             >
-<Box>
-  <Typography component="p">
-    Informamt name &amp; relationship:  <strong>Dummy</strong>
-  </Typography>
-</Box>
+              <Box>
+                <Typography component="p">
+                  Informamt name &amp; relationship: <strong>Dummy</strong>
+                </Typography>
+              </Box>
 
-<Box>
-  <Typography component="p">
-    Emergency Contact:  <strong>Dummy</strong>
-  </Typography>
-</Box>
-
-
+              <Box>
+                <Typography component="p">
+                  Emergency Contact: <strong>Dummy</strong>
+                </Typography>
+              </Box>
+            </Box>
             <Box sx={{ my: 5 }}>
               <Accordion
                 expanded={expanded === "panel1"}
