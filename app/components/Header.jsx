@@ -15,6 +15,8 @@ import MenuItem from "@mui/material/MenuItem";
 import Image from "next/image";
 import Link from "next/link";
 import Button from "@mui/material/Button";
+import { useRouter } from 'next/router';
+import { useEffect } from 'react';
 
 const pages = [
   { name: "Dashboard", href: "/dashboard" },
@@ -29,6 +31,7 @@ const settings = [
 function HeaderBar() {
   const [anchorElNav, setAnchorElNav] = React.useState(null);
   const [anchorElUser, setAnchorElUser] = React.useState(null);
+  const router = useRouter();
 
   const handleOpenNavMenu = (event) => {
     setAnchorElNav(event.currentTarget);
@@ -44,6 +47,11 @@ function HeaderBar() {
   const handleCloseUserMenu = () => {
     setAnchorElUser(null);
   };
+
+  useEffect(() => {
+    // This will log the current route name/pathname
+    console.log('Current route:', router.pathname);
+  }, [router.pathname]);
 
   return (
     <AppBar position="static">
