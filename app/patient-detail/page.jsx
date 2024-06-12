@@ -207,17 +207,18 @@ const InvoicePage = () => {
                 justifyContent: "space-between",
               }}
             >
-              <Box>
-                <Typography component="p">
-                  Informamt name & relationship:  <strong>Dummy</strong>
-                </Typography>
-              </Box>
-              <Box>
-                <Typography component="p">
-                  Emergency Contact:  <strong>Dummy</strong>
-                </Typography>
-              </Box>
-            </Box>
+<Box>
+  <Typography component="p">
+    Informamt name &amp; relationship:  <strong>Dummy</strong>
+  </Typography>
+</Box>
+
+<Box>
+  <Typography component="p">
+    Emergency Contact:  <strong>Dummy</strong>
+  </Typography>
+</Box>
+
 
             <Box sx={{ my: 5 }}>
               <Accordion
@@ -243,12 +244,12 @@ const InvoicePage = () => {
                   >
                     <Box>
                       <Typography component="p">
-                        <strong>Service: </strong> Dummy
+                        <strong>Service:&nbsp; </strong> Dummy
                       </Typography>
                     </Box>
                     <Box>
                       <Typography component="p">
-                        <strong>Faclilated By: </strong> Dummy
+                        <strong>Faclilated By:&nbsp; </strong> Dummy
                       </Typography>
                     </Box>
                   </Box>
@@ -260,7 +261,7 @@ const InvoicePage = () => {
                     }}
                   >
                     <Typography component="p">
-                      <strong>Diagnouse: </strong> simply dummy text of
+                      <strong>Diagnouse:&nbsp; </strong> simply dummy text of
                       the printing and typesetting industry. Lorem Ipsum has
                       been the industry's standard dummy text ever since the
                       1500s, when an unknown printer took a galley of type and
@@ -275,7 +276,7 @@ const InvoicePage = () => {
                     }}
                   >
                     <Typography component="p">
-                      <strong>Presenting Problem: </strong> simply dummy
+                      <strong>Presenting Problem:&nbsp; </strong> simply dummy
                       text of the printing and typesetting industry. Lorem Ipsum
                       has been the industry's standard dummy text ever since the
                       1500s, when an unknown printer took a galley of type and
@@ -290,7 +291,7 @@ const InvoicePage = () => {
                     }}
                   >
                     <Typography component="p">
-                      <strong>Suggestions: </strong> simply dummy text of
+                      <strong>Suggestions:&nbsp; </strong> simply dummy text of
                       the printing and typesetting industry. Lorem Ipsum has
                       been the industry's standard dummy text ever since the
                       1500s, when an unknown printer took a galley of type and
@@ -305,7 +306,7 @@ const InvoicePage = () => {
                     }}
                   >
                     <Typography component="p">
-                      <strong>Follow-up: </strong> simply dummy text of
+                      <strong>Follow-up:&nbsp; </strong> simply dummy text of
                       the printing and typesetting industry. Lorem Ipsum has
                       been the industry's standard dummy text ever since the
                       1500s, when an unknown printer took a galley of type and
