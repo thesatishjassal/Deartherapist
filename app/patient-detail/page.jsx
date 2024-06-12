@@ -219,6 +219,7 @@ const InvoicePage = () => {
                 </Typography>
               </Box>
             </Box>
+
             <Box sx={{ my: 5 }}>
               <Accordion
                 expanded={expanded === "panel1"}
