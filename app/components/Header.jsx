@@ -48,11 +48,6 @@ function HeaderBar() {
     setAnchorElUser(null);
   };
 
-  useEffect(() => {
-    // This will log the current route name/pathname
-    console.log('Current route:', router.pathname);
-  }, [router.pathname]);
-
   return (
     <AppBar position="static">
       <Container>
