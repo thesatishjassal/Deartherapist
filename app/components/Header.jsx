@@ -16,7 +16,6 @@ import Image from "next/image";
 import Link from "next/link";
 import Button from "@mui/material/Button";
 import { useRouter } from 'next/router';
-import { useEffect } from 'react';
 
 const pages = [
   { name: "Dashboard", href: "/dashboard" },
@@ -31,11 +30,17 @@ const settings = [
 function HeaderBar() {
   const [anchorElNav, setAnchorElNav] = React.useState(null);
   const [anchorElUser, setAnchorElUser] = React.useState(null);
+  const [isClient, setIsClient] = React.useState(false);
   const router = useRouter();
+
+  React.useEffect(() => {
+    setIsClient(true);
+  }, []);
 
   const handleOpenNavMenu = (event) => {
     setAnchorElNav(event.currentTarget);
   };
+
   const handleOpenUserMenu = (event) => {
     setAnchorElUser(event.currentTarget);
   };
@@ -67,7 +72,7 @@ function HeaderBar() {
               textDecoration: "none",
             }}
           >
-            <Link key="home" href="/dashboard" passHref>
+            <Link key="home" href="/" passHref>
               <Image
                 src="/images/apple-touch-icon.png"
                 alt="Icon"
@@ -103,15 +108,25 @@ function HeaderBar() {
               open={Boolean(anchorElNav)}
               onClose={handleCloseNavMenu}
             >
-              {pages.map((page) => (
-                <MenuItem key={page.name} onClick={handleCloseNavMenu}>
+              {isClient && router.pathname === '/' ? (
+                <MenuItem onClick={handleCloseNavMenu}>
                   <Typography textAlign="center">
-                    <Link href={page.href} passHref>
-                      <Button color="inherit">{page.name}</Button>
+                    <Link href="/login" passHref>
+                      <Button color="inherit">Login</Button>
                     </Link>
                   </Typography>
                 </MenuItem>
-              ))}
+              ) : (
+                pages.map((page) => (
+                  <MenuItem key={page.name} onClick={handleCloseNavMenu}>
+                    <Typography textAlign="center">
+                      <Link href={page.href} passHref>
+                        <Button color="inherit">{page.name}</Button>
+                      </Link>
+                    </Typography>
+                  </MenuItem>
+                ))
+              )}
             </Menu>
           </Box>
 
@@ -130,7 +145,7 @@ function HeaderBar() {
               textDecoration: "none",
             }}
           >
-            <Link key="home" href="/dashboard" passHref>
+            <Link key="home" href="/" passHref>
               <Image
                 src="/images/apple-touch-icon.png"
                 alt="Icon"
@@ -141,16 +156,27 @@ function HeaderBar() {
           </Typography>
 
           <Box sx={{ flexGrow: 1, display: { xs: "none", md: "flex" } }}>
-            {pages.map((page) => (
-              <Link key={page.name} href={page.href} passHref>
+            {isClient && router.pathname === '/' ? (
+              <Link href="/login" passHref>
                 <Button
                   onClick={handleCloseNavMenu}
                   sx={{ my: 2, color: "white", display: "block" }}
                 >
-                  {page.name}
+                  Login
                 </Button>
               </Link>
-            ))}
+            ) : (
+              pages.map((page) => (
+                <Link key={page.name} href={page.href} passHref>
+                  <Button
+                    onClick={handleCloseNavMenu}
+                    sx={{ my: 2, color: "white", display: "block" }}
+                  >
+                    {page.name}
+                  </Button>
+                </Link>
+              ))
+            )}
           </Box>
 
           <Box sx={{ flexGrow: 0 }}>
