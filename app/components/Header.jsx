@@ -10,16 +10,23 @@ import Menu from "@mui/material/Menu";
 import MenuIcon from "@mui/icons-material/Menu";
 import Container from "@mui/material/Container";
 import Avatar from "@mui/material/Avatar";
-import Button from "@mui/material/Button";
 import Tooltip from "@mui/material/Tooltip";
 import MenuItem from "@mui/material/MenuItem";
 import Image from "next/image";
-import Link from "@mui/material/Link";
+import Link from "next/link";
+import Button from "@mui/material/Button";
 
-const pages = ["Clients", "Appointments", "Genrate Report"];
-const settings = ["Dashboard", "Account",  "Logout"];
+const pages = [
+  { name: "Dashboard", href: "/dashboard" },
+  { name: "Generate Report", href: "/report" },
+];
 
-function headerBar() {
+const settings = [
+  { name: "Profile", href: "/profile" },
+  { name: "Logout", href: "/logout" },
+];
+
+function HeaderBar() {
   const [anchorElNav, setAnchorElNav] = React.useState(null);
   const [anchorElUser, setAnchorElUser] = React.useState(null);
 
@@ -46,7 +53,7 @@ function headerBar() {
             variant="h6"
             noWrap
             component="a"
-            href="#"
+            href="/"
             sx={{
               mr: 2,
               display: { xs: "none", md: "flex" },
@@ -57,22 +64,20 @@ function headerBar() {
               textDecoration: "none",
             }}
           >
-            <Image
-              src="/images/dear-therapist-logo.png"
-              width="200"
-              height="40"
-            />
+            <Link key="home" href="/dashboard" passHref>
+              <Image
+                src="/images/apple-touch-icon.png"
+                alt="Icon"
+                width={50}
+                height={50}
+              />
+            </Link>
           </Typography>
 
-          <Box
-            sx={{
-              flexGrow: 1,
-              display: { xs: "flex", justify: "end", md: "none" },
-            }}
-          >
+          <Box sx={{ flexGrow: 1, display: { xs: "flex", md: "none" } }}>
             <IconButton
               size="large"
-              aria-label="account of current user"
+              aria-label="menu"
               aria-controls="menu-appbar"
               aria-haspopup="true"
               onClick={handleOpenNavMenu}
@@ -80,18 +85,38 @@ function headerBar() {
             >
               <MenuIcon />
             </IconButton>
-            <Link className="nav-item pr-2" href="/login" underline="none">
-              Login
-            </Link>
-            <Link className="nav-item pr-2" href="/report" underline="none">
-              Genrate Report
-            </Link>
+            <Menu
+              id="menu-appbar"
+              anchorEl={anchorElNav}
+              anchorOrigin={{
+                vertical: "top",
+                horizontal: "left",
+              }}
+              keepMounted
+              transformOrigin={{
+                vertical: "top",
+                horizontal: "left",
+              }}
+              open={Boolean(anchorElNav)}
+              onClose={handleCloseNavMenu}
+            >
+              {pages.map((page) => (
+                <MenuItem key={page.name} onClick={handleCloseNavMenu}>
+                  <Typography textAlign="center">
+                    <Link href={page.href} passHref>
+                      <Button color="inherit">{page.name}</Button>
+                    </Link>
+                  </Typography>
+                </MenuItem>
+              ))}
+            </Menu>
           </Box>
+
           <Typography
             variant="h5"
             noWrap
             component="a"
-            href="#app-bar-with-responsive-menu"
+            href="/"
             sx={{
               mr: 2,
               display: { xs: "flex", md: "none" },
@@ -102,12 +127,27 @@ function headerBar() {
               textDecoration: "none",
             }}
           >
-            <Image src="/images/apple-touch-icon.png" width="50" height="50" />
-          </Typography>
-          <Box sx={{ flexGrow: 1, display: { xs: "none", md: "flex" } }}>
-          <Link className="nav-item" href="/report" underline="none">
-              Genrate Report
+            <Link key="home" href="/dashboard" passHref>
+              <Image
+                src="/images/apple-touch-icon.png"
+                alt="Icon"
+                width={50}
+                height={50}
+              />
             </Link>
+          </Typography>
+
+          <Box sx={{ flexGrow: 1, display: { xs: "none", md: "flex" } }}>
+            {pages.map((page) => (
+              <Link key={page.name} href={page.href} passHref>
+                <Button
+                  onClick={handleCloseNavMenu}
+                  sx={{ my: 2, color: "white", display: "block" }}
+                >
+                  {page.name}
+                </Button>
+              </Link>
+            ))}
           </Box>
 
           <Box sx={{ flexGrow: 0 }}>
@@ -133,8 +173,12 @@ function headerBar() {
               onClose={handleCloseUserMenu}
             >
               {settings.map((setting) => (
-                <MenuItem key={setting} onClick={handleCloseUserMenu}>
-                  <Typography textAlign="center">{setting}</Typography>
+                <MenuItem key={setting.name} onClick={handleCloseUserMenu}>
+                  <Typography textAlign="center">
+                    <Link href={setting.href} passHref>
+                      {setting.name}
+                    </Link>
+                  </Typography>
                 </MenuItem>
               ))}
             </Menu>
@@ -144,4 +188,5 @@ function headerBar() {
     </AppBar>
   );
 }
-export default headerBar;
+
+export default HeaderBar;

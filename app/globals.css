@@ -156,3 +156,34 @@ svg {
     padding: 0;
   }
 }
+.grey_box {
+  background-color: #f1f1f1;
+  padding: 18px;
+}
+.spacer {
+  margin: 18px 0;
+}
+.css-1f773le-MuiButtonBase-root-MuiAccordionSummary-root.Mui-expanded {
+  background: #cd497338 !important;
+  min-height: 50px !important;
+}
+.css-eqpfi5-MuiAccordionSummary-content.Mui-expanded {
+  margin: 13px 0 !important;
+}
+.css-1f773le-MuiButtonBase-root-MuiAccordionSummary-root.Mui-expanded p.MuiTypography-root {
+  color: #cd4973 !important;
+  font-weight: 600;
+  font-size: 15px;
+}
+div#panel1bh-header {
+  border: 1px solid #e3e3e3;
+}
+.blue-strong {
+  color: #4e5992;
+  font-weight: 600;
+}
+p.grey_light {
+  color: #5b5b5b;
+  font-weight: 400;
+  font-size: 15px;
+}

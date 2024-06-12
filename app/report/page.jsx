@@ -5,6 +5,7 @@ import { Box } from "@mui/material";
 import Container from "@mui/material/Container";
 import InvoicePage from "../components/InvoicePage"
 
+
 const DailyReport = () => {
   return (
     <>
