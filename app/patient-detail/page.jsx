@@ -198,66 +198,6 @@ const InvoicePage = () => {
                       </Box>
                     </Box>
                   </Grid>
-                  <Grid item xs={12} sm={5}>
-                    <Box
-                      className="grey_box"
-                      sx={{
-                        display: "flex",
-                        flexDirection: "column",
-                        justifyContent: "space-between",
-                        alignItems: "flex-start",
-                        height: "100%",
-                      }}
-                    >
-                      <Box>
-                        <Typography component="p" className="grey_light">
-                          Occupation
-                        </Typography>
-                        <Typography component="strong" variant="h6">
-                          Self-Employed
-                        </Typography>
-                      </Box>
-                      <Box className="spacer" sx={{ flexGrow: 1 }}></Box>
-                      <Box>
-                        <Typography component="p" className="grey_light">
-                          Marital Status
-                        </Typography>
-                        <Typography component="strong" variant="h6">
-                          Single
-                        </Typography>
-                      </Box>
-                    </Box>
-                  </Grid>
-                  <Grid item xs={12} sm={4}>
-                    <Box
-                      className="grey_box"
-                      sx={{
-                        display: "flex",
-                        flexDirection: "column",
-                        justifyContent: "space-between",
-                        alignItems: "flex-start",
-                        height: "100%",
-                      }}
-                    >
-                      <Box>
-                        <Typography component="p" className="grey_light">
-                          Medical/Psychiatric History
-                        </Typography>
-                        <Typography component="strong" variant="h6">
-                          28
-                        </Typography>
-                      </Box>
-                      <Box className="spacer" sx={{ flexGrow: 1 }}></Box>
-                      <Box>
-                        <Typography component="p" className="grey_light">
-                          Personal History
-                        </Typography>
-                        <Typography component="strong" variant="h6">
-                          Male
-                        </Typography>
-                      </Box>
-                    </Box>
-                  </Grid>
                 </Grid>
               </Box>
             </Box>
