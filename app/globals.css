@@ -1,4 +1,4 @@
-@import url('https://fonts.googleapis.com/css2?family=Poppins:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&display=swap');
+@import url("https://fonts.googleapis.com/css2?family=Poppins:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&display=swap");
 * {
   box-sizing: border-box;
   padding: 0;
@@ -142,7 +142,8 @@ svg {
   body * {
     visibility: hidden;
   }
-  .invoice-content, .invoice-content * {
+  .invoice-content,
+  .invoice-content * {
     visibility: visible;
   }
   .invoice-content {
@@ -169,7 +170,8 @@ svg {
 .css-eqpfi5-MuiAccordionSummary-content.Mui-expanded {
   margin: 13px 0 !important;
 }
-.css-1f773le-MuiButtonBase-root-MuiAccordionSummary-root.Mui-expanded p.MuiTypography-root {
+.css-1f773le-MuiButtonBase-root-MuiAccordionSummary-root.Mui-expanded
+  p.MuiTypography-root {
   color: #cd4973 !important;
   font-weight: 600;
   font-size: 15px;
@@ -185,4 +187,7 @@ p.grey_light {
   color: #5b5b5b;
   font-weight: 400;
   font-size: 15px;
+}
+.css-1x7skt0 {
+  background-color: #ffffff !important;
 }
