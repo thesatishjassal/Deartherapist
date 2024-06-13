@@ -23,7 +23,7 @@ import Button from "@mui/material/Button";
 import DownloadIcon from "@mui/icons-material/Download";
 import AddPrescription from "../components/AddPrescription"
 
-const InvoicePage = () => {
+const PatientDetails = () => {
   const invoiceRef = useRef();
   const [expanded, setExpanded] = React.useState(false);
   const [anchorEl, setAnchorEl] = React.useState(null);
@@ -463,4 +463,4 @@ const InvoicePage = () => {
   );
 };
 
-export default InvoicePage;
+export default PatientDetails;
