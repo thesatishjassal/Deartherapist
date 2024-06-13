@@ -144,11 +144,11 @@ const InvoicePage = () => {
                 }}>
                     John Doe
                   </Typography>
-                  <Typography variant="p">
+                  <Typography variant="p" className="address">
                     789/1 Sector-2c, 38200 Gandhinagar, <i>India</i>
                   </Typography>
                   <br />
-                  <Typography variant="p">
+                  <Typography variant="p" className="address">
                     +91-8481758569 | contact@johndoe.co
                   </Typography>
                 </Box>
