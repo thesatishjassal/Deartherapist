@@ -9,6 +9,10 @@ import IconButton from "@mui/material/IconButton";
 import CloseIcon from "@mui/icons-material/Close";
 import Typography from "@mui/material/Typography";
 import Grid from "@mui/material/Grid";
+import FormControl from "@mui/material/FormControl";
+import Select from "@mui/material/Select";
+import MenuItem from "@mui/material/MenuItem";
+import InputLabel from "@mui/material/InputLabel";
 
 const BootstrapDialog = styled(Dialog)(({ theme }) => ({
   "& .MuiDialogContent-root": {
@@ -21,6 +25,7 @@ const BootstrapDialog = styled(Dialog)(({ theme }) => ({
 
 export default function AddPrescription() {
   const [open, setOpen] = React.useState(false);
+  const [service, setService] = React.useState("");
 
   const handleClickOpen = () => {
     setOpen(true);
@@ -35,6 +40,8 @@ export default function AddPrescription() {
         Open dialog
       </Button>
       <BootstrapDialog
+        sx={{ width: "100%" }}
+        className="responsive-dialog"
         onClose={handleClose}
         aria-labelledby="customized-dialog-title"
         open={open}
@@ -54,7 +61,7 @@ export default function AddPrescription() {
         >
           <CloseIcon />
         </IconButton>
-        <DialogContent dividers>
+        <DialogContent dividers className="modalapp-body">
           <Grid item xs={12} sm={12} md={6}>
             <FormControl fullWidth>
               <InputLabel id="service">Service</InputLabel>
@@ -79,11 +86,46 @@ export default function AddPrescription() {
               </Select>
             </FormControl>
           </Grid>
-          <Grid item xs={12} sm={12} md={6}></Grid>
-          <Grid item xs={12} sm={12} md={12}></Grid>
-          <Grid item xs={12} sm={12} md={12}></Grid>
-          <Grid item xs={12} sm={12} md={12}></Grid>
-          <Grid item xs={12} sm={12} md={12}></Grid>
+          <Grid item xs={12} sm={12} md={6}>
+            {" "}
+            <TextField
+              id="outlined-multiline-static"
+              label="Address"
+              multiline
+              fullWidth
+              rows={1}
+            />
+          </Grid>
+          <Grid item xs={12} sm={12} md={12}>
+            {" "}
+            <TextField
+              id="outlined-multiline-static"
+              label="Address"
+              multiline
+              fullWidth
+              rows={1}
+            />
+          </Grid>
+          <Grid item xs={12} sm={12} md={12}>
+            {" "}
+            <TextField
+              id="outlined-multiline-static"
+              label="Address"
+              multiline
+              fullWidth
+              rows={1}
+            />
+          </Grid>
+          <Grid item xs={12} sm={12} md={12}>
+            {" "}
+            <TextField
+              id="outlined-multiline-static"
+              label="Address"
+              multiline
+              fullWidth
+              rows={1}
+            />
+          </Grid>
         </DialogContent>
         <DialogActions>
           <Button autoFocus onClick={handleClose}>
