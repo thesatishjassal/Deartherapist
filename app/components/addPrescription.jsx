@@ -16,7 +16,7 @@ import InputLabel from "@mui/material/InputLabel";
 import TextField from "@mui/material/TextField";
 import Box from "@mui/material/Box";
 import CloudUploadIcon from "@mui/icons-material/CloudUpload";
-import Diagnouse from "../components/Diagnouse"
+import Diagnouse from "./Diagnouse"
 
 const BootstrapDialog = styled(Dialog)(({ theme }) => ({
   "& .MuiDialogContent-root": {
@@ -27,7 +27,7 @@ const BootstrapDialog = styled(Dialog)(({ theme }) => ({
   },
 }));
 
-export default function AddPrescription() {
+export default function Addprescription() {
   const [open, setOpen] = React.useState(false);
   const [service, setService] = React.useState("");
 
