@@ -398,7 +398,7 @@ const InvoicePage = () => {
               sx={{
                 margin: "30px auto",
                 padding: 3,
-                boxShadow: 3,
+                boxShadow: 2,  backgroundColor: "#fff",
               }}
             >
               <Button
