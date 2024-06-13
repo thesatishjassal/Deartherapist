@@ -2,7 +2,7 @@ import { Inter } from "next/font/google";
 import HeaderBar from "./components/Header";
 import "./globals.css";
 import Container from "@mui/material/Container";
-
+import { AppRouterCacheProvider } from '@mui/material-nextjs/v13-appRouter';
 const inter = Inter({ subsets: ["latin"] });
 
 export const metadata = {
@@ -15,7 +15,9 @@ export default function RootLayout({ children }) {
     <html lang="en">
       <body className={inter.className}>
         <HeaderBar />
+        <AppRouterCacheProvider>
         {children}
+        </AppRouterCacheProvider>
       </body>
     </html>
   );
