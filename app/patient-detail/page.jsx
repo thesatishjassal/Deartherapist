@@ -126,7 +126,11 @@ const InvoicePage = () => {
               <Typography variant="p">
                 <strong>Page Details x</strong>
               </Typography>
-              <Divider />
+              <Divider
+                sx={{
+                  margin: "8px auto",
+                }}
+              />
               <Box
                 sx={{
                   display: "flex",
@@ -135,7 +139,9 @@ const InvoicePage = () => {
                 }}
               >
                 <Box>
-                  <Typography variant="h6" className="blue-strong">
+                  <Typography variant="h6" className="blue-strong"  sx={{
+                  margin: "6px auto",
+                }}>
                     John Doe
                   </Typography>
                   <Typography variant="p">
@@ -398,7 +404,8 @@ const InvoicePage = () => {
               sx={{
                 margin: "30px auto",
                 padding: 3,
-                boxShadow: 2,  backgroundColor: "#fff",
+                boxShadow: 2,
+                backgroundColor: "#fff",
               }}
             >
               <Button
@@ -411,7 +418,7 @@ const InvoicePage = () => {
                 endIcon={<KeyboardArrowDownIcon />}
                 sx={{ width: "100%" }}
                 variant="outlined"
-              > 
+              >
                 Give a Prescription
               </Button>
               <StyledMenu
