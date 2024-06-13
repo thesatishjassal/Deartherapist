@@ -20,7 +20,7 @@ export default function LoginForm() {
     >
       <Card className="login__card" sx={{ padding: 2 }}>
         <CardContent>
-          <Image src="/images/login-logo.png" width="150" height="100" />
+          <Image src="/images/login-logo.png" alt="logo" width="150" height="100" />
           <Typography gutterBottom variant="h5" className="mb-4 text-center">
             Sign In
           </Typography>
