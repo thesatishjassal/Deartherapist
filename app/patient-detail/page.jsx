@@ -21,6 +21,7 @@ import { styled, alpha } from "@mui/material/styles";
 import { Container } from "@mui/material";
 import Button from "@mui/material/Button";
 import DownloadIcon from "@mui/icons-material/Download";
+import AddPrescription from "../components/addprescription"
 
 const InvoicePage = () => {
   const invoiceRef = useRef();
@@ -439,6 +440,7 @@ const InvoicePage = () => {
                   Edit Prescription
                 </MenuItem>
               </StyledMenu>
+              <AddPrescription />
               <Divider
                 sx={{
                   margin: "15px auto",
