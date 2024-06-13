@@ -39,7 +39,7 @@ export default function CheckboxesTags() {
         </li>
       )}
       renderInput={(params) => (
-        <TextField {...params} label="Choose diagnoses" placeholder="Favorites" />
+        <TextField {...params} label="Choose diagnose" placeholder="Favorites" />
       )}
     />
   );

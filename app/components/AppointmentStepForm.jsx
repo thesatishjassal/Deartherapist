@@ -101,13 +101,13 @@ export default function HorizontalLinearStepper() {
       service: service,
       amount: amount,
     };
-    console.log('Form Data:', formData);
+    console.log("Form Data:", formData);
     // Here you can add the logic to send the form data to a server or perform other actions with it
   };
 
   const PersonalDetailStep = () => (
     <React.Fragment>
-      <Box sx={{ width: "100%" }}>
+      <Box sx={{ width: "100%", px: 1, py: 3 }}>
         <Grid container rowSpacing={3} columnSpacing={{ xs: 1, sm: 2, md: 3 }}>
           <Grid item xs={12} sm={12} md={6}>
             <Autocomplete
@@ -164,7 +164,7 @@ export default function HorizontalLinearStepper() {
 
   const MedicalDetailStep = () => (
     <React.Fragment>
-      <Box sx={{ width: "100%" }}>
+        <Box sx={{ width: "100%", px: 1, py: 3 }}>
         <Grid container rowSpacing={3} columnSpacing={{ xs: 1, sm: 2, md: 3 }}>
           <Grid item xs={12} sm={12} md={6}>
             <LocalizationProvider dateAdapter={AdapterDayjs}>
@@ -265,7 +265,7 @@ export default function HorizontalLinearStepper() {
   return (
     <Box sx={{ width: "100%" }}>
       {isFinished ? (
-        <Box sx={{ textAlign: 'center', mt: 2 }}>
+        <Box sx={{ textAlign: "center", mt: 2 }}>
           <Typography variant="h6" gutterBottom>
             All steps completed
           </Typography>
@@ -290,7 +290,7 @@ export default function HorizontalLinearStepper() {
           <React.Fragment>
             {activeStep === 0 && <PersonalDetailStep />}
             {activeStep === 1 && <MedicalDetailStep />}
-            <Box sx={{ display: 'flex', flexDirection: 'row', pt: 2 }}>
+            <Box sx={{ display: "flex", flexDirection: "row", pt: 2 }}>
               <Button
                 color="inherit"
                 disabled={activeStep === 0}
@@ -299,9 +299,9 @@ export default function HorizontalLinearStepper() {
               >
                 Back
               </Button>
-              <Box sx={{ flex: '1 1 auto' }} />
+              <Box sx={{ flex: "1 1 auto" }} />
               <Button onClick={handleNext}>
-                {activeStep === steps.length - 1 ? 'Finish' : 'Next'}
+                {activeStep === steps.length - 1 ? "Finish" : "Next"}
               </Button>
             </Box>
           </React.Fragment>

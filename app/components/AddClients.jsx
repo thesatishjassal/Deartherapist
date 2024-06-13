@@ -1,63 +1,81 @@
 "use client";
 
 import * as React from "react";
-import Box from "@mui/material/Box";
 import Button from "@mui/material/Button";
-import Typography from "@mui/material/Typography";
 import Modal from "@mui/material/Modal";
 import { styled } from "@mui/material/styles";
-import Grid from "@mui/material/Grid";
 import Paper from "@mui/material/Paper";
-import TextField from "@mui/material/TextField";
 import AddIcon from "@mui/icons-material/Add";
-import TwoStepForm from "./ClientStepsForm"
+import TwoStepForm from "./ClientStepsForm";
+import Dialog from "@mui/material/Dialog";
+import DialogTitle from "@mui/material/DialogTitle";
+import DialogContent from "@mui/material/DialogContent";
+import DialogActions from "@mui/material/DialogActions";
+import IconButton from "@mui/material/IconButton";
+import CloseIcon from "@mui/icons-material/Close";
+import Typography from "@mui/material/Typography";
+import Grid from "@mui/material/Grid";
+import FormControl from "@mui/material/FormControl";
+import Select from "@mui/material/Select";
+import MenuItem from "@mui/material/MenuItem";
+import InputLabel from "@mui/material/InputLabel";
+import TextField from "@mui/material/TextField";
+import Box from "@mui/material/Box";
+import CloudUploadIcon from "@mui/icons-material/CloudUpload";
+import Diagnouse from "../components/Diagnouse";
 
-const style = {
-  position: "absolute",
-  top: "50%",
-  left: "50%",
-  transform: "translate(-50%, -50%)",
-  width: 600,
-  bgcolor: "background.paper",
-  //   border: "2px solid #000000",
-  boxShadow: 24,
-  p: 4,
-};
+const BootstrapDialog = styled(Dialog)(({ theme }) => ({
+  "& .MuiDialogContent-root": {
+    padding: theme.spacing(2),
+  },
+  "& .MuiDialogActions-root": {
+    padding: theme.spacing(1),
+  },
+}));
 
 export default function AddClietns() {
   const [open, setOpen] = React.useState(false);
-  const handleOpen = () => setOpen(true);
-  const handleClose = () => setOpen(false);
-
-  const Item = styled(Paper)(({ theme }) => ({
-    backgroundColor: theme.palette.mode === "dark" ? "#1A2027" : "#fff",
-    ...theme.typography.body2,
-    padding: theme.spacing(1),
-    textAlign: "center",
-    color: theme.palette.text.secondary,
-  }));
+  const [service, setService] = React.useState("");
+  const handleClickOpen = () => {
+    setOpen(true);
+  };
+  const handleClose = () => {
+    setOpen(false);
+  };
 
   return (
-    <div>
-      <Button
-        variant="contained"
-        className="btn clients__btn"
-        onClick={handleOpen}
-      >
-        Add Clients
+    <React.Fragment>
+      <Button variant="outlined" onClick={handleClickOpen}>
+       Add Clients
       </Button>
-      <Modal
-        open={open}
+      <BootstrapDialog
+        sx={{ width: "100%" }}
+        className="responsive-dialog"
         onClose={handleClose}
-        aria-labelledby="modal-modal-title"
-        aria-describedby="modal-modal-description"
+        aria-labelledby="customized-dialog-title"
+        open={open}
       >
-        <Box sx={style}>
-          <Box sx={{ width: "100%" }}>
-          <TwoStepForm />
+        <DialogTitle sx={{ m: 0, p: 2 }} id="customized-dialog-title">
+          Add Clients
+        </DialogTitle>
+        <IconButton
+          aria-label="close"
+          onClick={handleClose}
+          sx={{
+            position: "absolute",
+            right: 8,
+            top: 8,
+            color: (theme) => theme.palette.grey[500],
+          }}
+        >
+          <CloseIcon />
+        </IconButton>
+        <DialogContent dividers className="modalapp-body">
+          <Box sx={{ width: "100%", padding: 3 }}>
+            <TwoStepForm />
           </Box>
-        </Box>
-      </Modal>
-    </div>
+        </DialogContent>
+      </BootstrapDialog>
+    </React.Fragment>
   );
 }
