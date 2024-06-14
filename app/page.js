@@ -1,13 +1,41 @@
-import * as React from "react";
-import Card from "@mui/material/Card";
-import CardContent from "@mui/material/CardContent";
-import Button from "@mui/material/Button";
-import Typography from "@mui/material/Typography";
-import TextField from "@mui/material/TextField";
-import Image from "next/image";
-import Box from "@mui/material/Box";
+"use client";
 
-export default function LoginForm() {
+import React, { useState } from 'react';
+import { useFormik } from 'formik';
+import * as Yup from 'yup';
+import Card from '@mui/material/Card';
+import CardContent from '@mui/material/CardContent';
+import Button from '@mui/material/Button';
+import Typography from '@mui/material/Typography';
+import TextField from '@mui/material/TextField';
+import Image from 'next/image';
+import Box from '@mui/material/Box';
+import CircularProgress from '@mui/material/CircularProgress'; // Import CircularProgress for loading state
+
+const LoginForm = () => {
+  const [isLoading, setIsLoading] = useState(false); // State for loading indicator
+
+  const validationSchema = Yup.object({
+    email: Yup.string().email('Invalid email address').required('Email is required'),
+    password: Yup.string().required('Password is required'),
+  });
+
+  const formik = useFormik({
+    initialValues: {
+      email: '',
+      password: '',
+    },
+    validationSchema: validationSchema,
+    onSubmit: async (values) => {
+      setIsLoading(true); // Start loading state
+      // Simulate API call or async operation
+      await new Promise((resolve) => setTimeout(resolve, 1000)); // Simulate 1 second delay
+      console.log('Form submitted:', values);
+      setIsLoading(false); // End loading state
+      formik.resetForm(); // Reset form fields
+    },
+  });
+
   return (
     <Box
       sx={{
@@ -24,34 +52,53 @@ export default function LoginForm() {
           <Typography gutterBottom variant="h5" className="mb-4 text-center">
             Sign In
           </Typography>
-          <Box
-            component="form"
-            sx={{
-              "& .MuiTextField-root": { m: 1 },
-            }}
-            noValidate
-            autoComplete="off"
-          >
-            <TextField
-              id="outlined-email"
-              label="Email"
-              fullWidth
-              size="small"
-              variant="outlined" 
-            />
-            <TextField
-              id="outlined-password"
-              label="Password"
-              fullWidth
-              size="small"
-              variant="outlined" 
-            />
-            <Button variant="contained" className="btn" size="medium" fullWidth>
-              Login
-            </Button>
-          </Box>
+          <form onSubmit={formik.handleSubmit}>
+            <Box
+              sx={{
+                '& .MuiTextField-root': { m: 1, width: '100%' },
+                '& .MuiButton-root': { m: 1, width: '100%' },
+              }}
+            >
+              <TextField
+                id="email"
+                name="email"
+                label="Email"
+                type="email"
+                variant="outlined"
+                fullWidth
+                size="small"
+                {...formik.getFieldProps('email')}
+                error={formik.touched.email && Boolean(formik.errors.email)}
+                helperText={formik.touched.email && formik.errors.email}
+              />
+              <TextField
+                id="password"
+                name="password"
+                label="Password"
+                type="password"
+                variant="outlined"
+                fullWidth
+                size="small"
+                {...formik.getFieldProps('password')}
+                error={formik.touched.password && Boolean(formik.errors.password)}
+                helperText={formik.touched.password && formik.errors.password}
+              />
+              <Button
+                type="submit"
+                variant="contained"
+                className={!formik.dirty || !formik.isValid || isLoading ? "disbaled_btn" : "btn"}
+                size="medium"
+                fullWidth
+                disabled={!formik.dirty || !formik.isValid || isLoading} // Disable when form is pristine or invalid or during loading
+              >
+                {isLoading ? <CircularProgress className="white" size={24} color="inherit" /> : 'Login'}
+              </Button>
+            </Box>
+          </form>
         </CardContent>
       </Card>
     </Box>
   );
-}
+};
+
+export default LoginForm;
