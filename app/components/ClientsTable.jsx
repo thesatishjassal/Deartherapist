@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import { DataGrid, GridToolbar } from "@mui/x-data-grid";
 import {
   Box,
@@ -77,25 +77,20 @@ const ActionsMenu = ({ rowId, onEdit, onDelete }) => {
   );
 };
 
-export default function ClientsTable() {
-  const [rows, setRows] = React.useState([]);
-  const [isLoading, setIsLoading] = React.useState(true);
-  const [searchText, setSearchText] = React.useState("");
-  const [selectedRow, setSelectedRow] = React.useState(null);
-  const [isEditModalOpen, setEditModalOpen] = React.useState(false);
-  const [isDeleteModalOpen, setDeleteModalOpen] = React.useState(false);
-  const { clients, isTLoading, error } = useGetClients();
+const ClientsTable = () => {
+  const [rows, setRows] = useState([]);
+  const [isLoading, setIsLoading] = useState(true);
+  const [searchText, setSearchText] = useState("");
+  const [selectedRow, setSelectedRow] = useState(null);
+  const [isEditModalOpen, setEditModalOpen] = useState(false);
+  const [isDeleteModalOpen, setDeleteModalOpen] = useState(false);
+  const { clients, isLoading: isTLoading, error } = useGetClients(); // Rename isLoading to avoid conflict
 
-  if (isTLoading) {
-    return <p>Loading...</p>; // You can add a loading spinner or message here
-  }
-
-  if (error) {
-    return <p>Error: {error.message}</p>; // Display error message
-  }
-
-  // Simulate loading initial data
   useEffect(() => {
+    if (isTLoading) {
+      return; // Early return if still loading
+    }
+
     setTimeout(() => {
       const formattedRows = clients.map((client) => ({
         ...client,
@@ -104,7 +99,8 @@ export default function ClientsTable() {
       setRows(formattedRows);
       setIsLoading(false);
     }, 2000); // Simulating a 2 second delay
-  }, [clients]);
+
+  }, [clients, isTLoading]); // Include clients and isTLoading in dependency array
 
   const handleSearch = (event) => {
     setSearchText(event.target.value);
@@ -128,7 +124,7 @@ export default function ClientsTable() {
   };
 
   const handleDeleteConfirm = () => {
-    setRows(rows.filter((row) => row._id !== selected.row._id));
+    setRows(rows.filter((row) => row._id !== selectedRow._id));
     setDeleteModalOpen(false);
   };
 
@@ -207,4 +203,6 @@ export default function ClientsTable() {
       />
     </div>
   );
-}
+};
+
+export default ClientsTable;
