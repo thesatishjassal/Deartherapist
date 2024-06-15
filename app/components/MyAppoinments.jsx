@@ -168,7 +168,7 @@ export default function MyAppointments() {
   );
 
   return (
-    <div style={{ height: 500, width: "100%" }}>
+    <div style={{ width: "100%" }}>
       <Toolbar>
         <Typography variant="h6" component="div" sx={{ flexGrow: 1 }}>
           My Appointments

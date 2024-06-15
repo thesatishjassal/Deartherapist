@@ -81,6 +81,7 @@ button.MuiButtonBase-root {
   width: 100%;
   max-width: 1200px;
   margin: 28px auto;
+  overflow: unset !important;
 }
 .MuiDataGrid-root {
   box-shadow: none !important;

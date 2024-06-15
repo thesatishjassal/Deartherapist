@@ -130,46 +130,51 @@ export default function HorizontalLinearStepper() {
   const PersonalDetailStep = () => (
     <Box sx={{ width: "100%", px: 1, py: 3 }}>
       <Grid container rowSpacing={3} columnSpacing={{ xs: 1, sm: 2, md: 3 }}>
-      <Grid item xs={12} sm={12} md={6}>
-  <Autocomplete
-    fullWidth
-    id="client-mobileno"
-    options={mobileNumbers}
-    value={formik.values.mobileNumber}
-    onChange={(event, value) => {
-      formik.setFieldValue("mobileNumber", value);
-    }}
-    onBlur={() => formik.setFieldTouched("mobileNumber", true)}
-    renderInput={(params) => (
-      <TextField
-        {...params}
-        label="Select Client Mobile No"
-        error={formik.touched.mobileNumber && Boolean(formik.errors.mobileNumber)}
-        helperText={formik.touched.mobileNumber && formik.errors.mobileNumber}
-      />
-    )}
-  />
-</Grid>
-<Grid item xs={12} sm={12} md={6}>
-  <Autocomplete
-    fullWidth
-    id="client-email"
-    options={emailAddresses}
-    value={formik.values.email}
-    onChange={(event, value) => {
-      formik.setFieldValue("email", value);
-    }}
-    onBlur={() => formik.setFieldTouched("email", true)}
-    renderInput={(params) => (
-      <TextField
-        {...params}
-        label="Select Client Email"
-        error={formik.touched.email && Boolean(formik.errors.email)}
-        helperText={formik.touched.email && formik.errors.email}
-      />
-    )}
-  />
-</Grid>
+        <Grid item xs={12} sm={12} md={6}>
+          <Autocomplete
+            fullWidth
+            id="client-mobileno"
+            options={mobileNumbers}
+            value={formik.values.mobileNumber}
+            onChange={(event, value) => {
+              formik.setFieldValue("mobileNumber", value);
+            }}
+            onBlur={() => formik.setFieldTouched("mobileNumber", true)}
+            renderInput={(params) => (
+              <TextField
+                {...params}
+                label="Select Client Mobile No"
+                error={
+                  formik.touched.mobileNumber &&
+                  Boolean(formik.errors.mobileNumber)
+                }
+                helperText={
+                  formik.touched.mobileNumber && formik.errors.mobileNumber
+                }
+              />
+            )}
+          />
+        </Grid>
+        <Grid item xs={12} sm={12} md={6}>
+          <Autocomplete
+            fullWidth
+            id="client-email"
+            options={emailAddresses}
+            value={formik.values.email}
+            onChange={(event, value) => {
+              formik.setFieldValue("email", value);
+            }}
+            onBlur={() => formik.setFieldTouched("email", true)}
+            renderInput={(params) => (
+              <TextField
+                {...params}
+                label="Select Client Email"
+                error={formik.touched.email && Boolean(formik.errors.email)}
+                helperText={formik.touched.email && formik.errors.email}
+              />
+            )}
+          />
+        </Grid>
 
         <Grid item xs={12} sm={12} md={12}>
           <Card className="selectedUser">
@@ -206,46 +211,46 @@ export default function HorizontalLinearStepper() {
   const MedicalDetailStep = () => (
     <Box sx={{ width: "100%", px: 1, py: 3 }}>
       <Grid container rowSpacing={3} columnSpacing={{ xs: 1, sm: 2, md: 3 }}>
-      <Grid item xs={12} sm={12} md={6}>
-  <LocalizationProvider dateAdapter={AdapterDayjs}>
-    <DatePicker
-      label="Pick a Date"
-      value={formik.values.date}
-      onChange={(newValue) => {
-        formik.setFieldValue("date", newValue);
-        formik.setFieldTouched("date", true, true);
-      }}
-      renderInput={(params) => (
-        <TextField
-          {...params}
-          fullWidth
-          error={formik.touched.date && Boolean(formik.errors.date)}
-          helperText={formik.touched.date && formik.errors.date}
-        />
-      )}
-    />
-  </LocalizationProvider>
-</Grid>
-<Grid item xs={12} sm={12} md={6}>
-  <LocalizationProvider dateAdapter={AdapterDayjs}>
-    <TimePicker
-      label="Pick a Time"
-      value={formik.values.time}
-      onChange={(newTime) => {
-        formik.setFieldValue("time", newTime);
-        formik.setFieldTouched("time", true, true);
-      }}
-      renderInput={(params) => (
-        <TextField
-          {...params}
-          fullWidth
-          error={formik.touched.time && Boolean(formik.errors.time)}
-          helperText={formik.touched.time && formik.errors.time}
-        />
-      )}
-    />
-  </LocalizationProvider>
-</Grid>
+        <Grid item xs={12} sm={12} md={6}>
+          <LocalizationProvider dateAdapter={AdapterDayjs}>
+            <DatePicker
+              label="Pick a Date"
+              value={formik.values.date}
+              onChange={(newValue) => {
+                formik.setFieldValue("date", newValue);
+                formik.setFieldTouched("date", true, true);
+              }}
+              renderInput={(params) => (
+                <TextField
+                  {...params}
+                  fullWidth
+                  error={formik.touched.date && Boolean(formik.errors.date)}
+                  helperText={formik.touched.date && formik.errors.date}
+                />
+              )}
+            />
+          </LocalizationProvider>
+        </Grid>
+        <Grid item xs={12} sm={12} md={6}>
+          <LocalizationProvider dateAdapter={AdapterDayjs}>
+            <TimePicker
+              label="Pick a Time"
+              value={formik.values.time}
+              onChange={(newTime) => {
+                formik.setFieldValue("time", newTime);
+                formik.setFieldTouched("time", true, true);
+              }}
+              renderInput={(params) => (
+                <TextField
+                  {...params}
+                  fullWidth
+                  error={formik.touched.time && Boolean(formik.errors.time)}
+                  helperText={formik.touched.time && formik.errors.time}
+                />
+              )}
+            />
+          </LocalizationProvider>
+        </Grid>
 
         <Grid item xs={12} sm={12} md={6}>
           <FormControl
@@ -385,7 +390,7 @@ export default function HorizontalLinearStepper() {
         </>
       )}
       <Backdrop
-        sx={{ color: '#fff', zIndex: (theme) => theme.zIndex.drawer + 1 }}
+        sx={{ color: "#fff", zIndex: (theme) => theme.zIndex.drawer + 1 }}
         open={loading}
       >
         <CircularProgress color="inherit" />

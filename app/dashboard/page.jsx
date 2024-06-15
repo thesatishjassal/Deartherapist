@@ -14,6 +14,7 @@ import MyAppointments from "../components/MyAppoinments";
 
 export default function Dashboard() {
   const [value, setValue] = React.useState("1");
+  
   const handleChange = (event, newValue) => {
     setValue(newValue);
   };

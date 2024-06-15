@@ -35,7 +35,7 @@ const InvoicePage = () => {
   };
 
   return (
-    <Box sx={{ padding: 2, backgroundColor: "#f9f9f9", minHeight: "100vh" }}>
+    <Box sx={{ padding: 2}}>
       <Box
         ref={invoiceRef}
         className="invoice-content"

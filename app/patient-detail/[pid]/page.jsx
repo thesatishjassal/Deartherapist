@@ -23,32 +23,29 @@ import { Container } from "@mui/material";
 import Button from "@mui/material/Button";
 import DownloadIcon from "@mui/icons-material/Download";
 import Addprescription from "../../components/Addprescription"; // Correct import path for Addprescription
+import useGetClientById from "../../../hooks/useGetClientById ";
 
-// Mock static data for demonstration
-const patients = {
-  43534343: { id: "43534343", name: "John Doe", age: 30, condition: "Healthy" },
-  12345678: {
-    id: "12345678",
-    name: "Jane Smith",
-    age: 45,
-    condition: "Recovering",
-  },
-  // Add more patient data as needed
-};
-
-async function getPatientData(pid) {
-  // Simulate fetching data based on pid
-  return patients[pid] || null;
-}
-
-const PatientDetails = async ({ params }) => {
+const PatientDetails = ({ params }) => {
   const invoiceRef = useRef();
   const [expanded, setExpanded] = React.useState(false);
   const [anchorEl, setAnchorEl] = React.useState(null);
   const open = Boolean(anchorEl);
   const { pid } = params;
-  const data = await getPatientData(pid);
+  
+  const data = useGetClientById(pid);
+  const { client, isLoading, error } = useGetClientById(pid);
 
+  if (isLoading) {
+    return <p>Loading...</p>; // Handle loading state
+  }
+
+  if (error) {
+    return <p>Error: {error.message}</p>; // Handle error state
+  }
+
+  if (!client) {
+    return null; // Handle case when client is not found
+  }
   // If no data found, you can throw an error or return a not found component
   if (!data) {
     // You can also return a 404 page component here
@@ -132,26 +129,6 @@ const PatientDetails = async ({ params }) => {
     window.print();
   };
 
-  // const PatientDetailPage = async ({ params }) => {
-  //   const { pid } = params;
-  //   const data = await getPatientData(pid);
-
-  //   // If no data found, you can throw an error or return a not found component
-  //   if (!data) {
-  //     // You can also return a 404 page component here
-  //     return <div>404: Patient not found</div>;
-  //   }
-
-  //   return (
-  //     <div>
-  //       <h1>Patient Detail for ID: {data.id}</h1>
-  //       <p>Name: {data.name}</p>
-  //       <p>Age: {data.age}</p>
-  //       <p>Condition: {data.condition}</p>
-  //     </div>
-  //   );
-  // };
-
   return (
     <Box sx={{ width: "100%" }}>
       <Container maxWidth="lg">
@@ -171,7 +148,7 @@ const PatientDetails = async ({ params }) => {
             >
               {/* Invoice Header */}
               <Typography variant="p">
-                <strong>Page Details x</strong>
+                <strong>Client ID: {client.ClientID}</strong>
               </Typography>
               <Divider
                 sx={{
@@ -193,14 +170,14 @@ const PatientDetails = async ({ params }) => {
                       margin: "6px auto",
                     }}
                   >
-                    John Doe
+                   {client.name}
                   </Typography>
                   <Typography variant="p" className="address">
-                    789/1 Sector-2c, 38200 Gandhinagar, <i>India</i>
+                    {client.address}r, <i>{client.country}</i>
                   </Typography>
                   <br />
                   <Typography variant="p" className="address">
-                    +91-8481758569 | contact@johndoe.co
+                    {client.mobile} | {client.email}
                   </Typography>
                 </Box>
                 <Box
@@ -238,7 +215,7 @@ const PatientDetails = async ({ params }) => {
                             Age
                           </Typography>
                           <Typography component="strong" variant="h6">
-                            28
+                            {client.age}
                           </Typography>
                         </Box>
                         <Box className="spacer" sx={{ flexGrow: 1 }}></Box>
@@ -247,7 +224,7 @@ const PatientDetails = async ({ params }) => {
                             Gender
                           </Typography>
                           <Typography component="strong" variant="h6">
-                            Male
+                            {client.gender}
                           </Typography>
                         </Box>
                       </Box>
@@ -268,7 +245,7 @@ const PatientDetails = async ({ params }) => {
                             Occupation
                           </Typography>
                           <Typography component="strong" variant="h6">
-                            Self-Employed
+                            {client.occupation}
                           </Typography>
                         </Box>
                         <Box className="spacer" sx={{ flexGrow: 1 }}></Box>
@@ -277,7 +254,7 @@ const PatientDetails = async ({ params }) => {
                             Marital Status
                           </Typography>
                           <Typography component="strong" variant="h6">
-                            Single
+                            {client.maritalStatus}
                           </Typography>
                         </Box>
                       </Box>
@@ -298,16 +275,16 @@ const PatientDetails = async ({ params }) => {
                             Medical/Psychiatric History
                           </Typography>
                           <Typography component="strong" variant="h6">
-                            28
+                            {client.medicalHistory}
                           </Typography>
                         </Box>
                         <Box className="spacer" sx={{ flexGrow: 1 }}></Box>
                         <Box>
                           <Typography component="p" className="grey_light">
-                            Gender
+                          Find Us
                           </Typography>
                           <Typography component="strong" variant="h6">
-                            Male
+                            {client.findUs}
                           </Typography>
                         </Box>
                       </Box>
@@ -323,13 +300,13 @@ const PatientDetails = async ({ params }) => {
               >
                 <Box>
                   <Typography component="p">
-                    Informamt name and relationship: <strong>Dummy</strong>
+                    Informamt name and relationship: <strong>{client.informant}</strong>
                   </Typography>
                 </Box>
 
                 <Box>
                   <Typography component="p">
-                    Emergency Contact: <strong>Dummy</strong>
+                    Emergency Contact: <strong>{client.emergencyContact}</strong>
                   </Typography>
                 </Box>
               </Box>
