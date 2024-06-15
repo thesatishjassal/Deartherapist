@@ -1,4 +1,6 @@
 import * as React from "react";
+import { useFormik } from "formik";
+import * as Yup from "yup";
 import Box from "@mui/material/Box";
 import Stepper from "@mui/material/Stepper";
 import Step from "@mui/material/Step";
@@ -25,6 +27,8 @@ import ListItemText from "@mui/material/ListItemText";
 import ListItemAvatar from "@mui/material/ListItemAvatar";
 import Avatar from "@mui/material/Avatar";
 import Card from "@mui/material/Card";
+import Backdrop from "@mui/material/Backdrop";
+import CircularProgress from "@mui/material/CircularProgress";
 
 const steps = ["Search Client", "Personal Details"];
 
@@ -44,17 +48,50 @@ const emailAddresses = [
   "example5@example.com",
 ];
 
+const validationSchema = Yup.object({
+  mobileNumber: Yup.string().required("Mobile number is required"),
+  email: Yup.string()
+    .email("Invalid email address")
+    .required("Email is required"),
+  date: Yup.date().required("Date is required"),
+  time: Yup.date().required("Time is required"),
+  channel: Yup.string().required("Session type is required"),
+  facilitatedBy: Yup.string().required("Facilitated by is required"),
+  service: Yup.string().required("Service is required"),
+  amount: Yup.number()
+    .required("Amount is required")
+    .positive("Amount must be positive"),
+});
+
 export default function HorizontalLinearStepper() {
   const theme = useTheme();
   const [activeStep, setActiveStep] = React.useState(0);
   const [skipped, setSkipped] = React.useState(new Set());
-  const [value, setValue] = React.useState(null);
-  const [time, setTime] = React.useState(null);
-  const [channel, setChannel] = React.useState("");
-  const [facilatedby, setFacilatedby] = React.useState("");
-  const [service, setService] = React.useState("");
-  const [amount, setAmount] = React.useState("");
   const [isFinished, setIsFinished] = React.useState(false);
+  const [loading, setLoading] = React.useState(false); // Loading state
+
+  const formik = useFormik({
+    initialValues: {
+      mobileNumber: "",
+      email: "",
+      date: null,
+      time: null,
+      channel: "",
+      facilitatedBy: "",
+      service: "",
+      amount: "",
+    },
+    validationSchema: validationSchema,
+    onSubmit: (values) => {
+      setLoading(true); // Start loading
+      // Simulate a network request
+      setTimeout(() => {
+        console.log("Form Data:", values);
+        setIsFinished(true);
+        setLoading(false); // Stop loading
+      }, 2000);
+    },
+  });
 
   const isStepOptional = (step) => {
     return step === 1;
@@ -72,8 +109,7 @@ export default function HorizontalLinearStepper() {
     }
 
     if (activeStep === steps.length - 1) {
-      handleSubmit();
-      setIsFinished(true);
+      formik.handleSubmit();
     } else {
       setActiveStep((prevActiveStep) => prevActiveStep + 1);
       setSkipped(newSkipped);
@@ -88,178 +124,219 @@ export default function HorizontalLinearStepper() {
     setActiveStep(0);
     setSkipped(new Set());
     setIsFinished(false);
-  };
-
-  const handleSubmit = () => {
-    const formData = {
-      mobileNumber: value,
-      email: emailAddresses,
-      date: value,
-      time: time,
-      channel: channel,
-      facilitatedBy: facilatedby,
-      service: service,
-      amount: amount,
-    };
-    console.log("Form Data:", formData);
-    // Here you can add the logic to send the form data to a server or perform other actions with it
+    formik.resetForm();
   };
 
   const PersonalDetailStep = () => (
-    <React.Fragment>
-      <Box sx={{ width: "100%", px: 1, py: 3 }}>
-        <Grid container rowSpacing={3} columnSpacing={{ xs: 1, sm: 2, md: 3 }}>
-          <Grid item xs={12} sm={12} md={6}>
-            <Autocomplete
-              fullWidth
-              id="client-mobileno"
-              options={mobileNumbers}
-              renderInput={(params) => (
-                <TextField {...params} label="Select Client Mobile No" />
-              )}
-            />
-          </Grid>
-          <Grid item xs={12} sm={12} md={6}>
-            <Autocomplete
-              fullWidth
-              id="client-email"
-              options={emailAddresses}
-              renderInput={(params) => (
-                <TextField {...params} label="Select Client Email" />
-              )}
-            />
-          </Grid>
-          <Grid item xs={12} sm={12} md={12}>
-            <Card className="selectedUser">
-              <List sx={{ width: "100%" }}>
-                <ListItem alignItems="flex-start">
-                  <ListItemAvatar>
-                    <Avatar
-                      alt="Remy Sharp"
-                      src="https://mui.com/static/images/avatar/3.jpg"
-                    />
-                  </ListItemAvatar>
-                  <ListItemText
-                    primary="Remy Sharp"
-                    secondary={
-                      <React.Fragment>
-                        <Typography
-                          sx={{ display: "inline" }}
-                          component="span"
-                          variant="body2"
-                        >
-                          remysharp@gmail.com | Female
-                        </Typography>
-                      </React.Fragment>
-                    }
+    <Box sx={{ width: "100%", px: 1, py: 3 }}>
+      <Grid container rowSpacing={3} columnSpacing={{ xs: 1, sm: 2, md: 3 }}>
+      <Grid item xs={12} sm={12} md={6}>
+  <Autocomplete
+    fullWidth
+    id="client-mobileno"
+    options={mobileNumbers}
+    value={formik.values.mobileNumber}
+    onChange={(event, value) => {
+      formik.setFieldValue("mobileNumber", value);
+    }}
+    onBlur={() => formik.setFieldTouched("mobileNumber", true)}
+    renderInput={(params) => (
+      <TextField
+        {...params}
+        label="Select Client Mobile No"
+        error={formik.touched.mobileNumber && Boolean(formik.errors.mobileNumber)}
+        helperText={formik.touched.mobileNumber && formik.errors.mobileNumber}
+      />
+    )}
+  />
+</Grid>
+<Grid item xs={12} sm={12} md={6}>
+  <Autocomplete
+    fullWidth
+    id="client-email"
+    options={emailAddresses}
+    value={formik.values.email}
+    onChange={(event, value) => {
+      formik.setFieldValue("email", value);
+    }}
+    onBlur={() => formik.setFieldTouched("email", true)}
+    renderInput={(params) => (
+      <TextField
+        {...params}
+        label="Select Client Email"
+        error={formik.touched.email && Boolean(formik.errors.email)}
+        helperText={formik.touched.email && formik.errors.email}
+      />
+    )}
+  />
+</Grid>
+
+        <Grid item xs={12} sm={12} md={12}>
+          <Card className="selectedUser">
+            <List sx={{ width: "100%" }}>
+              <ListItem alignItems="flex-start">
+                <ListItemAvatar>
+                  <Avatar
+                    alt="Remy Sharp"
+                    src="https://mui.com/static/images/avatar/3.jpg"
                   />
-                </ListItem>
-              </List>
-            </Card>
-          </Grid>
+                </ListItemAvatar>
+                <ListItemText
+                  primary="Remy Sharp"
+                  secondary={
+                    <React.Fragment>
+                      <Typography
+                        sx={{ display: "inline" }}
+                        component="span"
+                        variant="body2"
+                      >
+                        remysharp@gmail.com | Female
+                      </Typography>
+                    </React.Fragment>
+                  }
+                />
+              </ListItem>
+            </List>
+          </Card>
         </Grid>
-      </Box>
-    </React.Fragment>
+      </Grid>
+    </Box>
   );
 
   const MedicalDetailStep = () => (
-    <React.Fragment>
-        <Box sx={{ width: "100%", px: 1, py: 3 }}>
-        <Grid container rowSpacing={3} columnSpacing={{ xs: 1, sm: 2, md: 3 }}>
-          <Grid item xs={12} sm={12} md={6}>
-            <LocalizationProvider dateAdapter={AdapterDayjs}>
-              <DemoContainer components={["DatePicker"]}>
-                <DatePicker
-                  label="Pick a Date"
-                  value={value}
-                  onChange={(newValue) => setValue(newValue)}
-                  fullWidth
-                  size="small"
-                />
-              </DemoContainer>
-            </LocalizationProvider>
-          </Grid>
-          <Grid item xs={12} sm={12} md={6}>
-            <LocalizationProvider dateAdapter={AdapterDayjs}>
-              <DemoContainer components={["TimePicker"]}>
-                <TimePicker
-                  label="Pick a Time"
-                  value={time}
-                  onChange={(newTime) => setTime(newTime)}
-                  fullWidth
-                />
-              </DemoContainer>
-            </LocalizationProvider>
-          </Grid>
-          <Grid item xs={12} sm={12} md={6}>
-            <FormControl fullWidth>
-              <InputLabel id="facilated-by">Facilitated By</InputLabel>
-              <Select
-                labelId="facilated-by"
-                id="facilated-by-control"
-                value={facilatedby}
-                label="Facilitated By"
-                onChange={(e) => setFacilatedby(e.target.value)}
-              >
-                <MenuItem value="SHAVETA BHARDWAJ">
-                  Dr. SHAVETA BHARDWAJ
-                </MenuItem>
-                <MenuItem value="Counselor">Counselor</MenuItem>
-              </Select>
-            </FormControl>
-          </Grid>
-          <Grid item xs={12} sm={12} md={6}>
-            <FormControl fullWidth>
-              <InputLabel id="Online-offline">Session Type:</InputLabel>
-              <Select
-                labelId="Online-offline"
-                id="Online-offline-control"
-                value={channel}
-                label="Session Type"
-                placeholder="Choose your session type"
-                onChange={(e) => setChannel(e.target.value)}
-              >
-                <MenuItem value="online">Online</MenuItem>
-                <MenuItem value="offline">Offline</MenuItem>
-              </Select>
-            </FormControl>
-          </Grid>
-          <Grid item xs={12} sm={12} md={6}>
-            <FormControl fullWidth>
-              <InputLabel id="service">Service</InputLabel>
-              <Select
-                labelId="service"
-                id="service-control"
-                value={service}
-                label="Service"
-                placeholder="Select a service"
-                onChange={(e) => setService(e.target.value)}
-              >
-                <MenuItem value="Counselling Session">
-                  Counselling Session
-                </MenuItem>
-                <MenuItem value="Couple Session">Couple Session</MenuItem>
-                <MenuItem value="Therapy">Therapy</MenuItem>
-                <MenuItem value="Astrology Session">Astrology Session</MenuItem>
-                <MenuItem value="Tarot Card Reading">
-                  Tarot Card Reading
-                </MenuItem>
-                <MenuItem value="Other">Other</MenuItem>
-              </Select>
-            </FormControl>
-          </Grid>
-          <Grid item xs={12} sm={12} md={6}>
-            <TextField
-              id="amount-control"
-              label="Amount"
-              fullWidth
-              variant="outlined"
-              onChange={(e) => setAmount(e.target.value)}
-            />
-          </Grid>
+    <Box sx={{ width: "100%", px: 1, py: 3 }}>
+      <Grid container rowSpacing={3} columnSpacing={{ xs: 1, sm: 2, md: 3 }}>
+      <Grid item xs={12} sm={12} md={6}>
+  <LocalizationProvider dateAdapter={AdapterDayjs}>
+    <DatePicker
+      label="Pick a Date"
+      value={formik.values.date}
+      onChange={(newValue) => {
+        formik.setFieldValue("date", newValue);
+        formik.setFieldTouched("date", true, true);
+      }}
+      renderInput={(params) => (
+        <TextField
+          {...params}
+          fullWidth
+          error={formik.touched.date && Boolean(formik.errors.date)}
+          helperText={formik.touched.date && formik.errors.date}
+        />
+      )}
+    />
+  </LocalizationProvider>
+</Grid>
+<Grid item xs={12} sm={12} md={6}>
+  <LocalizationProvider dateAdapter={AdapterDayjs}>
+    <TimePicker
+      label="Pick a Time"
+      value={formik.values.time}
+      onChange={(newTime) => {
+        formik.setFieldValue("time", newTime);
+        formik.setFieldTouched("time", true, true);
+      }}
+      renderInput={(params) => (
+        <TextField
+          {...params}
+          fullWidth
+          error={formik.touched.time && Boolean(formik.errors.time)}
+          helperText={formik.touched.time && formik.errors.time}
+        />
+      )}
+    />
+  </LocalizationProvider>
+</Grid>
+
+        <Grid item xs={12} sm={12} md={6}>
+          <FormControl
+            fullWidth
+            error={
+              formik.touched.facilitatedBy &&
+              Boolean(formik.errors.facilitatedBy)
+            }
+          >
+            <InputLabel id="facilitated-by">Facilitated By</InputLabel>
+            <Select
+              labelId="facilitated-by"
+              id="facilitated-by-control"
+              value={formik.values.facilitatedBy}
+              label="Facilitated By"
+              onChange={(e) =>
+                formik.setFieldValue("facilitatedBy", e.target.value)
+              }
+            >
+              <MenuItem value="SHAVETA BHARDWAJ">Dr. SHAVETA BHARDWAJ</MenuItem>
+              <MenuItem value="Counselor">Counselor</MenuItem>
+            </Select>
+            {formik.touched.facilitatedBy && formik.errors.facilitatedBy && (
+              <Typography color="error">
+                {formik.errors.facilitatedBy}
+              </Typography>
+            )}
+          </FormControl>
         </Grid>
-      </Box>
-    </React.Fragment>
+        <Grid item xs={12} sm={12} md={6}>
+          <FormControl
+            fullWidth
+            error={formik.touched.channel && Boolean(formik.errors.channel)}
+          >
+            <InputLabel id="session-type">Session Type</InputLabel>
+            <Select
+              labelId="session-type"
+              id="session-type-control"
+              value={formik.values.channel}
+              label="Session Type"
+              onChange={(e) => formik.setFieldValue("channel", e.target.value)}
+            >
+              <MenuItem value="online">Online</MenuItem>
+              <MenuItem value="offline">Offline</MenuItem>
+            </Select>
+            {formik.touched.channel && formik.errors.channel && (
+              <Typography color="error">{formik.errors.channel}</Typography>
+            )}
+          </FormControl>
+        </Grid>
+        <Grid item xs={12} sm={12} md={6}>
+          <FormControl
+            fullWidth
+            error={formik.touched.service && Boolean(formik.errors.service)}
+          >
+            <InputLabel id="service">Service</InputLabel>
+            <Select
+              labelId="service"
+              id="service-control"
+              value={formik.values.service}
+              label="Service"
+              onChange={(e) => formik.setFieldValue("service", e.target.value)}
+            >
+              <MenuItem value="Counselling Session">
+                Counselling Session
+              </MenuItem>
+              <MenuItem value="Couple Session">Couple Session</MenuItem>
+              <MenuItem value="Therapy">Therapy</MenuItem>
+              <MenuItem value="Astrology Session">Astrology Session</MenuItem>
+              <MenuItem value="Tarot Card Reading">Tarot Card Reading</MenuItem>
+              <MenuItem value="Other">Other</MenuItem>
+            </Select>
+            {formik.touched.service && formik.errors.service && (
+              <Typography color="error">{formik.errors.service}</Typography>
+            )}
+          </FormControl>
+        </Grid>
+        <Grid item xs={12} sm={12} md={6}>
+          <TextField
+            id="amount-control"
+            label="Amount"
+            fullWidth
+            variant="outlined"
+            value={formik.values.amount}
+            onChange={(e) => formik.setFieldValue("amount", e.target.value)}
+            error={formik.touched.amount && Boolean(formik.errors.amount)}
+            helperText={formik.touched.amount && formik.errors.amount}
+          />
+        </Grid>
+      </Grid>
+    </Box>
   );
 
   return (
@@ -307,6 +384,12 @@ export default function HorizontalLinearStepper() {
           </React.Fragment>
         </>
       )}
+      <Backdrop
+        sx={{ color: '#fff', zIndex: (theme) => theme.zIndex.drawer + 1 }}
+        open={loading}
+      >
+        <CircularProgress color="inherit" />
+      </Backdrop>
     </Box>
   );
 }

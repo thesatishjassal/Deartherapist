@@ -9,6 +9,10 @@ import Button from "@mui/material/Button";
 import Typography from "@mui/material/Typography";
 import Step1Form from "./Step1Form";
 import Step2Form from "./Step2Form";
+import CircularProgress from "@mui/material/CircularProgress";
+import Modal from "@mui/material/Modal";
+import Backdrop from "@mui/material/Backdrop";
+import Fade from "@mui/material/Fade";
 
 const steps = ["Personal Detail", "Medical Detail"];
 
@@ -61,6 +65,7 @@ const HorizontalLinearStepper = () => {
   const [activeStep, setActiveStep] = React.useState(0);
   const [skipped, setSkipped] = React.useState(new Set());
   const [isFinished, setIsFinished] = React.useState(false);
+  const [showModalProgress, setShowModalProgress] = React.useState(false);
 
   const isStepOptional = (step) => {
     return step === 1;
@@ -130,14 +135,28 @@ const HorizontalLinearStepper = () => {
       body: JSON.stringify(formData),
     };
 
-    const response = await fetch(apiUrl, requestOptions);
-    if (!response.ok) {
-      const errorMessage = `An error occurred: ${response.status}`;
-      throw new Error(errorMessage);
+    setShowModalProgress(true);
+
+    try {
+      const response = await fetch(apiUrl, requestOptions);
+      if (!response.ok) {
+        const errorMessage = `An error occurred: ${response.status}`;
+        throw new Error(errorMessage);
+      }
+      // Handle success response as needed
+      const data = await response.json();
+      console.log("Form submission successful:", data);
+      setIsFinished(true);
+    } catch (error) {
+      console.error("Error submitting form:", error);
+      // Handle error state as needed
+    } finally {
+      setShowModalProgress(false);
     }
-    // Handle success response as needed
-    const data = await response.json();
-    console.log("Form submission successful:", data);
+  };
+
+  const handleCloseModal = () => {
+    setShowModalProgress(false);
   };
 
   return (
@@ -182,7 +201,7 @@ const HorizontalLinearStepper = () => {
                   <Box sx={{ flex: "1 1 auto" }} />
                   <Button
                     type="button"
-                    disabled={!isStepValid(activeStep)}
+                    disabled={!isStepValid(activeStep) || isSubmitting}
                     onClick={handleNext}
                   >
                     {activeStep === steps.length - 1 ? "Finish" : "Next"}
@@ -200,6 +219,30 @@ const HorizontalLinearStepper = () => {
           )}
         </Box>
       </form>
+
+      {/* Modal with Progress Indicator */}
+      <Modal
+        open={showModalProgress}
+        onClose={handleCloseModal}
+        closeAfterTransition
+        BackdropComponent={Backdrop}
+        BackdropProps={{
+          timeout: 500,
+        }}
+      >
+        <Fade in={showModalProgress}>
+          <Box
+            sx={{
+              display: "flex",
+              justifyContent: "center",
+              alignItems: "center",
+              height: "100vh",
+            }}
+          >
+            <CircularProgress />
+          </Box>
+        </Fade>
+      </Modal>
     </Box>
   );
 };

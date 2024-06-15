@@ -4,7 +4,7 @@ import TextField from "@mui/material/TextField";
 
 const Step2Form = ({ formik }) => {
   return (
-    <Grid container rowSpacing={3} columnSpacing={{ xs: 1, sm: 2, md: 3 }}>
+    <Grid container rowSpacing={3} columnSpacing={{ xs: 1, sm: 2, md: 3 }} sx={{ width: "100%", px: 1, pt: 4 }}>
       <Grid item xs={12} sm={6}>
         <TextField
           id="medicalHistory"
