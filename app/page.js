@@ -11,10 +11,13 @@ import TextField from '@mui/material/TextField';
 import Image from 'next/image';
 import Box from '@mui/material/Box';
 import CircularProgress from '@mui/material/CircularProgress'; // Import CircularProgress for loading state
+import { useRouter } from 'next/navigation'
+import { jwtDecode } from "jwt-decode";
 
 const LoginForm = () => {
   const [isLoading, setIsLoading] = useState(false); // State for loading indicator
-
+  const [error, setError] = useState(null);
+  const router = useRouter()
   const validationSchema = Yup.object({
     email: Yup.string().email('Invalid email address').required('Email is required'),
     password: Yup.string().required('Password is required'),
@@ -28,9 +31,33 @@ const LoginForm = () => {
     validationSchema: validationSchema,
     onSubmit: async (values) => {
       setIsLoading(true); // Start loading state
+
+      try {
+        const response = await fetch('http://localhost:5500/api/auth/login', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify(values),
+        });
+  
+        if (response.ok) {
+          const data = await response.json();
+          const token = data.token;
+          // Decode the token to get user data
+          const decoded = jwtDecode(token);
+          console.log(decoded); // You can access decoded data like decoded.email, decoded.role, etc.
+          localStorage.setItem('token', token);
+            router.push('/dashboard')
+        } else {
+          setError('Invalid email or password');
+        }
+      } catch (error) {
+        console.error('Login error:', error);
+        setError('Login failed. Please try again.');
+      }
       // Simulate API call or async operation
       await new Promise((resolve) => setTimeout(resolve, 1000)); // Simulate 1 second delay
-      console.log('Form submitted:', values);
       setIsLoading(false); // End loading state
       formik.resetForm(); // Reset form fields
     },

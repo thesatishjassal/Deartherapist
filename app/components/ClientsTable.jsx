@@ -1,4 +1,4 @@
-import * as React from "react";
+import React, { useEffect } from "react";
 import { DataGrid, GridToolbar } from "@mui/x-data-grid";
 import {
   Box,
@@ -8,7 +8,7 @@ import {
   TextField,
   Toolbar,
   Typography,
-  Skeleton,
+  CircularProgress,
 } from "@mui/material";
 import MoreVertIcon from "@mui/icons-material/MoreVert";
 import EditIcon from "@mui/icons-material/Edit";
@@ -16,7 +16,7 @@ import DeleteIcon from "@mui/icons-material/DeleteOutlined";
 import VisibilityIcon from "@mui/icons-material/Visibility";
 import AddClients from "./AddClients";
 import EditClient from "./EditClient"; // Import the EditClient modal
-import { useRouter } from 'next/navigation';
+import { useRouter } from "next/navigation";
 
 const ActionsMenu = ({ rowId, onEdit, onDelete }) => {
   const [anchorEl, setAnchorEl] = React.useState(null);
@@ -74,23 +74,6 @@ const ActionsMenu = ({ rowId, onEdit, onDelete }) => {
     </>
   );
 };
-
-const SkeletonLoader = () => (
-  <Box p={2}>
-    {[...Array(5)].map((_, index) => (
-      <Box key={index} display="flex" alignItems="center" marginBottom={1}>
-        <Skeleton variant="rect" width={90} height={36} marginRight={1} />
-        <Skeleton variant="rect" width={110} height={36} marginRight={1} />
-        <Skeleton variant="rect" width={120} height={36} marginRight={1} />
-        <Skeleton variant="rect" width={200} height={36} marginRight={1} />
-        <Skeleton variant="rect" width={100} height={36} marginRight={1} />
-        <Skeleton variant="rect" width={90} height={36} marginRight={1} />
-        <Skeleton variant="rect" width={130} height={36} marginRight={1} />
-        <Skeleton variant="rect" width={120} height={36} />
-      </Box>
-    ))}
-  </Box>
-);
 
 export default function ClientsTable() {
   const initialRows = [
@@ -159,7 +142,7 @@ export default function ClientsTable() {
   const [isDeleteModalOpen, setDeleteModalOpen] = React.useState(false);
 
   // Simulate loading initial data
-  React.useEffect(() => {
+  useEffect(() => {
     setTimeout(() => {
       setRows(initialRows);
       setIsLoading(false);
@@ -236,7 +219,12 @@ export default function ClientsTable() {
         <AddClients />
       </Toolbar>
       {isLoading ? (
-        <SkeletonLoader />
+        <Box sx={{ display: "flex", justifyContent: "center", alignItems: "center", height: 400 }}>
+          <CircularProgress />
+          <Typography variant="h6" sx={{ marginLeft: 2 }}>
+            Please wait...
+          </Typography>
+        </Box>
       ) : (
         <DataGrid
           rows={filteredRows}

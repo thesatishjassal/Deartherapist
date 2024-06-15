@@ -179,7 +179,7 @@ export default function MyAppointments() {
           placeholder="Search by name"
           value={searchText}
           onChange={handleSearch}
-          sx={{ marginRight: 2 }}
+          sx={{ marginright: 2 }}
         />
         <AddAppointment />
       </Toolbar>

@@ -1,6 +1,4 @@
-"use client";
-
-import * as React from "react";
+import React, { useEffect, useState } from 'react';
 import AppBar from "@mui/material/AppBar";
 import Box from "@mui/material/Box";
 import Toolbar from "@mui/material/Toolbar";
@@ -15,6 +13,8 @@ import MenuItem from "@mui/material/MenuItem";
 import Image from "next/image";
 import Link from "next/link";
 import Button from "@mui/material/Button";
+import { jwtDecode } from "jwt-decode";
+import { useRouter } from 'next/navigation';
 
 const pages = [
   { name: "Dashboard", href: "/dashboard" },
@@ -23,12 +23,14 @@ const pages = [
 
 const settings = [
   { name: "Profile", href: "/profile" },
-  { name: "Logout", href: "/logout" },
+  { name: "Logout" }, // No href needed here
 ];
 
 function NavigationBar() {
   const [anchorElNav, setAnchorElNav] = React.useState(null);
   const [anchorElUser, setAnchorElUser] = React.useState(null);
+  const [user, setUser] = React.useState(null);
+  const router = useRouter();
 
   const handleOpenNavMenu = (event) => {
     setAnchorElNav(event.currentTarget);
@@ -45,6 +47,25 @@ function NavigationBar() {
   const handleCloseUserMenu = () => {
     setAnchorElUser(null);
   };
+
+  const handleLogout = () => {
+    localStorage.removeItem('token'); // Adjust this according to your token storage method
+    router.push('/');
+  };
+
+  useEffect(() => {
+    // Fetch the JWT token from local storage (or wherever it's stored)
+    const token = localStorage.getItem('token');
+    if (token) {
+      try {
+        // Decode the token
+        const decoded = jwtDecode(token);
+        setUser(decoded);
+      } catch (error) {
+        console.error('Error decoding token:', error);
+      }
+    }
+  }, []);
 
   return (
     <AppBar position="static">
@@ -63,7 +84,7 @@ function NavigationBar() {
               textDecoration: "none",
             }}
           >
-            <Link href="/" passHref>
+            <Link href="/dashboard" passHref>
               <Image
                 src="/images/apple-touch-icon.png"
                 alt="Icon"
@@ -119,77 +140,62 @@ function NavigationBar() {
             </Menu>
           </Box>
 
-          <Typography
-            variant="h5"
-            noWrap
-            sx={{
-              mr: 2,
-              display: { xs: "flex", md: "none" },
-              flexGrow: 1,
-              fontWeight: 700,
-              letterSpacing: ".3rem",
-              color: "inherit",
-              textDecoration: "none",
-            }}
-          >
-            <Link href="/" passHref>
-              <Image
-                src="/images/apple-touch-icon.png"
-                alt="Icon"
-                width={50}
-                height={50}
-                style={{ marginRight: "1rem" }}
-              />
-            </Link>
-          </Typography>
-
           <Box sx={{ flexGrow: 1, display: { xs: "none", md: "flex" } }}>
-              {
-              pages.map((page) => (
-                <Link key={page.name} href={page.href} passHref>
-                  <Button
-                    onClick={handleCloseNavMenu}
-                    sx={{ my: 2, color: "white", display: "block" }}
-                  >
-                    {page.name}
-                  </Button>
-                </Link>
-              ))
-            }
+            {pages.map((page) => (
+              <Link key={page.name} href={page.href} passHref>
+                <Button
+                  onClick={handleCloseNavMenu}
+                  sx={{ my: 2, color: "white", display: "block" }}
+                >
+                  {page.name}
+                </Button>
+              </Link>
+            ))}
           </Box>
 
-          <Box sx={{ flexGrow: 0 }}>
+          <Box sx={{ display: "flex", alignItems: "center" }}>
             <Tooltip title="Open settings">
-              <IconButton onClick={handleOpenUserMenu} sx={{ p: 0 }}>
+              <IconButton onClick={handleOpenUserMenu} sx={{ p: 0, mr: 1 }}>
                 <Avatar alt="Shweta Bhardwaj" src="/images/girl_avatar.webp" />
               </IconButton>
             </Tooltip>
-            <Menu
-              sx={{ mt: "45px" }}
-              id="menu-appbar"
-              anchorEl={anchorElUser}
-              anchorOrigin={{
-                vertical: "top",
-                horizontal: "right",
-              }}
-              keepMounted
-              transformOrigin={{
-                vertical: "top",
-                horizontal: "right",
-              }}
-              open={Boolean(anchorElUser)}
-              onClose={handleCloseUserMenu}
-            >
-              {settings.map((setting) => (
-                <MenuItem key={setting.name} onClick={handleCloseUserMenu}>
-                  <Typography textAlign="center">
-                    <Link href={setting.href} passHref>
-                      {setting.name}
-                    </Link>
-                  </Typography>
-                </MenuItem>
-              ))}
-            </Menu>
+            {user && (
+              <>
+                <Typography variant="p" className='username' sx={{ marginRight: 1 }}>
+                  {user.role}
+                </Typography>
+                <Menu
+                  sx={{ mt: "45px" }}
+                  id="menu-appbar"
+                  anchorEl={anchorElUser}
+                  anchorOrigin={{
+                    vertical: "top",
+                    horizontal: "right",
+                  }}
+                  keepMounted
+                  transformOrigin={{
+                    vertical: "top",
+                    horizontal: "right",
+                  }}
+                  open={Boolean(anchorElUser)}
+                  onClose={handleCloseUserMenu}
+                >
+                  {settings.map((setting) => (
+                    <MenuItem key={setting.name} onClick={setting.name === 'Logout' ? handleLogout : handleCloseUserMenu}>
+                      <Typography textAlign="center">
+                        {setting.href ? (
+                          <Link href={setting.href} passHref>
+                            {setting.name}
+                          </Link>
+                        ) : (
+                          setting.name
+                        )}
+                      </Typography>
+                    </MenuItem>
+                  ))}
+                </Menu>
+              </>
+            )}
           </Box>
         </Toolbar>
       </Container>
