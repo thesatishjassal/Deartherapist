@@ -3,7 +3,7 @@
 
 import React, { useState } from 'react';
 import { Container, Grid } from '@mui/material';
-import UserProfile from '../../components/UserProfile';
+import UserProfile from '../components/UserProfile';
 
 const initialUsers = [
   {
