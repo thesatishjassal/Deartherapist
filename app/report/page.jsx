@@ -2,7 +2,7 @@ import React from "react";
 import Grid from "@mui/material/Grid"; // Grid version 1
 import { Box } from "@mui/material";
 import Container from "@mui/material/Container";
-import InvoicePage from "../components/InvoicePage";
+import InvoicePage from "../../components/InvoicePage";
 import Button from "@mui/material/Button";
 import DownloadIcon from "@mui/icons-material/Download";
 

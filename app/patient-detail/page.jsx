@@ -21,7 +21,7 @@ import { styled, alpha } from "@mui/material/styles";
 import { Container } from "@mui/material";
 import Button from "@mui/material/Button";
 import DownloadIcon from "@mui/icons-material/Download";
-import Addprescription from "../components/NewPrescription";
+import Addprescription from "../components/Addprescription"; // Correct import path for Addprescription
 
 const PatientDetails = () => {
   const invoiceRef = useRef();

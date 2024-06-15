@@ -1,21 +1,63 @@
 import * as React from "react";
+import { useFormik } from "formik";
+import * as Yup from "yup";
 import Box from "@mui/material/Box";
 import Stepper from "@mui/material/Stepper";
 import Step from "@mui/material/Step";
 import StepLabel from "@mui/material/StepLabel";
 import Button from "@mui/material/Button";
 import Typography from "@mui/material/Typography";
-import Grid from "@mui/material/Grid";
-import TextField from "@mui/material/TextField";
-import FormControl from "@mui/material/FormControl";
-import Select from "@mui/material/Select";
-import InputLabel from "@mui/material/InputLabel";
-import MenuItem from "@mui/material/MenuItem";
-import CountrySelect from "./CounntrySelect";
+import Step1Form from "./Step1Form";
+import Step2Form from "./Step2Form";
 
 const steps = ["Personal Detail", "Medical Detail"];
 
-export default function HorizontalLinearStepper() {
+const HorizontalLinearStepper = () => {
+  const validationSchema = Yup.object({
+    name: Yup.string().required("Name is required"),
+    email: Yup.string().email("Invalid email address").required("Email is required"),
+    gender: Yup.string().required("Gender is required"),
+    mobile: Yup.string().required("Mobile is required"),
+    maritalStatus: Yup.string().required("Marital Status is required"),
+    occupation: Yup.string().required("Occupation is required"),
+    address: Yup.string().required("Address is required"),
+    informant: Yup.string().required("Informant is required"),
+    emergencyContact: Yup.string().required("Emergency Contact is required"),
+    medicalHistory: Yup.string().required("Medical History is required"),
+    personalHistory: Yup.string().required("Personal History is required"),
+    findUs: Yup.string().required("How did you find us? is required"),
+    remarks: Yup.string().required("Remarks is required"),
+  });
+
+  const formik = useFormik({
+    initialValues: {
+      name: "",
+      email: "",
+      gender: "",
+      mobile: "",
+      maritalStatus: "",
+      occupation: "",
+      address: "",
+      informant: "",
+      emergencyContact: "",
+      medicalHistory: "",
+      personalHistory: "",
+      findUs: "",
+      remarks: "",
+    },
+    validationSchema: validationSchema,
+    onSubmit: async (values) => {
+      try {
+        await submitForm(values);
+        setIsFinished(true); // Assuming the API call is successful
+      } catch (error) {
+        console.error("Error submitting form:", error);
+        // Handle error state as needed
+      }
+    },
+  });
+
+  const { handleSubmit, isValid, dirty, isSubmitting, errors, touched } = formik;
   const [activeStep, setActiveStep] = React.useState(0);
   const [skipped, setSkipped] = React.useState(new Set());
   const [isFinished, setIsFinished] = React.useState(false);
@@ -37,7 +79,6 @@ export default function HorizontalLinearStepper() {
 
     if (activeStep === steps.length - 1) {
       handleSubmit();
-      setIsFinished(true);
     } else {
       setActiveStep((prevActiveStep) => prevActiveStep + 1);
       setSkipped(newSkipped);
@@ -54,225 +95,113 @@ export default function HorizontalLinearStepper() {
     setIsFinished(false);
   };
 
-  const handleSubmit = () => {
-    console.log("Form Data:");
-    // Here you can add the logic to send the form data to a server or perform other actions with it
+  const isStepValid = (step) => {
+    switch (step) {
+      case 0:
+        return (
+          formik.values.name !== "" &&
+          formik.values.email !== "" &&
+          formik.values.gender !== "" &&
+          formik.values.mobile !== "" &&
+          formik.values.maritalStatus !== "" &&
+          formik.values.occupation !== "" &&
+          formik.values.address !== "" &&
+          formik.values.informant !== "" &&
+          formik.values.emergencyContact !== ""
+        );
+      case 1:
+        return (
+          formik.values.medicalHistory !== "" &&
+          formik.values.personalHistory !== "" &&
+          formik.values.findUs !== "" &&
+          formik.values.remarks !== ""
+        );
+      default:
+        return true;
+    }
   };
 
-  const style = {
-    py: 4,
+  const submitForm = async (formData) => {
+    // Replace with your actual API endpoint
+    const apiUrl = "https://api.example.com/submit-form";
+    const requestOptions = {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(formData),
+    };
+
+    const response = await fetch(apiUrl, requestOptions);
+    if (!response.ok) {
+      const errorMessage = `An error occurred: ${response.status}`;
+      throw new Error(errorMessage);
+    }
+    // Handle success response as needed
+    const data = await response.json();
+    console.log("Form submission successful:", data);
   };
-
-  const PersonalDetailStep = () => (
-    <React.Fragment>
-      <Box sx={style}>
-        <Box sx={{ width: "100%" }}>
-          <Grid
-            container
-            rowSpacing={3}
-            columnSpacing={{ xs: 1, sm: 2, md: 3 }}
-            columns={{ xs: 12, sm: 12, md: 12 }}
-          >
-            <Grid item xs={12} sm={12} md={6} lg={6}>
-              <TextField
-                id="amount-control"
-                label="Name"
-                fullWidth
-                variant="outlined"
-              />
-            </Grid>
-            <Grid item xs={12} sm={12} md={6} lg={6}>
-              <TextField
-                id="amount-control"
-                label="Email"
-                fullWidth
-                variant="outlined"
-              />
-            </Grid>
-            <Grid item xs={12} sm={12} md={6} lg={6}>
-              <FormControl fullWidth>
-                <InputLabel id="gender">Gender</InputLabel>
-                <Select labelId="gender" id="gender-control" label="gender">
-                  <MenuItem value="male">Male</MenuItem>
-                  <MenuItem value="female">female</MenuItem>
-                  <MenuItem value="Prefer Not to answer">
-                    Prefer Not to answer
-                  </MenuItem>
-                </Select>
-              </FormControl>
-            </Grid>
-            <Grid item xs={12} sm={12} md={6} lg={6}>
-              <TextField
-                id="amount-control"
-                label="Mobile"
-                fullWidth
-                variant="outlined"
-              />
-            </Grid>
-            <Grid item xs={12} sm={12} md={6} lg={6}>
-              <FormControl fullWidth>
-                <InputLabel id="marital-status">Marital Status</InputLabel>
-                <Select
-                  labelId="marital-status"
-                  id="marital-tatus-control"
-                  label="marital-status"
-                >
-                  <MenuItem value="single">Single</MenuItem>
-                  <MenuItem value="Married">Married</MenuItem>
-                  <MenuItem value="Widow">Widow</MenuItem>
-                  <MenuItem value="Seprated">Seprated</MenuItem>
-                </Select>
-              </FormControl>
-            </Grid>
-            <Grid item xs={12} sm={12} md={6} lg={6}>
-              <FormControl fullWidth>
-                <InputLabel id="occupation">Occupation</InputLabel>
-                <Select
-                  labelId="occupation"
-                  id="occupation-control"
-                  label="occupation"
-                >
-                  <MenuItem value="job">Job</MenuItem>
-                  <MenuItem value="Student">Student</MenuItem>
-                  <MenuItem value="Business">Business</MenuItem>
-                  <MenuItem value="Unemployed">Unemployed</MenuItem>
-                  <MenuItem value="Self Employed">Self Employed</MenuItem>
-                  <MenuItem value="Widow">Counselor</MenuItem>
-                  <MenuItem value="Homemaker">Homemaker</MenuItem>
-                </Select>
-              </FormControl>
-            </Grid>
-            <Grid item xs={12} sm={12} md={6} lg={6}>
-              {" "}
-              <TextField
-                id="outlined-multiline-static"
-                label="Address"
-                multiline
-                fullWidth
-                rows={1}
-              />
-            </Grid>
-            <Grid item xs={12} sm={12} md={6} lg={6}>
-              <CountrySelect />
-            </Grid>
-            <Grid item xs={12} sm={12} md={6} lg={6}>
-              <TextField
-                id="amount-control"
-                label="Informant (name | relation)"
-                fullWidth
-                variant="outlined"
-              />
-            </Grid>
-            <Grid item xs={12} sm={12} md={6} lg={6}>
-              <TextField
-                id="amount-control"
-                label="Emergency Contact"
-                fullWidth
-                variant="outlined"
-              />
-            </Grid>
-          </Grid>
-        </Box>
-      </Box>
-    </React.Fragment>
-  );
-
-  const MedicalDetailStep = () => (
-    <React.Fragment>
-      <Box sx={style}>
-        <Box sx={{ width: "100%" }}></Box>{" "}
-        <Grid
-          container
-          rowSpacing={3}
-          columnSpacing={{ xs: 1, sm: 2, md: 3 }}
-          columns={{ xs: 12, sm: 12, md: 12 }}
-        >
-          <Grid item xs={12} sm={12} md={6} lg={6}>
-            <TextField
-              id="medical-multiline-static"
-              label="Medical / physicatric History"
-              multiline
-              fullWidth
-              rows={2}
-            />
-          </Grid>
-          <Grid item xs={12} sm={12} md={6} lg={6}>
-            <TextField
-              id="personal-multiline-static"
-              label="Personal History"
-              multiline
-              fullWidth
-              rows={2}
-            />
-          </Grid>{" "}
-          <Grid item xs={12} sm={12} md={6} lg={6}>
-            <TextField
-              id="find-multiline-static"
-              label="How did you find us?"
-              multiline
-              fullWidth
-              rows={2}
-            />
-          </Grid>
-          <Grid item xs={12} sm={12} md={6} lg={6}>
-            <TextField
-              id="remarks-multiline-static"
-              label="Remarks"
-              multiline
-              fullWidth
-              rows={2}
-            />
-          </Grid>
-        </Grid>
-      </Box>
-    </React.Fragment>
-  );
 
   return (
     <Box sx={{ width: "100%" }}>
-      {isFinished ? (
-        <Box sx={{ textAlign: "center", mt: 2 }}>
-          <Typography variant="h6" gutterBottom>
-            All steps completed
-          </Typography>
-          <Button onClick={handleReset}>Reset</Button>
-        </Box>
-      ) : (
-        <>
-          <Stepper activeStep={activeStep}>
-            {steps.map((label, index) => {
-              const stepProps = {};
-              const labelProps = {};
-              if (isStepSkipped(index)) {
-                stepProps.completed = false;
-              }
-              return (
-                <Step key={label} {...stepProps}>
-                  <StepLabel {...labelProps}>{label}</StepLabel>
-                </Step>
-              );
-            })}
-          </Stepper>
-          <React.Fragment>
-            {activeStep === 0 && <PersonalDetailStep />}
-            {activeStep === 1 && <MedicalDetailStep />}
-            <Box sx={{ display: "flex", flexDirection: "row", pt: 2 }}>
-              <Button
-                color="inherit"
-                disabled={activeStep === 0}
-                onClick={handleBack}
-                sx={{ mr: 1 }}
-              >
-                Back
-              </Button>
-              <Box sx={{ flex: "1 1 auto" }} />
-              <Button onClick={handleNext}>
-                {activeStep === steps.length - 1 ? "Finish" : "Next"}
-              </Button>
+      <form onSubmit={handleSubmit}>
+        <Box sx={{ width: "100%" }}>
+          {isFinished ? (
+            <Box sx={{ textAlign: "center", mt: 2 }}>
+              <Typography variant="h6" gutterBottom>
+                All steps completed
+              </Typography>
+              <Button onClick={handleReset}>Reset</Button>
             </Box>
-          </React.Fragment>
-        </>
-      )}
+          ) : (
+            <>
+              <Stepper activeStep={activeStep}>
+                {steps.map((label, index) => {
+                  const stepProps = {};
+                  const labelProps = {};
+                  if (isStepSkipped(index)) {
+                    stepProps.completed = false;
+                  }
+                  return (
+                    <Step key={label} {...stepProps}>
+                      <StepLabel {...labelProps}>{label}</StepLabel>
+                    </Step>
+                  );
+                })}
+              </Stepper>
+              <React.Fragment>
+                {activeStep === 0 && <Step1Form formik={formik} />}
+                {activeStep === 1 && <Step2Form formik={formik} />}
+                <Box sx={{ display: "flex", flexDirection: "row", pt: 2 }}>
+                  <Button
+                    color="inherit"
+                    disabled={activeStep === 0}
+                    onClick={handleBack}
+                    sx={{ mr: 1 }}
+                  >
+                    Back
+                  </Button>
+                  <Box sx={{ flex: "1 1 auto" }} />
+                  <Button
+                    type="button"
+                    disabled={!isStepValid(activeStep)}
+                    onClick={handleNext}
+                  >
+                    {activeStep === steps.length - 1 ? "Finish" : "Next"}
+                  </Button>
+                </Box>
+                <Box sx={{ color: "red", textAlign: "center", mt: 2 }}>
+                  {touched[Object.keys(errors)[0]] && (
+                    <Typography variant="caption">
+                      {errors[Object.keys(errors)[0]]}
+                    </Typography>
+                  )}
+                </Box>
+              </React.Fragment>
+            </>
+          )}
+        </Box>
+      </form>
     </Box>
   );
-}
+};
+
+export default HorizontalLinearStepper;

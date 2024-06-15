@@ -2,23 +2,25 @@ import * as React from "react";
 import { DataGrid, GridToolbar } from "@mui/x-data-grid";
 import {
   Box,
-  Button,
   IconButton,
   Menu,
   MenuItem,
   TextField,
   Toolbar,
   Typography,
+  Skeleton,
 } from "@mui/material";
 import MoreVertIcon from "@mui/icons-material/MoreVert";
 import EditIcon from "@mui/icons-material/Edit";
 import DeleteIcon from "@mui/icons-material/DeleteOutlined";
 import VisibilityIcon from "@mui/icons-material/Visibility";
-import AddIcon from "@mui/icons-material/Add";
-import AddClietns from "./AddClients";
+import AddClients from "./AddClients";
+import EditClient from "./EditClient"; // Import the EditClient modal
+import { useRouter } from 'next/navigation';
 
-const ActionsMenu = ({ rowId }) => {
+const ActionsMenu = ({ rowId, onEdit, onDelete }) => {
   const [anchorEl, setAnchorEl] = React.useState(null);
+  const router = useRouter(); // Initialize useRouter
 
   const handleClick = (event) => {
     setAnchorEl(event.currentTarget);
@@ -29,17 +31,17 @@ const ActionsMenu = ({ rowId }) => {
   };
 
   const handleEdit = () => {
-    console.log("Edit", rowId);
+    onEdit(rowId);
     handleClose();
   };
 
   const handleDelete = () => {
-    console.log("Delete", rowId);
+    onDelete(rowId);
     handleClose();
   };
 
   const handleView = () => {
-    console.log("View", rowId);
+    router.push(`/patient-detail/${rowId}`); // Navigate to the detailed view
     handleClose();
   };
 
@@ -72,6 +74,23 @@ const ActionsMenu = ({ rowId }) => {
     </>
   );
 };
+
+const SkeletonLoader = () => (
+  <Box p={2}>
+    {[...Array(5)].map((_, index) => (
+      <Box key={index} display="flex" alignItems="center" marginBottom={1}>
+        <Skeleton variant="rect" width={90} height={36} marginRight={1} />
+        <Skeleton variant="rect" width={110} height={36} marginRight={1} />
+        <Skeleton variant="rect" width={120} height={36} marginRight={1} />
+        <Skeleton variant="rect" width={200} height={36} marginRight={1} />
+        <Skeleton variant="rect" width={100} height={36} marginRight={1} />
+        <Skeleton variant="rect" width={90} height={36} marginRight={1} />
+        <Skeleton variant="rect" width={130} height={36} marginRight={1} />
+        <Skeleton variant="rect" width={120} height={36} />
+      </Box>
+    ))}
+  </Box>
+);
 
 export default function ClientsTable() {
   const initialRows = [
@@ -132,6 +151,51 @@ export default function ClientsTable() {
     },
   ];
 
+  const [rows, setRows] = React.useState([]);
+  const [isLoading, setIsLoading] = React.useState(true);
+  const [searchText, setSearchText] = React.useState("");
+  const [selectedRow, setSelectedRow] = React.useState(null);
+  const [isEditModalOpen, setEditModalOpen] = React.useState(false);
+  const [isDeleteModalOpen, setDeleteModalOpen] = React.useState(false);
+
+  // Simulate loading initial data
+  React.useEffect(() => {
+    setTimeout(() => {
+      setRows(initialRows);
+      setIsLoading(false);
+    }, 2000); // Simulating a 2 second delay
+  }, []);
+
+  const handleSearch = (event) => {
+    setSearchText(event.target.value);
+  };
+
+  const handleEdit = (id) => {
+    setSelectedRow(rows.find((row) => row.id === id));
+    setEditModalOpen(true);
+  };
+
+  const handleDelete = (id) => {
+    setSelectedRow(rows.find((row) => row.id === id));
+    setDeleteModalOpen(true);
+  };
+
+  const handleEditSave = (updatedClient) => {
+    setRows((prevRows) =>
+      prevRows.map((row) => (row.id === updatedClient.id ? updatedClient : row))
+    );
+    setEditModalOpen(false);
+  };
+
+  const handleDeleteConfirm = () => {
+    setRows(rows.filter((row) => row.id !== selectedRow.id));
+    setDeleteModalOpen(false);
+  };
+
+  const filteredRows = rows.filter((row) =>
+    row.name.toLowerCase().includes(searchText.toLowerCase())
+  );
+
   const columns = [
     { field: "SrNo", headerName: "Sr. NO", width: 90 },
     { field: "clientId", headerName: "Client ID", width: 110 },
@@ -145,34 +209,15 @@ export default function ClientsTable() {
       field: "actions",
       headerName: "Actions",
       width: 120,
-      renderCell: (params) => <ActionsMenu rowId={params.row.id} />,
+      renderCell: (params) => (
+        <ActionsMenu
+          rowId={params.row.id}
+          onEdit={handleEdit}
+          onDelete={handleDelete}
+        />
+      ),
     },
   ];
-  const [rows, setRows] = React.useState(initialRows);
-  const [searchText, setSearchText] = React.useState("");
-
-  const handleSearch = (event) => {
-    setSearchText(event.target.value);
-  };
-
-  const handleAddClient = () => {
-    // const newClient = {
-    //   id: rows.length + 1,
-    //   SrNo: rows.length + 1,
-    //   clientId: `C00${rows.length + 1}`,
-    //   date: new Date().toISOString().split('T')[0],
-    //   name: `New Client ${rows.length + 1}`,
-    //   gender: 'Unknown',
-    //   age: 0,
-    //   mobileNo: '000-000-0000',
-    //   country: 'Unknown',
-    // };
-    // setRows([...rows, newClient]);
-  };
-
-  const filteredRows = rows.filter((row) =>
-    row.name.toLowerCase().includes(searchText.toLowerCase())
-  );
 
   return (
     <div style={{ height: 500, width: "100%" }}>
@@ -188,14 +233,24 @@ export default function ClientsTable() {
           onChange={handleSearch}
           sx={{ marginRight: 2 }}
         />
-        <AddClietns />
+        <AddClients />
       </Toolbar>
-      <DataGrid
-        rows={filteredRows}
-        columns={columns}
-        pageSize={5}
-        rowsPerPageOptions={[5]}
-        components={{ Toolbar: GridToolbar }}
+      {isLoading ? (
+        <SkeletonLoader />
+      ) : (
+        <DataGrid
+          rows={filteredRows}
+          columns={columns}
+          pageSize={5}
+          rowsPerPageOptions={[5]}
+          components={{ Toolbar: GridToolbar }}
+        />
+      )}
+      <EditClient
+        open={isEditModalOpen}
+        onClose={() => setEditModalOpen(false)}
+        client={selectedRow}
+        onSave={handleEditSave}
       />
     </div>
   );
