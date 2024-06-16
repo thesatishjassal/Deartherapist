@@ -25,7 +25,7 @@ export default function Dashboard() {
     <Card className="main__dashboard">
       <CardContent>
         <Typography gutterBottom variant="h5" component="div" className="mb-4">
-          Hi'👋 {user && user.role} 
+          Hi👋 {user && user.role} 
         </Typography>
       </CardContent>
       <Box sx={{ width: "100%", typography: "body1" }}>
