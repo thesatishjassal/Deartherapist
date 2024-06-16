@@ -16,6 +16,8 @@ import DeleteIcon from "@mui/icons-material/DeleteOutlined";
 import VisibilityIcon from "@mui/icons-material/Visibility";
 import AddIcon from "@mui/icons-material/Add";
 import AddAppointment from "./MakeAppointment";
+import useTodayAppointments from "../../hooks/useTodayAppointments"; // Assuming the file path is correct
+import useGetClients from "../../hooks/useGetClients"; // Path to your custom hook
 
 const ActionsMenu = ({ rowId }) => {
   const [anchorEl, setAnchorEl] = React.useState(null);
@@ -45,95 +47,22 @@ const ActionsMenu = ({ rowId }) => {
 
   return (
     <>
-      <IconButton
-        aria-label="more"
-        aria-controls="long-menu"
-        aria-haspopup="true"
-        onClick={handleClick}
-      >
-        <MoreVertIcon />
-      </IconButton>
-      <Menu
-        id="long-menu"
-        anchorEl={anchorEl}
-        open={Boolean(anchorEl)}
-        onClose={handleClose}
-      >
-        <MenuItem onClick={handleView}>
-          <VisibilityIcon /> &nbsp; View
-        </MenuItem>
-        <MenuItem onClick={handleEdit}>
-          <EditIcon /> &nbsp; Edit
-        </MenuItem>
-        <MenuItem onClick={handleDelete}>
-          <DeleteIcon /> &nbsp; Delete
-        </MenuItem>
-      </Menu>
+      <Button variant="outlined" onClick={handleView}>
+        View
+      </Button>
     </>
   );
 };
 
 export default function MyAppointments() {
-  const initialRows = [
-    {
-      id: 1,
-      SrNo: 1,
-      clientId: "C001",
-      date: "2024-01-01",
-      time: "10:00 AM",
-      name: "John Doe",
-      service: "Service A",
-      facilitatedBy: "Alice",
-    },
-    {
-      id: 2,
-      SrNo: 2,
-      clientId: "C002",
-      date: "2024-01-02",
-      time: "11:30 AM",
-      name: "Jane Smith",
-      service: "Service B",
-      facilitatedBy: "Bob",
-    },
-    {
-      id: 3,
-      SrNo: 3,
-      clientId: "C003",
-      date: "2024-01-03",
-      time: "01:00 PM",
-      name: "Sam Johnson",
-      service: "Service C",
-      facilitatedBy: "Charlie",
-    },
-    {
-      id: 4,
-      SrNo: 4,
-      clientId: "C004",
-      date: "2024-01-04",
-      time: "02:30 PM",
-      name: "Alice Brown",
-      service: "Service D",
-      facilitatedBy: "David",
-    },
-    {
-      id: 5,
-      SrNo: 5,
-      clientId: "C005",
-      date: "2024-01-05",
-      time: "04:00 PM",
-      name: "Bob Davis",
-      service: "Service E",
-      facilitatedBy: "Emma",
-    },
-  ];
   const columns = [
-    { field: "SrNo", headerName: "Sr. NO", width: 90 },
-    { field: "clientId", headerName: "Client ID", width: 110 },
+    { field: "appointmentID", headerName: "Appointment ID", width: 90 },
     { field: "date", headerName: "Date", width: 130 },
     { field: "time", headerName: "Time", width: 120 },
-    { field: "name", headerName: "Name", width: 180 },
+    { field: "channel", headerName: "Channel", width: 180 },
     { field: "service", headerName: "Service", width: 180 },
-    { field: "facilitatedBy", headerName: "Facilated By", width: 180 },
+    { field: "facilitatedBy", headerName: "Facilitated By", width: 180 },
+    { field: "amount", headerName: "Amount", width: 110 },
     {
       field: "actions",
       headerName: "Actions",
@@ -141,31 +70,23 @@ export default function MyAppointments() {
       renderCell: (params) => <ActionsMenu rowId={params.row.id} />,
     },
   ];
-  const [rows, setRows] = React.useState(initialRows);
   const [searchText, setSearchText] = React.useState("");
+  const { clients, isLoading: isTLoading, error } = useGetClients(); // Rename isLoading to avoid conflict
+  const todayAppointments = useTodayAppointments(clients);
+  const [rows, setRows] = React.useState([]);
+
+  React.useEffect(() => {
+    setRows(todayAppointments);
+  }, [todayAppointments]);
 
   const handleSearch = (event) => {
     setSearchText(event.target.value);
   };
-
-  const handleAddClient = () => {
-    // const newClient = {
-    //   id: rows.length + 1,
-    //   SrNo: rows.length + 1,
-    //   clientId: `C00${rows.length + 1}`,
-    //   date: new Date().toISOString().split('T')[0],
-    //   name: `New Client ${rows.length + 1}`,
-    //   gender: 'Unknown',
-    //   age: 0,
-    //   mobileNo: '000-000-0000',
-    //   country: 'Unknown',
-    // };
-    // setRows([...rows, newClient]);
-  };
-
-  const filteredRows = rows.filter((row) =>
-    row.name.toLowerCase().includes(searchText.toLowerCase())
-  );
+  const filteredRows = rows.filter((row) => {
+    const rowName = row.name || ""; // Handle case where row.name is undefined or null
+    return rowName.toLowerCase().includes(searchText.toLowerCase());
+  });
+  
 
   return (
     <div style={{ width: "100%" }}>
@@ -188,6 +109,7 @@ export default function MyAppointments() {
         columns={columns}
         pageSize={5}
         rowsPerPageOptions={[5]}
+        getRowId={(row) => row._id}
         components={{ Toolbar: GridToolbar }}
       />
     </div>

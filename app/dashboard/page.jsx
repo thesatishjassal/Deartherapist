@@ -11,10 +11,12 @@ import TabList from "@mui/lab/TabList";
 import TabPanel from "@mui/lab/TabPanel";
 import { Box, Button } from "@mui/material";
 import MyAppointments from "../components/MyAppoinments";
+import useAuth from '../../hooks/useAuth'; // Adjust the import path as needed
 
 export default function Dashboard() {
   const [value, setValue] = React.useState("1");
-  
+  const { user, handleLogout } = useAuth();
+
   const handleChange = (event, newValue) => {
     setValue(newValue);
   };
@@ -23,7 +25,7 @@ export default function Dashboard() {
     <Card className="main__dashboard">
       <CardContent>
         <Typography gutterBottom variant="h5" component="div" className="mb-4">
-          Good Morning Rekha 👋
+          Hi'👋 {user && user.role} 
         </Typography>
       </CardContent>
       <Box sx={{ width: "100%", typography: "body1" }}>

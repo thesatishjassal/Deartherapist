@@ -29,30 +29,14 @@ import Avatar from "@mui/material/Avatar";
 import Card from "@mui/material/Card";
 import Backdrop from "@mui/material/Backdrop";
 import CircularProgress from "@mui/material/CircularProgress";
+import useClientContacts from "../../hooks/useClientContacts"; // Adjust the path as needed
+import useGetClients from "../../hooks/useGetClients"; // Path to your custom hook
+import Alert from "@mui/material/Alert";
 
 const steps = ["Search Client", "Personal Details"];
 
-const mobileNumbers = [
-  "123-456-7890",
-  "234-567-8901",
-  "345-678-9012",
-  "456-789-0123",
-  "567-890-1234",
-];
-
-const emailAddresses = [
-  "example1@example.com",
-  "example2@example.com",
-  "example3@example.com",
-  "example4@example.com",
-  "example5@example.com",
-];
-
 const validationSchema = Yup.object({
   mobileNumber: Yup.string().required("Mobile number is required"),
-  email: Yup.string()
-    .email("Invalid email address")
-    .required("Email is required"),
   date: Yup.date().required("Date is required"),
   time: Yup.date().required("Time is required"),
   channel: Yup.string().required("Session type is required"),
@@ -69,11 +53,24 @@ export default function HorizontalLinearStepper() {
   const [skipped, setSkipped] = React.useState(new Set());
   const [isFinished, setIsFinished] = React.useState(false);
   const [loading, setLoading] = React.useState(false); // Loading state
+  const [clientEmail, setclientEmail] = React.useState(); // Loading state
+  const [clientMobile, setclientMobile] = React.useState(); // Loading state
+  const [filteredClients, setfilteredClients] = React.useState(); // Loading state
+  const [appointmentID, setAppointmentID] = React.useState(); // Loading state
+  const [alertMessage, setAlertMessage] = React.useState("");
+  const [showAlert, setShowAlert] = React.useState(false);
+  const [successMessage, setSuccessMessage] = React.useState("");
+  const [showSuccess, setShowSuccess] = React.useState(false);
+
+  const apiUrl = "http://localhost:5500/api/clients";
+
+  const { contacts, wait, error } = useClientContacts(apiUrl);
+  const { clients, isLoading: loadingClients, clienterror } = useGetClients(); // Rename isLoading to avoid conflict
 
   const formik = useFormik({
     initialValues: {
       mobileNumber: "",
-      email: "",
+      // email: "",
       date: null,
       time: null,
       channel: "",
@@ -82,14 +79,38 @@ export default function HorizontalLinearStepper() {
       amount: "",
     },
     validationSchema: validationSchema,
-    onSubmit: (values) => {
+    onSubmit: async (values) => {
       setLoading(true); // Start loading
-      // Simulate a network request
-      setTimeout(() => {
-        console.log("Form Data:", values);
-        setIsFinished(true);
-        setLoading(false); // Stop loading
-      }, 2000);
+      const apiUrl = `http://localhost:5500/api/clients/${appointmentID}/appointments`;
+      const requestOptions = {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(values),
+      };
+      try {
+        const response = await fetch(apiUrl, requestOptions);
+        const data = await response.json();
+
+        if (!response.ok) {
+          setShowAlert(true);
+          throw new Error(
+            data.error || `An error occurred: ${response.status}`
+          );
+        }
+        // Handle success response
+        console.log("Form submission successful:", data);
+        setSuccessMessage("Form submitted successfully!");
+        setShowSuccess(true);
+
+        setTimeout(() => {
+          console.log("Form Data:", values);
+          setIsFinished(true);
+          setLoading(false); // Stop loading
+        }, 2000);
+      } catch (error) {
+        console.error("Error submitting form:", error);
+      } finally {
+      }
     },
   });
 
@@ -127,18 +148,27 @@ export default function HorizontalLinearStepper() {
     formik.resetForm();
   };
 
+  const handleMobileNumber = (event, value) => {
+    console.log(value);
+    formik.setFieldValue("mobileNumber", value); // Update Formik field value
+    setclientMobile(value);
+    const sortedlients = clients.filter((client) => client.mobile === value);
+    setfilteredClients(sortedlients);
+    const matchedClientId = sortedlients ? sortedlients[0]._id : null;
+    setAppointmentID(matchedClientId);
+    console.log("Matched Client ID:", matchedClientId); // Output: Matched Client ID: 2
+  };
+
   const PersonalDetailStep = () => (
     <Box sx={{ width: "100%", px: 1, py: 3 }}>
       <Grid container rowSpacing={3} columnSpacing={{ xs: 1, sm: 2, md: 3 }}>
-        <Grid item xs={12} sm={12} md={6}>
+        <Grid item xs={12} sm={12} md={12}>
           <Autocomplete
             fullWidth
             id="client-mobileno"
-            options={mobileNumbers}
+            options={contacts && contacts.mobileNumbers}
             value={formik.values.mobileNumber}
-            onChange={(event, value) => {
-              formik.setFieldValue("mobileNumber", value);
-            }}
+            onChange={handleMobileNumber}
             onBlur={() => formik.setFieldTouched("mobileNumber", true)}
             renderInput={(params) => (
               <TextField
@@ -155,15 +185,13 @@ export default function HorizontalLinearStepper() {
             )}
           />
         </Grid>
-        <Grid item xs={12} sm={12} md={6}>
+        {/* <Grid item xs={12} sm={12} md={6}>
           <Autocomplete
             fullWidth
             id="client-email"
-            options={emailAddresses}
+            options={contacts.emails}
             value={formik.values.email}
-            onChange={(event, value) => {
-              formik.setFieldValue("email", value);
-            }}
+            onChange={handleEmailAdreess}
             onBlur={() => formik.setFieldTouched("email", true)}
             renderInput={(params) => (
               <TextField
@@ -174,33 +202,48 @@ export default function HorizontalLinearStepper() {
               />
             )}
           />
-        </Grid>
+        </Grid> */}
 
         <Grid item xs={12} sm={12} md={12}>
-          <Card className="selectedUser">
-            <List sx={{ width: "100%" }}>
-              <ListItem alignItems="flex-start">
-                <ListItemAvatar>
-                  <Avatar
-                    alt="Remy Sharp"
-                    src="https://mui.com/static/images/avatar/3.jpg"
-                  />
-                </ListItemAvatar>
-                <ListItemText
-                  primary="Remy Sharp"
-                  secondary={
-                    <React.Fragment>
-                      <Typography
-                        sx={{ display: "inline" }}
-                        component="span"
-                        variant="body2"
-                      >
-                        remysharp@gmail.com | Female
-                      </Typography>
-                    </React.Fragment>
-                  }
-                />
-              </ListItem>
+          <Card>
+            <List sx={{ width: "100%" }} className="themeBg">
+              {loadingClients ? (
+                <p>Wait...</p>
+              ) : (
+                filteredClients &&
+                filteredClients.map((client) => (
+                  <ListItem
+                    key={client.id}
+                    className="selectedUser"
+                    alignItems="flex-start"
+                  >
+                    <ListItemAvatar>
+                      <Avatar
+                        alt="Remy Sharp"
+                        src={
+                          client.gender === "male"
+                            ? "/images/avatar-man.jpg"
+                            : "/images/girl_avatar.webp"
+                        }
+                      />
+                    </ListItemAvatar>
+                    <ListItemText
+                      primary={client.name}
+                      secondary={
+                        <React.Fragment>
+                          <Typography
+                            sx={{ display: "inline" }}
+                            component="span"
+                            variant="body2"
+                          >
+                            {client.email} | {client.gender}
+                          </Typography>
+                        </React.Fragment>
+                      }
+                    />
+                  </ListItem>
+                ))
+              )}
             </List>
           </Card>
         </Grid>
@@ -223,6 +266,7 @@ export default function HorizontalLinearStepper() {
               renderInput={(params) => (
                 <TextField
                   {...params}
+                  value={format(day, "dd/MM/yyyy")} // Format example: day/month/year
                   fullWidth
                   error={formik.touched.date && Boolean(formik.errors.date)}
                   helperText={formik.touched.date && formik.errors.date}
@@ -248,6 +292,8 @@ export default function HorizontalLinearStepper() {
                   helperText={formik.touched.time && formik.errors.time}
                 />
               )}
+              ampm={false} // 24-hour format
+              format="HH:mm" // Format example: hour:minute:second
             />
           </LocalizationProvider>
         </Grid>
@@ -346,12 +392,22 @@ export default function HorizontalLinearStepper() {
 
   return (
     <Box sx={{ width: "100%" }}>
+    {showAlert && (
+          <Alert severity="error" onClose={() => setShowAlert(false)}>
+            {alertMessage}
+          </Alert>
+        )}
+        {showSuccess && (
+          <Alert severity="success" onClose={() => setShowSuccess(false)}>
+            {successMessage}
+          </Alert>
+        )}
       {isFinished ? (
         <Box sx={{ textAlign: "center", mt: 2 }}>
-          <Typography variant="h6" gutterBottom>
+          {/* <Typography variant="h6" gutterBottom>
             All steps completed
           </Typography>
-          <Button onClick={handleReset}>Reset</Button>
+          <Button onClick={handleReset}>Reset</Button> */}
         </Box>
       ) : (
         <>

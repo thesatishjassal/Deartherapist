@@ -5,7 +5,9 @@ import FormControl from "@mui/material/FormControl";
 import Select from "@mui/material/Select";
 import InputLabel from "@mui/material/InputLabel";
 import MenuItem from "@mui/material/MenuItem";
-import CountrySelect from "./CounntrySelect";
+import CountrySelect from "../components/CounntrySelect"; // Ensure the file name is correct
+import Box from "@mui/material/Box";
+import FormHelperText from "@mui/material/FormHelperText";
 
 const Step1Form = ({ formik }) => {
   return (
@@ -35,23 +37,42 @@ const Step1Form = ({ formik }) => {
         />
       </Grid>
       <Grid item xs={12} sm={6}>
-        <FormControl fullWidth>
-          <InputLabel id="gender-label">Gender</InputLabel>
-          <Select
-            labelId="gender-label"
-            id="gender"
-            name="gender" // Make sure name attribute matches Formik field name
-            value={formik.values.gender}
-            onChange={formik.handleChange}
-            onBlur={formik.handleBlur}
-            error={formik.touched.gender && Boolean(formik.errors.gender)}
-          >
-            <MenuItem value="">Select Gender</MenuItem>
-            <MenuItem value="male">Male</MenuItem>
-            <MenuItem value="female">Female</MenuItem>
-            <MenuItem value="preferNotToAnswer">Prefer Not to answer</MenuItem>
-          </Select>
-        </FormControl>
+        <Grid container spacing={2}>
+          <Grid item xs={6}>
+            <FormControl fullWidth error={formik.touched.gender && Boolean(formik.errors.gender)}>
+              <InputLabel id="gender-label">Gender</InputLabel>
+              <Select
+                labelId="gender-label"
+                id="gender"
+                name="gender"
+                value={formik.values.gender}
+                onChange={formik.handleChange}
+                onBlur={formik.handleBlur}
+                label="Gender"
+              >
+                <MenuItem value="">Select Gender</MenuItem>
+                <MenuItem value="male">Male</MenuItem>
+                <MenuItem value="female">Female</MenuItem>
+                <MenuItem value="preferNotToAnswer">Prefer Not to answer</MenuItem>
+              </Select>
+              {formik.touched.gender && formik.errors.gender && (
+                <FormHelperText>{formik.errors.gender}</FormHelperText>
+              )}
+            </FormControl>
+          </Grid>
+          <Grid item xs={6}>
+            <TextField
+              id="age"
+              name="age"
+              label="Age"
+              fullWidth
+              variant="outlined"
+              {...formik.getFieldProps("age")}
+              error={formik.touched.age && Boolean(formik.errors.age)}
+              helperText={formik.touched.age && formik.errors.age}
+            />
+          </Grid>
+        </Grid>
       </Grid>
       <Grid item xs={12} sm={6}>
         <TextField
@@ -66,16 +87,16 @@ const Step1Form = ({ formik }) => {
         />
       </Grid>
       <Grid item xs={12} sm={6}>
-        <FormControl fullWidth>
+        <FormControl fullWidth error={formik.touched.maritalStatus && Boolean(formik.errors.maritalStatus)}>
           <InputLabel id="marital-status-label">Marital Status</InputLabel>
           <Select
             labelId="marital-status-label"
-            id="maritalStatus" // Make sure id attribute is camelCase and matches the name
-            name="maritalStatus" // Make sure name attribute matches Formik field name
+            id="maritalStatus"
+            name="maritalStatus"
             value={formik.values.maritalStatus}
             onChange={formik.handleChange}
             onBlur={formik.handleBlur}
-            error={formik.touched.maritalStatus && Boolean(formik.errors.maritalStatus)}
+            label="Marital Status"
           >
             <MenuItem value="">Select Marital Status</MenuItem>
             <MenuItem value="single">Single</MenuItem>
@@ -83,19 +104,22 @@ const Step1Form = ({ formik }) => {
             <MenuItem value="widow">Widow</MenuItem>
             <MenuItem value="separated">Separated</MenuItem>
           </Select>
+          {formik.touched.maritalStatus && formik.errors.maritalStatus && (
+            <FormHelperText>{formik.errors.maritalStatus}</FormHelperText>
+          )}
         </FormControl>
       </Grid>
       <Grid item xs={12} sm={6}>
-        <FormControl fullWidth>
+        <FormControl fullWidth error={formik.touched.occupation && Boolean(formik.errors.occupation)}>
           <InputLabel id="occupation-label">Occupation</InputLabel>
           <Select
             labelId="occupation-label"
-            id="occupation" // Make sure id attribute is camelCase and matches the name
-            name="occupation" // Make sure name attribute matches Formik field name
+            id="occupation"
+            name="occupation"
             value={formik.values.occupation}
             onChange={formik.handleChange}
             onBlur={formik.handleBlur}
-            error={formik.touched.occupation && Boolean(formik.errors.occupation)}
+            label="Occupation"
           >
             <MenuItem value="">Select Occupation</MenuItem>
             <MenuItem value="job">Job</MenuItem>
@@ -106,6 +130,9 @@ const Step1Form = ({ formik }) => {
             <MenuItem value="counselor">Counselor</MenuItem>
             <MenuItem value="homemaker">Homemaker</MenuItem>
           </Select>
+          {formik.touched.occupation && formik.errors.occupation && (
+            <FormHelperText>{formik.errors.occupation}</FormHelperText>
+          )}
         </FormControl>
       </Grid>
       <Grid item xs={12} sm={6}>
@@ -124,7 +151,11 @@ const Step1Form = ({ formik }) => {
       </Grid>
       <Grid item xs={12} sm={6}>
         <CountrySelect
-          {...formik.getFieldProps("country")}
+          id="country"
+          name="country"
+          value={formik.values.country}
+          onChange={formik.handleChange}
+          onBlur={formik.handleBlur}
           error={formik.touched.country && Boolean(formik.errors.country)}
           helperText={formik.touched.country && formik.errors.country}
         />

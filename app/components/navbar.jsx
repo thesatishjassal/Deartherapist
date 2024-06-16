@@ -13,8 +13,7 @@ import MenuItem from "@mui/material/MenuItem";
 import Image from "next/image";
 import Link from "next/link";
 import Button from "@mui/material/Button";
-import { jwtDecode } from "jwt-decode";
-import { useRouter } from 'next/navigation';
+import useAuth from '../../hooks/useAuth'; // Adjust the import path as needed
 
 const pages = [
   { name: "Dashboard", href: "/dashboard" },
@@ -26,11 +25,11 @@ const settings = [
   { name: "Logout" }, // No href needed here
 ];
 
+
 function NavigationBar() {
   const [anchorElNav, setAnchorElNav] = React.useState(null);
   const [anchorElUser, setAnchorElUser] = React.useState(null);
-  const [user, setUser] = React.useState(null);
-  const router = useRouter();
+  const { user, handleLogout } = useAuth();
 
   const handleOpenNavMenu = (event) => {
     setAnchorElNav(event.currentTarget);
@@ -47,25 +46,6 @@ function NavigationBar() {
   const handleCloseUserMenu = () => {
     setAnchorElUser(null);
   };
-
-  const handleLogout = () => {
-    localStorage.removeItem('token'); // Adjust this according to your token storage method
-    router.push('/');
-  };
-
-  useEffect(() => {
-    // Fetch the JWT token from local storage (or wherever it's stored)
-    const token = localStorage.getItem('token');
-    if (token) {
-      try {
-        // Decode the token
-        const decoded = jwtDecode(token);
-        setUser(decoded);
-      } catch (error) {
-        console.error('Error decoding token:', error);
-      }
-    }
-  }, []);
 
   return (
     <AppBar position="static">

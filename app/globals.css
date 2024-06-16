@@ -205,3 +205,6 @@ p.grey_light {
 .username {
   color: #373737;
 }
+.themeBg{
+  background-color: #ffecec !important;
+}

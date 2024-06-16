@@ -4,13 +4,18 @@ import TextField from '@mui/material/TextField';
 import Autocomplete from '@mui/material/Autocomplete';
 import Image from 'next/image';
 
-export default function CountrySelect() {
+export default function CountrySelect({ formik }) {
+  const handleCountryChange = (event, value) => {
+    formik.setFieldValue("country", value ? value.label : "");
+  };
+  
   return (
     <Autocomplete
       id="country-select-demo"
       options={countries}
       autoHighlight
       getOptionLabel={(option) => option.label}
+      onChange={handleCountryChange}
       renderOption={(props, option) => (
         <Box component="li" sx={{ '& > img': { mr: 2, flexShrink: 0 } }} {...props}>
           <Image 
@@ -25,7 +30,7 @@ export default function CountrySelect() {
       )}
       renderInput={(params) => (
         <TextField
-        fullWidth
+          fullWidth
           {...params}
           label="Choose a country"
           inputProps={{

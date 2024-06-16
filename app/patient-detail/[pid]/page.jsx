@@ -23,17 +23,17 @@ import { Container } from "@mui/material";
 import Button from "@mui/material/Button";
 import DownloadIcon from "@mui/icons-material/Download";
 import Addprescription from "../../components/Addprescription"; // Correct import path for Addprescription
-import useGetClientById from "../../../hooks/useGetClientById ";
+import useGetClientById from "../../../hooks/useGetClientById";
 
 const PatientDetails = ({ params }) => {
   const invoiceRef = useRef();
   const [expanded, setExpanded] = React.useState(false);
   const [anchorEl, setAnchorEl] = React.useState(null);
   const open = Boolean(anchorEl);
+
+  const apiUrl = 'http://localhost:5500/api/clients'; // Replace with your actual API URL
   const { pid } = params;
-  
-  const data = useGetClientById(pid);
-  const { client, isLoading, error } = useGetClientById(pid);
+  const { data, isLoading, error } = useGetClientById(apiUrl, pid);
 
   if (isLoading) {
     return <p>Loading...</p>; // Handle loading state
