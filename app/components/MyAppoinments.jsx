@@ -59,19 +59,19 @@ const ActionsMenu = ({ rowId }) => {
 
 export default function MyAppointments() {
   const columns = [
-    { field: "appointmentID", headerName: "Appointment ID", width: 90 },
+    { field: "appointmentID", headerName: "Appointment ID", width: 150 },
     { field: "date", headerName: "Date", width: 130 },
     { field: "time", headerName: "Time", width: 120 },
     { field: "channel", headerName: "Channel", width: 180 },
     { field: "service", headerName: "Service", width: 180 },
     { field: "facilitatedBy", headerName: "Facilitated By", width: 180 },
     { field: "amount", headerName: "Amount", width: 110 },
-    {
-      field: "actions",
-      headerName: "Actions",
-      width: 100,
-      renderCell: (params) => <ActionsMenu rowId={params.row._id} />,
-    },
+    // {
+    //   field: "actions",
+    //   headerName: "Actions",
+    //   width: 100,
+    //   renderCell: (params) => <ActionsMenu rowId={params.row._id} />,
+    // },
   ];
   const [searchText, setSearchText] = React.useState("");
   const { clients, isLoading: isTLoading, error } = useGetClients(); // Rename isLoading to avoid conflict
