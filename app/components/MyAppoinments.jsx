@@ -18,9 +18,11 @@ import AddIcon from "@mui/icons-material/Add";
 import AddAppointment from "./MakeAppointment";
 import useTodayAppointments from "../../hooks/useTodayAppointments"; // Assuming the file path is correct
 import useGetClients from "../../hooks/useGetClients"; // Path to your custom hook
+import { useRouter } from "next/navigation";
 
 const ActionsMenu = ({ rowId }) => {
   const [anchorEl, setAnchorEl] = React.useState(null);
+  const router = useRouter(); // Initialize useRouter
 
   const handleClick = (event) => {
     setAnchorEl(event.currentTarget);
@@ -34,7 +36,7 @@ const ActionsMenu = ({ rowId }) => {
     console.log("Edit", rowId);
     handleClose();
   };
-
+c
   const handleDelete = () => {
     console.log("Delete", rowId);
     handleClose();
@@ -42,6 +44,7 @@ const ActionsMenu = ({ rowId }) => {
 
   const handleView = () => {
     console.log("View", rowId);
+    router.push(`/patient-detail/${rowId}`); // Navigate to the detailed view
     handleClose();
   };
 
@@ -67,7 +70,7 @@ export default function MyAppointments() {
       field: "actions",
       headerName: "Actions",
       width: 100,
-      renderCell: (params) => <ActionsMenu rowId={params.row.id} />,
+      renderCell: (params) => <ActionsMenu rowId={params.row._id} />,
     },
   ];
   const [searchText, setSearchText] = React.useState("");
