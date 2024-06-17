@@ -193,6 +193,11 @@ const ClientsTable = () => {
           pagination
           getRowId={(row) => row._id} // Use _id as the row id
           components={{ Toolbar: GridToolbar }}
+          initialState={{
+            sorting: {
+              sortModel: [{ field: 'date', sort: 'desc' }],
+            },
+          }}
         />
       )}
       <EditClient

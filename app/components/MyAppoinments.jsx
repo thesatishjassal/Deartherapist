@@ -18,7 +18,8 @@ import AddIcon from "@mui/icons-material/Add";
 import AddAppointment from "./MakeAppointment";
 import useTodayAppointments from "../../hooks/useTodayAppointments"; // Assuming the file path is correct
 import useGetClients from "../../hooks/useGetClients"; // Path to your custom hook
-import { useRouter } from "next/navigation";
+import { useRouter } from "next/navigation"; // Corrected import
+import { format } from "date-fns"; // Import date-fns format function
 
 const ActionsMenu = ({ rowId }) => {
   const [anchorEl, setAnchorEl] = React.useState(null);
@@ -65,31 +66,31 @@ export default function MyAppointments() {
     { field: "channel", headerName: "Channel", width: 180 },
     { field: "service", headerName: "Service", width: 180 },
     { field: "facilitatedBy", headerName: "Facilitated By", width: 180 },
-    { field: "amount", headerName: "Amount", width: 110 },
-    // {
-    //   field: "actions",
-    //   headerName: "Actions",
-    //   width: 100,
-    //   renderCell: (params) => <ActionsMenu rowId={params.row._id} />,
-    // },
+    { field: "amount", headerName: "Amount", width: 110 }
   ];
+
   const [searchText, setSearchText] = React.useState("");
   const { clients, isLoading: isTLoading, error } = useGetClients(); // Rename isLoading to avoid conflict
   const todayAppointments = useTodayAppointments(clients);
   const [rows, setRows] = React.useState([]);
 
   React.useEffect(() => {
-    setRows(todayAppointments);
-  }, [todayAppointments]);
+    const formattedRows = todayAppointments.map((appointment) => ({
+      ...appointment,
+      date: format(new Date(appointment.date), "dd-MM-yyyy"), // Format date correctly
+      time: format(new Date(appointment.time), "HH:mm a"), // Format time correctly
+    }));
+    setRows(formattedRows);
+  }, [todayAppointments]); // Update when todayAppointments changes
 
   const handleSearch = (event) => {
     setSearchText(event.target.value);
   };
+
   const filteredRows = rows.filter((row) => {
     const rowName = row.name || ""; // Handle case where row.name is undefined or null
     return rowName.toLowerCase().includes(searchText.toLowerCase());
   });
-  
 
   return (
     <div style={{ width: "100%" }}>
@@ -103,7 +104,7 @@ export default function MyAppointments() {
           placeholder="Search by name"
           value={searchText}
           onChange={handleSearch}
-          sx={{ marginright: 2 }}
+          sx={{ marginRight: 2 }} // Corrected marginRight spelling
         />
         <AddAppointment />
       </Toolbar>
@@ -114,6 +115,11 @@ export default function MyAppointments() {
         rowsPerPageOptions={[5]}
         getRowId={(row) => row._id}
         components={{ Toolbar: GridToolbar }}
+        initialState={{
+          sorting: {
+            sortModel: [{ field: 'date', sort: 'desc' }],
+          },
+        }}
       />
     </div>
   );

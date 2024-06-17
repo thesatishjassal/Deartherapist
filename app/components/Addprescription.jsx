@@ -1,47 +1,50 @@
-import * as React from 'react';
-import Button from '@mui/material/Button';
-import { styled } from '@mui/material/styles';
-import Dialog from '@mui/material/Dialog';
-import DialogTitle from '@mui/material/DialogTitle';
-import DialogContent from '@mui/material/DialogContent';
-import DialogActions from '@mui/material/DialogActions';
-import IconButton from '@mui/material/IconButton';
-import CloseIcon from '@mui/icons-material/Close';
-import Typography from '@mui/material/Typography';
-import Grid from '@mui/material/Grid';
-import FormControl from '@mui/material/FormControl';
-import Select from '@mui/material/Select';
-import MenuItem from '@mui/material/MenuItem';
-import InputLabel from '@mui/material/InputLabel';
-import TextField from '@mui/material/TextField';
-import Box from '@mui/material/Box';
-import CloudUploadIcon from '@mui/icons-material/CloudUpload';
-import Diagnouse from './Diagnouse';
-import Autocomplete from '@mui/material/Autocomplete';
-import Checkbox from '@mui/material/Checkbox';
-import CheckBoxOutlineBlankIcon from '@mui/icons-material/CheckBoxOutlineBlank';
-import CheckBoxIcon from '@mui/icons-material/CheckBox';
-import { useFormik } from 'formik';
-import * as Yup from 'yup';
-
+import * as React from "react";
+import Button from "@mui/material/Button";
+import { styled } from "@mui/material/styles";
+import Dialog from "@mui/material/Dialog";
+import DialogTitle from "@mui/material/DialogTitle";
+import DialogContent from "@mui/material/DialogContent";
+import DialogActions from "@mui/material/DialogActions";
+import IconButton from "@mui/material/IconButton";
+import CloseIcon from "@mui/icons-material/Close";
+import Typography from "@mui/material/Typography";
+import Grid from "@mui/material/Grid";
+import FormControl from "@mui/material/FormControl";
+import Select from "@mui/material/Select";
+import MenuItem from "@mui/material/MenuItem";
+import InputLabel from "@mui/material/InputLabel";
+import TextField from "@mui/material/TextField";
+import Box from "@mui/material/Box";
+import CloudUploadIcon from "@mui/icons-material/CloudUpload";
+import Diagnouse from "./Diagnouse";
+import Autocomplete from "@mui/material/Autocomplete";
+import Checkbox from "@mui/material/Checkbox";
+import CheckBoxOutlineBlankIcon from "@mui/icons-material/CheckBoxOutlineBlank";
+import CheckBoxIcon from "@mui/icons-material/CheckBox";
+import { useFormik } from "formik";
+import * as Yup from "yup";
+import useAppointments from "../../hooks/useAppointments"; // Adjust the path as necessary
+import Alert from "@mui/material/Alert";
+import Backdrop from "@mui/material/Backdrop";
+import CircularProgress from "@mui/material/CircularProgress";
 const BootstrapDialog = styled(Dialog)(({ theme }) => ({
-  '& .MuiDialogContent-root': {
+  "& .MuiDialogContent-root": {
     padding: theme.spacing(2),
   },
-  '& .MuiDialogActions-root': {
+  "& .MuiDialogActions-root": {
     padding: theme.spacing(1),
   },
 }));
 
-const VisuallyHiddenInput = styled('input')({
-  clip: 'rect(0 0 0 0)',
-  clipPath: 'inset(50%)',
+const VisuallyHiddenInput = styled("input")({
+  clip: "rect(0 0 0 0)",
+  clipPath: "inset(50%)",
   height: 1,
-  overflow: 'hidden',
-  position: 'absolute',
+  overflow: "hidden",
+  position: "absolute",
   bottom: 0,
   left: 0,
-  whiteSpace: 'nowrap',
+  whiteSpace: "nowrap",
   width: 1,
 });
 
@@ -49,33 +52,73 @@ const icon = <CheckBoxOutlineBlankIcon fontSize="small" />;
 const checkedIcon = <CheckBoxIcon fontSize="small" />;
 
 const validationSchema = Yup.object({
-  service: Yup.string().required('Service is required'),
-  suggestions: Yup.string().required('Suggestions are required'),
-  symptoms: Yup.string().required('Symptoms are required'),
-  followUp: Yup.string().required('Follow-up is required'),
-  diagnoses: Yup.array().min(1, 'Select at least one diagnosis'),
+  appointmentID: Yup.string().required("Appointment ID is required"),
+  service: Yup.string().required("Service is required"),
+  suggestions: Yup.string().required("Suggestions are required"),
+  symptoms: Yup.string().required("Symptoms are required"),
+  followUp: Yup.string().required("Follow-up is required"),
+  diagnoses: Yup.array()
+    .min(1, "Select at least one diagnosis")
+    .max(4, "You can select up to 4 diagnoses")
+    .required("Diagnoses are required"),
 });
 
-const Addprescription = () => {
+const Addprescription = (props) => {
+  const [open, setOpen] = React.useState(false);
+  const { appointments, meetloading, error } = useAppointments(props.clientId);
+  const [alertMessage, setAlertMessage] = React.useState("");
+  const [showAlert, setShowAlert] = React.useState(false);
+  const [successMessage, setSuccessMessage] = React.useState("");
+  const [showSuccess, setShowSuccess] = React.useState(false);
+  const [loading, setLoading] = React.useState(false); // Loading state
+
   const formik = useFormik({
     initialValues: {
-      service: '',
-      suggestions: '',
-      symptoms: '',
-      followUp: '',
+      appointmentID: "",
+      service: "",
+      suggestions: "",
+      symptoms: "",
+      followUp: "",
       diagnoses: [],
       file: null, // Optional file upload field
     },
     validationSchema: validationSchema,
     onSubmit: async (values) => {
       // Handle form submission here
-      console.log('Form Data:', values);
+      setLoading(true); // Start loading
+      const apiUrl = `http://localhost:5500/api/clients/${props.clientId}/appointments/${values.appointmentID}/prescriptions`;
+      const requestOptions = {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(values),
+      };
+      try {
+        const response = await fetch(apiUrl, requestOptions);
+        const data = await response.json();
+
+        if (!response.ok) {
+          setShowAlert(true);
+          throw new Error(
+            data.error || `An error occurred: ${response.status}`
+          );
+        }
+        // Handle success response
+        console.log("Form submission successful:", data);
+        setSuccessMessage("Form submitted successfully!");
+        setShowSuccess(true);
+        setTimeout(() => {
+          console.log("Form Data:", values);
+        }, 2000);
+      } catch (error) {
+        console.error("Error submitting form:", error);
+      } finally {
+      }
+      console.log("Form Data:", values);
       // Add your API call logic here
+      setLoading(false); // Start loading
       handleClose();
     },
   });
-
-  const [open, setOpen] = React.useState(false);
 
   const handleClickOpen = () => {
     setOpen(true);
@@ -85,21 +128,31 @@ const Addprescription = () => {
     setOpen(false);
   };
 
-  const handleChangeDiagnoses = (event, newValue) => {
-    formik.setFieldValue('diagnoses', newValue);
+  const handleFileChange = (event) => {
+    formik.setFieldValue("file", event.currentTarget.files[0]);
+    console.log(event.currentTarget.files[0]);
   };
 
-  const handleFileChange = (event) => {
-    formik.setFieldValue('file', event.currentTarget.files[0]);
+  const handleChangeDiagnoses = (event, newValue) => {
+    const result = newValue.reduce(
+      (res, el) => res.concat(Array(el.title).fill(el.title)), 
+      []
+    );
+    console.log(result);
+    formik.setFieldValue("diagnoses", result);
   };
 
   return (
     <React.Fragment>
-      <Button variant="outlined" onClick={handleClickOpen}>
-        Open dialog
+      <Button
+        variant="outlined"
+        onClick={handleClickOpen}
+        sx={{ width: "100%" }}
+      >
+        Add New Prescription
       </Button>
       <BootstrapDialog
-        sx={{ width: '100%' }}
+        sx={{ width: "100%" }}
         className="responsive-dialog"
         onClose={handleClose}
         aria-labelledby="customized-dialog-title"
@@ -112,7 +165,7 @@ const Addprescription = () => {
           aria-label="close"
           onClick={handleClose}
           sx={{
-            position: 'absolute',
+            position: "absolute",
             right: 8,
             top: 8,
             color: (theme) => theme.palette.grey[500],
@@ -121,26 +174,82 @@ const Addprescription = () => {
           <CloseIcon />
         </IconButton>
         <DialogContent dividers className="modalapp-body">
-          <Box sx={{ width: '100%', padding: 3 }}>
+          <Box sx={{ width: "100%", padding: 3 }}>
+            {showAlert && (
+              <Alert severity="error" onClose={() => setShowAlert(false)}>
+                {alertMessage}
+              </Alert>
+            )}
+            {showSuccess && (
+              <Alert severity="success" onClose={() => setShowSuccess(false)}>
+                {successMessage}
+              </Alert>
+            )}
             <form onSubmit={formik.handleSubmit}>
-              <Grid container rowSpacing={3} columnSpacing={{ xs: 1, sm: 2, md: 3 }}>
-                <Grid item xs={12} sm={12} md={12}>
-                  <FormControl fullWidth error={formik.touched.service && Boolean(formik.errors.service)}>
+              <Grid
+                container
+                rowSpacing={3}
+                columnSpacing={{ xs: 1, sm: 2, md: 3 }}
+              >
+                <Grid item xs={12} sm={12} md={6}>
+                  <FormControl
+                    fullWidth
+                    error={
+                      formik.touched.appointmentID &&
+                      Boolean(formik.errors.appointmentID)
+                    }
+                  >
+                    <InputLabel id="appointmentID">
+                      Select Appointment ID
+                    </InputLabel>
+                    <Select
+                      labelId="appointmentID"
+                      id="appointmentID-control"
+                      {...formik.getFieldProps("appointmentID")}
+                    >
+                      {appointments &&
+                        appointments.map((appointment) => (
+                          <MenuItem value={appointment._id}>
+                            {appointment.appointmentID}
+                          </MenuItem>
+                        ))}
+                    </Select>
+                    {formik.touched.appointmentID &&
+                    formik.errors.appointmentID ? (
+                      <Typography variant="caption" sx={{ color: "red" }}>
+                        {formik.errors.appointmentID}
+                      </Typography>
+                    ) : null}
+                  </FormControl>
+                </Grid>
+                <Grid item xs={12} sm={12} md={6}>
+                  <FormControl
+                    fullWidth
+                    error={
+                      formik.touched.service && Boolean(formik.errors.service)
+                    }
+                  >
                     <InputLabel id="service">Service</InputLabel>
                     <Select
                       labelId="service"
                       id="service-control"
-                      {...formik.getFieldProps('service')}
+                      {...formik.getFieldProps("service")}
                     >
-                      <MenuItem value="Counselling Session">Counselling Session</MenuItem>
+                      <MenuItem value="Counselling Session">
+                        Counselling Session
+                      </MenuItem>
                       <MenuItem value="Couple Session">Couple Session</MenuItem>
                       <MenuItem value="Therapy">Therapy</MenuItem>
-                      <MenuItem value="Astrology Session">Astrology Session</MenuItem>
-                      <MenuItem value="Tarot Card Reading">Tarot Card Reading</MenuItem>
+                      <MenuItem value="Astrology Session">
+                        Astrology Session
+                      </MenuItem>
+                      <MenuItem value="Tarot Card Reading">
+                        Tarot Card Reading
+                      </MenuItem>
                       <MenuItem value="Other">Other</MenuItem>
                     </Select>
                     {formik.touched.service && formik.errors.service ? (
-                      <Typography variant="caption" sx={{ color: 'red' }}>
+                      <Typography variant="caption" sx={{ color: "red" }}>
                         {formik.errors.service}
                       </Typography>
                     ) : null}
@@ -153,7 +262,6 @@ const Addprescription = () => {
                       id="checkboxes-tags-demo"
                       options={diagnoses}
                       disableCloseOnSelect
-                      value={formik.values.diagnoses}
                       onChange={handleChangeDiagnoses}
                       getOptionLabel={(option) => option.title}
                       renderOption={(props, option, { selected }) => (
@@ -172,12 +280,15 @@ const Addprescription = () => {
                           {...params}
                           label="Choose diagnoses"
                           placeholder="Favorites"
-                          error={formik.touched.diagnoses && Boolean(formik.errors.diagnoses)}
+                          error={
+                            formik.touched.diagnoses &&
+                            Boolean(formik.errors.diagnoses)
+                          }
                         />
                       )}
                     />
                     {formik.touched.diagnoses && formik.errors.diagnoses ? (
-                      <Typography variant="caption" sx={{ color: 'red' }}>
+                      <Typography variant="caption" sx={{ color: "red" }}>
                         {formik.errors.diagnoses}
                       </Typography>
                     ) : null}
@@ -190,11 +301,14 @@ const Addprescription = () => {
                     multiline
                     fullWidth
                     rows={2}
-                    {...formik.getFieldProps('suggestions')}
-                    error={formik.touched.suggestions && Boolean(formik.errors.suggestions)}
+                    {...formik.getFieldProps("suggestions")}
+                    error={
+                      formik.touched.suggestions &&
+                      Boolean(formik.errors.suggestions)
+                    }
                   />
                   {formik.touched.suggestions && formik.errors.suggestions ? (
-                    <Typography variant="caption" sx={{ color: 'red' }}>
+                    <Typography variant="caption" sx={{ color: "red" }}>
                       {formik.errors.suggestions}
                     </Typography>
                   ) : null}
@@ -206,11 +320,13 @@ const Addprescription = () => {
                     multiline
                     fullWidth
                     rows={2}
-                    {...formik.getFieldProps('symptoms')}
-                    error={formik.touched.symptoms && Boolean(formik.errors.symptoms)}
+                    {...formik.getFieldProps("symptoms")}
+                    error={
+                      formik.touched.symptoms && Boolean(formik.errors.symptoms)
+                    }
                   />
                   {formik.touched.symptoms && formik.errors.symptoms ? (
-                    <Typography variant="caption" sx={{ color: 'red' }}>
+                    <Typography variant="caption" sx={{ color: "red" }}>
                       {formik.errors.symptoms}
                     </Typography>
                   ) : null}
@@ -222,11 +338,13 @@ const Addprescription = () => {
                     multiline
                     fullWidth
                     rows={2}
-                    {...formik.getFieldProps('followUp')}
-                    error={formik.touched.followUp && Boolean(formik.errors.followUp)}
+                    {...formik.getFieldProps("followUp")}
+                    error={
+                      formik.touched.followUp && Boolean(formik.errors.followUp)
+                    }
                   />
                   {formik.touched.followUp && formik.errors.followUp ? (
-                    <Typography variant="caption" sx={{ color: 'red' }}>
+                    <Typography variant="caption" sx={{ color: "red" }}>
                       {formik.errors.followUp}
                     </Typography>
                   ) : null}
@@ -248,6 +366,12 @@ const Addprescription = () => {
                 </Grid>
               </Grid>
             </form>
+            <Backdrop
+              sx={{ color: "#fff", zIndex: (theme) => theme.zIndex.drawer + 1 }}
+              open={loading}
+            >
+              <CircularProgress color="inherit" />
+            </Backdrop>
           </Box>
         </DialogContent>
         <DialogActions>
@@ -265,21 +389,21 @@ const Addprescription = () => {
 
 // List of diagnoses
 const diagnoses = [
-  { title: 'BPD F60.3' },
-  { title: 'APD F60.2' },
-  { title: 'NPD F60.81' },
-  { title: 'PPD 60.0' },
-  { title: 'SAD F40.10' },
-  { title: 'AJOAPHOBIA F40.0' },
-  { title: 'PTSD F43.10' },
-  { title: 'B2D F31.81' },
-  { title: 'OCD' },
-  { title: 'MDD PERSISTENT 34.1' },
-  { title: 'MDD(SINGLE EPISODE)' },
-  { title: 'MDD RECURRENT EPISODE' },
-  { title: 'DISSOCIATIVE IDENTITY DISORDER F44.81' },
-  { title: 'ADHD F90.1' },
-  { title: 'ALCOHOL USE DISORDER F10.20' },
-  { title: 'OTHER' }
+  { title: "BPD F60.3" },
+  { title: "APD F60.2" },
+  { title: "NPD F60.81" },
+  { title: "PPD 60.0" },
+  { title: "SAD F40.10" },
+  { title: "AJOAPHOBIA F40.0" },
+  { title: "PTSD F43.10" },
+  { title: "B2D F31.81" },
+  { title: "OCD" },
+  { title: "MDD PERSISTENT 34.1" },
+  { title: "MDD(SINGLE EPISODE)" },
+  { title: "MDD RECURRENT EPISODE" },
+  { title: "DISSOCIATIVE IDENTITY DISORDER F44.81" },
+  { title: "ADHD F90.1" },
+  { title: "ALCOHOL USE DISORDER F10.20" },
+  { title: "OTHER" },
 ];
 export default Addprescription;

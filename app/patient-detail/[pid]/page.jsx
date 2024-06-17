@@ -24,34 +24,30 @@ import Button from "@mui/material/Button";
 import DownloadIcon from "@mui/icons-material/Download";
 import Addprescription from "../../components/Addprescription"; // Correct import path for Addprescription
 import useGetClientById from "../../../hooks/useGetClientById";
+import useAppointments from "../../../hooks/useAppointments"; // Adjust the path as necessary
+import { format } from "date-fns"; // Import date-fns format function
 
 const PatientDetails = ({ params }) => {
   const invoiceRef = useRef();
   const [expanded, setExpanded] = React.useState(false);
   const [anchorEl, setAnchorEl] = React.useState(null);
+  const [clientId, setclientId] = React.useState(null);
+  const [filltredMeets, setfilltredmeets] = React.useState([]);
   const open = Boolean(anchorEl);
 
-  const apiUrl = 'http://localhost:5500/api/clients'; // Replace with your actual API URL
+  const apiUrl = "http://localhost:5500/api/clients"; // Replace with your actual API URL
   const { pid } = params;
   const { client, isLoading, error } = useGetClientById(apiUrl, pid);
+  const { appointments, loading, meetserror } = useAppointments(pid);
 
   if (isLoading) {
     return <p>Loading...</p>; // Handle loading state
+    setclientId(pid);
   }
 
   if (error) {
     return <p>Error: {error.message}</p>; // Handle error state
   }
-
-  console.log(pid)
-  // if (!client) {
-  //   return null; // Handle case when client is not found
-  // }
-  // // If no data found, you can throw an error or return a not found component
-  // if (!client) {
-  //   // You can also return a 404 page component here
-  //   return <div>404: Patient not found</div>;
-  // }
 
   const handleClick = (event) => {
     setAnchorEl(event.currentTarget);
@@ -64,6 +60,16 @@ const PatientDetails = ({ params }) => {
   const handleChange = (panel) => (event, isExpanded) => {
     setExpanded(isExpanded ? panel : false);
   };
+
+  React.useEffect(() => {
+    const formattedRows = appointments.map((appointment) => ({
+      ...appointment,
+      date: format(new Date(appointment.date), "dd-MM-yyyy"), // Format date correctly
+      time: format(new Date(appointment.time), "HH:mm a"), // Format time correctly
+    }));
+    setfilltredmeets(formattedRows);
+    console.log(filltredMeets);
+  }, [appointments]); // Update when todayAppointments changes
 
   const StyledMenu = styled((props) => (
     <Menu
@@ -130,6 +136,12 @@ const PatientDetails = ({ params }) => {
     window.print();
   };
 
+  // const handleGetAppointmentID = (client) => {
+  //  const appointments =  client.appointments.map((appointment) => (
+
+  //  )}
+  // };
+
   return (
     <Box sx={{ width: "100%" }}>
       <Container maxWidth="lg">
@@ -171,10 +183,11 @@ const PatientDetails = ({ params }) => {
                       margin: "6px auto",
                     }}
                   >
-                   {client && client.name}
+                    {client && client.name}
                   </Typography>
                   <Typography variant="p" className="address">
-                    {client && client.address}, <i>{client && client.country}</i>
+                    {client && client.address},{" "}
+                    <i>{client && client.country}</i>
                   </Typography>
                   <br />
                   <Typography variant="p" className="address">
@@ -282,7 +295,7 @@ const PatientDetails = ({ params }) => {
                         <Box className="spacer" sx={{ flexGrow: 1 }}></Box>
                         <Box>
                           <Typography component="p" className="grey_light">
-                          Find Us
+                            Find Us
                           </Typography>
                           <Typography component="strong" variant="h6">
                             {client && client.findUs}
@@ -301,113 +314,139 @@ const PatientDetails = ({ params }) => {
               >
                 <Box>
                   <Typography component="p">
-                    Informamt name and relationship: <strong>{client && client.informant}</strong>
+                    Informamt name and relationship:{" "}
+                    <strong>{client && client.informant}</strong>
                   </Typography>
                 </Box>
 
                 <Box>
                   <Typography component="p">
-                    Emergency Contact: <strong>{client && client.emergencyContact}</strong>
+                    Emergency Contact:{" "}
+                    <strong>{client && client.emergencyContact}</strong>
                   </Typography>
                 </Box>
               </Box>
 
               <Box sx={{ my: 5 }}>
-                <Accordion
-                  expanded={expanded === "panel1"}
-                  onChange={handleChange("panel1")}
-                >
-                  <AccordionSummary
-                    expandIcon={<ExpandMoreIcon />}
-                    aria-controls="panel1bh-content"
-                    id="panel1bh-header"
-                  >
-                    <Typography sx={{ width: "70%" }}>Ap-101</Typography>
-                    <Typography sx={{ width: "100%" }}>Precison</Typography>
-                    <Typography sx={{ width: "33%" }}>10-March-2024</Typography>
-                  </AccordionSummary>
-                  <AccordionDetails>
-                    <Box
-                      sx={{
-                        display: "flex",
-                        justifyContent: "space-between",
-                        padding: 2,
-                      }}
+                {filltredMeets &&
+                  filltredMeets.map((appointment) => (
+                    <Accordion
+                      className="accordian-theme"
+                      expanded={
+                        expanded ===
+                        `${appointment && appointment.appointmentID}`
+                      }
+                      onChange={handleChange(
+                        `${appointment && appointment.appointmentID}`
+                      )}
                     >
-                      <Box>
-                        <Typography component="p">
-                          <strong>Service: </strong> Dummy
+                      <AccordionSummary
+                        expandIcon={<ExpandMoreIcon />}
+                        aria-controls={appointment && appointment.appointmentID}
+                        id={appointment && appointment.appointmentID}
+                      >
+                        <Typography sx={{ width: "70%" }}>
+                          {appointment && appointment.appointmentID}
                         </Typography>
-                      </Box>
-                      <Box>
-                        <Typography component="p">
-                          <strong>Faclilated By: </strong> Dummy
+                        <Typography sx={{ width: "100%" }}>Precison</Typography>
+                        <Typography sx={{ width: "33%" }}>
+                          {appointment && appointment.date}
                         </Typography>
-                      </Box>
-                    </Box>
+                      </AccordionSummary>
+                      <AccordionDetails>
+                        <Box
+                          sx={{
+                            display: "flex",
+                            justifyContent: "space-between",
+                            padding: 2,
+                          }}
+                        >
+                          <Box>
+                            <Typography component="p">
+                              <strong>Service: </strong>{" "}
+                              {appointment && appointment.service}
+                            </Typography>
+                          </Box>
+                          <Box>
+                            <Typography component="p">
+                              <strong>Faclilated By: </strong>{" "}
+                              {appointment && appointment.facilitatedBy}
+                            </Typography>
+                          </Box>
+                        </Box>
 
-                    <Divider />
-                    <Box
-                      sx={{
-                        padding: 2,
-                      }}
-                    >
-                      <Typography component="p">
-                        <strong>Diagnouse: </strong> simply dummy text of the
-                        printing and typesetting industry. Lorem Ipsum has been
-                        the industry&apos;s standard dummy text ever since the
-                        1500s, when an unknown printer took a galley of type and
-                        scrambled it to make a type specimen book. It has
-                        survived not only five centuries,
-                      </Typography>
-                    </Box>
-                    <Divider />
-                    <Box
-                      sx={{
-                        padding: 2,
-                      }}
-                    >
-                      <Typography component="p">
-                        <strong>Diagnouse: </strong> simply dummy text of the
-                        printing and typesetting industry. Lorem Ipsum has been
-                        the industry&apos;s standard dummy text ever since the
-                        1500s, when an unknown printer took a galley of type and
-                        scrambled it to make a type specimen book. It has
-                        survived not only five centuries,
-                      </Typography>
-                    </Box>
-                    <Divider />
-                    <Box
-                      sx={{
-                        padding: 2,
-                      }}
-                    >
-                      <Typography component="p">
-                        <strong>Diagnouse: </strong> simply dummy text of the
-                        printing and typesetting industry. Lorem Ipsum has been
-                        the industry&apos;s standard dummy text ever since the
-                        1500s, when an unknown printer took a galley of type and
-                        scrambled it to make a type specimen book. It has
-                        survived not only five centuries,
-                      </Typography>
-                    </Box>
-                    <Divider />
-                    <Box
-                      sx={{
-                        padding: 2,
-                      }}
-                    >
-                      <Typography component="p">
-                        <strong>Diagnouse: </strong> simply dummy text of the
-                        printing and typesetting industry. Lorem Ipsum has been
-                        the industry&apos;s standard dummy text ever since the
-                        1500s, when an unknown printer took a galley of type and
-                        scrambled it to make a type specimen book. It has
-                        survived not only five centuries,
-                      </Typography>
-                    </Box>
-                  </AccordionDetails>
-                </Accordion>
+                        <Divider />
+                        {appointment &&
+                          appointment.prescriptions.map((prescription) => (
+                            <>
+                              <Box
+                                sx={{
+                                  padding: 2,
+                                }}
+                              >
+                                <Typography component="p">
+                                  <strong>Suggestions: </strong>{" "}
+                                  {prescription.suggestions}
+                                </Typography>
+                              </Box>
+                              <Divider />
+                              <Box
+                                sx={{
+                                  padding: 2,
+                                }}
+                              >
+                                <Typography component="p">
+                                  <strong>Symptoms: </strong>{" "}
+                                  {prescription.symptoms}
+                                </Typography>
+                              </Box>
+                              <Divider />
+                              <Box
+                                sx={{
+                                  padding: 2,
+                                }}
+                              >
+                                <Typography component="p">
+                                  <strong>Diagnoses: </strong>{" "}
+                                  {prescription.diagnoses}
+                                </Typography>
+                              </Box>
+                              <Divider />
+                              <Box
+                                sx={{
+                                  padding: 2,
+                                }}
+                              >
+                                <Typography component="p">
+                                  <strong>Follow Up: </strong>{" "}
+                                  {prescription.followUp}
+                                </Typography>
+                              </Box>
+                            </>
+                          ))}
+                        {appointment &&
+                        appointment.prescriptions.length == "0" ? (
+                          <Typography
+                            component="h6"
+                            className="my-5 center-text"
+                          >
+                            🙁 prescription not updated for{" "}
+                            {client && client.name}.
+                          </Typography>
+                        ) : (
+                          ""
+                        )}
+                      </AccordionDetails>
+                    </Accordion>
+                  ))}
+
+                {filltredMeets && filltredMeets.lenght == 0 ? (
+                  <Typography component="h6" className="my-4 center-text">
+                    🙁 {client && client.name} dont have any appointments.
+                  </Typography>
+                ) : (
+                  ""
+                )}
               </Box>
 
               <Box
@@ -437,38 +476,7 @@ const PatientDetails = ({ params }) => {
                 backgroundColor: "#fff",
               }}
             >
-              <Button
-                id="demo-customized-button"
-                aria-controls={open ? "demo-customized-menu" : undefined}
-                aria-haspopup="true"
-                aria-expanded={open ? "true" : undefined}
-                disableElevation
-                onClick={handleClick}
-                endIcon={<KeyboardArrowDownIcon />}
-                sx={{ width: "100%" }}
-                variant="outlined"
-              >
-                Give a Prescription
-              </Button>
-              <StyledMenu
-                id="demo-customized-menu"
-                MenuListProps={{
-                  "aria-labelledby": "demo-customized-button",
-                }}
-                anchorEl={anchorEl}
-                open={open}
-                onClose={handleClose}
-              >
-                <MenuItem onClick={handleClose} disableRipple>
-                  <AddIcon />
-                  Add Prescription
-                </MenuItem>
-                <MenuItem onClick={handleClose} disableRipple>
-                  <EditIcon />
-                  Edit Prescription
-                </MenuItem>
-              </StyledMenu>
-              <Addprescription />
+              <Addprescription clientId={pid} />
               <Divider
                 sx={{
                   margin: "15px auto",

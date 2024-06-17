@@ -134,7 +134,8 @@ svg {
   box-shadow: none;
 }
 .responsive-dialog {
-  width: 634px !important;
+  width: 100% !important;
+  max-width: 634px !important;
   margin: 0 auto;
 }
 /* App.css or a separate CSS file */
@@ -206,4 +207,10 @@ p.grey_light {
 }
 .themeBg{
   background-color: #ffecec !important;
+}
+.center-text{
+  text-align: center;
+}
+.accordian-theme {
+  background: #f1f1f1 !important;
 }

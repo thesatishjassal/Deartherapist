@@ -164,14 +164,14 @@ export default function HorizontalLinearStepper() {
       <Grid container rowSpacing={3} columnSpacing={{ xs: 1, sm: 2, md: 3 }}>
         <Grid item xs={12} sm={12} md={12}>
           <Autocomplete
-            fullWidth
+            fullWidth 
             id="client-mobileno"
             options={contacts && contacts.mobileNumbers}
             value={formik.values.mobileNumber}
             onChange={handleMobileNumber}
             onBlur={() => formik.setFieldTouched("mobileNumber", true)}
             renderInput={(params) => (
-              <TextField
+              <TextField fullWidth
                 {...params}
                 label="Select Client Mobile No"
                 error={
@@ -331,7 +331,7 @@ export default function HorizontalLinearStepper() {
             fullWidth
             error={formik.touched.channel && Boolean(formik.errors.channel)}
           >
-            <InputLabel id="session-type">Session Type</InputLabel>
+            <InputLabel id="session-type">Mode</InputLabel>
             <Select
               labelId="session-type"
               id="session-type-control"
