@@ -36,7 +36,7 @@ const ActionsMenu = ({ rowId }) => {
     console.log("Edit", rowId);
     handleClose();
   };
-c
+
   const handleDelete = () => {
     console.log("Delete", rowId);
     handleClose();
