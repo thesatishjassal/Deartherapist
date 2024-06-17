@@ -134,8 +134,7 @@ svg {
   box-shadow: none;
 }
 .responsive-dialog {
-  width: 100% !important;
-  max-width: 634px !important;
+  width: 634px !important;
   margin: 0 auto;
 }
 /* App.css or a separate CSS file */
