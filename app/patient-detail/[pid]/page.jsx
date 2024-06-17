@@ -33,7 +33,7 @@ const PatientDetails = ({ params }) => {
 
   const apiUrl = 'http://localhost:5500/api/clients'; // Replace with your actual API URL
   const { pid } = params;
-  const { data, isLoading, error } = useGetClientById(apiUrl, pid);
+  const { client, isLoading, error } = useGetClientById(apiUrl, pid);
 
   if (isLoading) {
     return <p>Loading...</p>; // Handle loading state
@@ -43,14 +43,15 @@ const PatientDetails = ({ params }) => {
     return <p>Error: {error.message}</p>; // Handle error state
   }
 
-  if (!client) {
-    return null; // Handle case when client is not found
-  }
-  // If no data found, you can throw an error or return a not found component
-  if (!data) {
-    // You can also return a 404 page component here
-    return <div>404: Patient not found</div>;
-  }
+  console.log(pid)
+  // if (!client) {
+  //   return null; // Handle case when client is not found
+  // }
+  // // If no data found, you can throw an error or return a not found component
+  // if (!client) {
+  //   // You can also return a 404 page component here
+  //   return <div>404: Patient not found</div>;
+  // }
 
   const handleClick = (event) => {
     setAnchorEl(event.currentTarget);
@@ -148,7 +149,7 @@ const PatientDetails = ({ params }) => {
             >
               {/* Invoice Header */}
               <Typography variant="p">
-                <strong>Client ID: {client.ClientID}</strong>
+                <strong>Client ID: {client && client.ClientID}</strong>
               </Typography>
               <Divider
                 sx={{
@@ -170,14 +171,14 @@ const PatientDetails = ({ params }) => {
                       margin: "6px auto",
                     }}
                   >
-                   {client.name}
+                   {client && client.name}
                   </Typography>
                   <Typography variant="p" className="address">
-                    {client.address}r, <i>{client.country}</i>
+                    {client && client.address}, <i>{client && client.country}</i>
                   </Typography>
                   <br />
                   <Typography variant="p" className="address">
-                    {client.mobile} | {client.email}
+                    {client && client.mobile} | {client && client.email}
                   </Typography>
                 </Box>
                 <Box
@@ -215,7 +216,7 @@ const PatientDetails = ({ params }) => {
                             Age
                           </Typography>
                           <Typography component="strong" variant="h6">
-                            {client.age}
+                            {client && client.age}
                           </Typography>
                         </Box>
                         <Box className="spacer" sx={{ flexGrow: 1 }}></Box>
@@ -224,7 +225,7 @@ const PatientDetails = ({ params }) => {
                             Gender
                           </Typography>
                           <Typography component="strong" variant="h6">
-                            {client.gender}
+                            {client && client.gender}
                           </Typography>
                         </Box>
                       </Box>
@@ -245,7 +246,7 @@ const PatientDetails = ({ params }) => {
                             Occupation
                           </Typography>
                           <Typography component="strong" variant="h6">
-                            {client.occupation}
+                            {client && client.occupation}
                           </Typography>
                         </Box>
                         <Box className="spacer" sx={{ flexGrow: 1 }}></Box>
@@ -254,7 +255,7 @@ const PatientDetails = ({ params }) => {
                             Marital Status
                           </Typography>
                           <Typography component="strong" variant="h6">
-                            {client.maritalStatus}
+                            {client && client.maritalStatus}
                           </Typography>
                         </Box>
                       </Box>
@@ -275,7 +276,7 @@ const PatientDetails = ({ params }) => {
                             Medical/Psychiatric History
                           </Typography>
                           <Typography component="strong" variant="h6">
-                            {client.medicalHistory}
+                            {client && client.medicalHistory}
                           </Typography>
                         </Box>
                         <Box className="spacer" sx={{ flexGrow: 1 }}></Box>
@@ -284,7 +285,7 @@ const PatientDetails = ({ params }) => {
                           Find Us
                           </Typography>
                           <Typography component="strong" variant="h6">
-                            {client.findUs}
+                            {client && client.findUs}
                           </Typography>
                         </Box>
                       </Box>
@@ -300,13 +301,13 @@ const PatientDetails = ({ params }) => {
               >
                 <Box>
                   <Typography component="p">
-                    Informamt name and relationship: <strong>{client.informant}</strong>
+                    Informamt name and relationship: <strong>{client && client.informant}</strong>
                   </Typography>
                 </Box>
 
                 <Box>
                   <Typography component="p">
-                    Emergency Contact: <strong>{client.emergencyContact}</strong>
+                    Emergency Contact: <strong>{client && client.emergencyContact}</strong>
                   </Typography>
                 </Box>
               </Box>

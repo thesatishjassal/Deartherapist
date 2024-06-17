@@ -1,12 +1,12 @@
 import { useState, useEffect } from 'react';
 
-const useGetClientById = (apiUrl, clientId) => {
+const useGetClientById = (apiUrl, Id) => {
   const [client, setClient] = useState(null);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
 
   useEffect(() => {
-    if (!clientId) return;
+    if (!Id) return;
 
     const fetchClient = async () => {
       setLoading(true);
@@ -27,7 +27,7 @@ const useGetClientById = (apiUrl, clientId) => {
     };
 
     fetchClient();
-  }, [apiUrl, clientId]);
+  }, [apiUrl, Id]);
 
   return { client, loading, error };
 };
