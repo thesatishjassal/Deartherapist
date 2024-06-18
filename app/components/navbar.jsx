@@ -142,7 +142,9 @@ function NavigationBar() {
             {user && (
               <>
                 <Typography variant="p" className='username' sx={{ marginRight: 1 }}>
-                  {user.role}
+                 {user && user.role == "admin" ? "Dr. Shaveta" : ""}
+                 {user && user.role == "counselor" ? "Counselor" : ""}
+                 {user && user.role == "receptionist" ? "Receptionist" : ""}
                 </Typography>
                 <Menu
                   sx={{ mt: "45px" }}

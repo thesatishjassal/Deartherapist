@@ -9,20 +9,29 @@ import {
   Toolbar,
   Typography,
   CircularProgress,
+  Dialog,
+  DialogActions,
+  DialogContent,
+  DialogContentText,
+  DialogTitle,
+  Button,
+  Snackbar,
+  SnackbarContent,
 } from "@mui/material";
 import MoreVertIcon from "@mui/icons-material/MoreVert";
 import EditIcon from "@mui/icons-material/Edit";
 import DeleteIcon from "@mui/icons-material/DeleteOutlined";
 import VisibilityIcon from "@mui/icons-material/Visibility";
 import AddClients from "./AddClients";
-import EditClient from "./EditClient"; // Import the EditClient modal
+import EditClient from "./EditClient";
 import { useRouter } from "next/navigation";
-import useGetClients from "../../hooks/useGetClients"; // Path to your custom hook
-import { format } from "date-fns"; // Import date-fns format function
+import useGetClients from "../../hooks/useGetClients";
+import axios from "axios";
+import { format } from "date-fns";
 
 const ActionsMenu = ({ rowId, onEdit, onDelete }) => {
   const [anchorEl, setAnchorEl] = React.useState(null);
-  const router = useRouter(); // Initialize useRouter
+  const router = useRouter();
 
   const handleClick = (event) => {
     setAnchorEl(event.currentTarget);
@@ -43,7 +52,7 @@ const ActionsMenu = ({ rowId, onEdit, onDelete }) => {
   };
 
   const handleView = () => {
-    router.push(`/patient-detail/${rowId}`); // Navigate to the detailed view
+    router.push(`/patient-detail/${rowId}`);
     handleClose();
   };
 
@@ -83,24 +92,27 @@ const ClientsTable = () => {
   const [searchText, setSearchText] = useState("");
   const [selectedRow, setSelectedRow] = useState(null);
   const [isEditModalOpen, setEditModalOpen] = useState(false);
-  const [isDeleteModalOpen, setDeleteModalOpen] = useState(false);
-  const { clients, isLoading: isTLoading, error } = useGetClients(); // Rename isLoading to avoid conflict
+  const [isDeleteDialogOpen, setDeleteDialogOpen] = useState(false);
+  const [deleteId, setDeleteId] = useState(null);
+  const [isSnackbarOpen, setSnackbarOpen] = useState(false);
+  const [snackbarMessage, setSnackbarMessage] = useState("");
+  const { clients, isLoading: isTLoading, error } = useGetClients();
 
   useEffect(() => {
     if (isTLoading) {
-      return; // Early return if still loading
+      return;
     }
 
     setTimeout(() => {
-      const formattedRows = clients.map((client) => ({
+      const formattedRows = clients.map((client, index) => ({
         ...client,
-        date: format(new Date(), "yyyy-MM-dd"), // Add formatted date
+        Srno: index + 1,
+        date: format(new Date(client.date), "yyyy-MM-dd"),
       }));
       setRows(formattedRows);
       setIsLoading(false);
-    }, 2000); // Simulating a 2 second delay
-
-  }, [clients, isTLoading]); // Include clients and isTLoading in dependency array
+    }, 2000);
+  }, [clients, isTLoading]);
 
   const handleSearch = (event) => {
     setSearchText(event.target.value);
@@ -111,21 +123,81 @@ const ClientsTable = () => {
     setEditModalOpen(true);
   };
 
-  const handleDelete = (id) => {
-    setSelectedRow(rows.find((row) => row._id === id));
-    setDeleteModalOpen(true);
+  const handleDelete = async (id) => {
+    setDeleteId(id);
+    setDeleteDialogOpen(true);
   };
 
-  const handleEditSave = (updatedClient) => {
-    setRows((prevRows) =>
-      prevRows.map((row) => (row._id === updatedClient.id ? updatedClient : row))
-    );
-    setEditModalOpen(false);
+  const confirmDelete = async () => {
+    try {
+      await axios.delete(`http://localhost:5500/api/clients/${deleteId}`);
+      setRows((prevRows) => prevRows.filter((row) => row._id !== deleteId));
+      setDeleteDialogOpen(false);
+      setDeleteId(null);
+      setSnackbarMessage("Client deleted successfully");
+      setSnackbarOpen(true);
+    } catch (error) {
+      console.error("Error deleting client:", error);
+      setDeleteDialogOpen(false);
+      setDeleteId(null);
+      setSnackbarMessage("Error deleting client");
+      setSnackbarOpen(true);
+    }
   };
 
-  const handleDeleteConfirm = () => {
-    setRows(rows.filter((row) => row._id !== selectedRow._id));
-    setDeleteModalOpen(false);
+  const cancelDelete = () => {
+    setDeleteDialogOpen(false);
+    setDeleteId(null);
+  };
+
+  const handleEditSave = async (updatedClient) => {
+    try {
+      const response = await axios.patch(`http://localhost:5500/api/clients/${updatedClient._id}`, updatedClient);
+      setRows((prevRows) =>
+        prevRows.map((row) => (row._id === updatedClient._id ? response.data : row))
+      );
+      setEditModalOpen(false);
+      setSnackbarMessage("Client updated successfully");
+      setSnackbarOpen(true);
+    } catch (error) {
+      console.error("Error updating client:", error);
+      setSnackbarMessage("Error updating client");
+      setSnackbarOpen(true);
+    }
+  };
+
+  const handleExport = async () => {
+    try {
+      const response = await axios.get("http://localhost:5500/api/clients");
+      const clientData = response.data;
+
+      // Construct CSV content
+      let csvContent = "Sr. NO,Client ID,Date,Name,Gender,Age,Mobile No,Country,Occupation,Address,Informant,Emergency Contact,Medical History,Personal History,Find Us,Remarks\n";
+      clientData.forEach((row, index) => {
+        csvContent += `${index + 1},${row.ClientID},${row.date},${row.name},${row.gender},${row.age},${row.mobile},${row.country},${row.occupation || ""},${row.address || ""},${row.informant || ""},${row.emergencyContact || ""},${row.medicalHistory || ""},${row.personalHistory || ""},${row.findUs || ""},${row.remarks || ""}\n`;
+      });
+
+      // Trigger download
+      const blob = new Blob([csvContent], { type: "text/csv;charset=utf-8;" });
+      const link = document.createElement("a");
+      if (link.download !== undefined) {
+        const url = URL.createObjectURL(blob);
+        link.setAttribute("href", url);
+        link.setAttribute("download", "clients.csv");
+        link.style.visibility = "hidden";
+        document.body.appendChild(link);
+        link.click();
+        document.body.removeChild(link);
+      }
+    } catch (error) {
+      console.error("Error exporting clients:", error);
+      setSnackbarMessage("Error exporting clients");
+      setSnackbarOpen(true);
+    }
+  };
+
+  const handleSnackbarClose = () => {
+    setSnackbarOpen(false);
   };
 
   const filteredRows = rows.filter((row) =>
@@ -166,9 +238,12 @@ const ClientsTable = () => {
           size="small"
           placeholder="Search Name"
           value={searchText}
-          onChange={handleSearch}
+          onChange={handleSearch} 
           sx={{ marginRight: 2 }}
         />
+        <Button onClick={handleExport}  variant="outlined"   sx={{ marginRight: 2 }}>
+          Export Data
+        </Button>
         <AddClients />
       </Toolbar>
       {isLoading ? (
@@ -191,21 +266,53 @@ const ClientsTable = () => {
           pageSize={10}
           rowsPerPageOptions={[10, 20, 50]}
           pagination
-          getRowId={(row) => row._id} // Use _id as the row id
+          getRowId={(row) => row._id}
           components={{ Toolbar: GridToolbar }}
           initialState={{
             sorting: {
-              sortModel: [{ field: 'date', sort: 'desc' }],
+              sortModel: [{ field: "date", sort: "desc" }],
             },
           }}
         />
       )}
-      <EditClient
-        open={isEditModalOpen}
-        onClose={() => setEditModalOpen(false)}
-        client={selectedRow}
-        onSave={handleEditSave}
-      />
+      {selectedRow && (
+        <EditClient
+          open={isEditModalOpen}
+          onClose={() => setEditModalOpen(false)}
+          client={selectedRow}
+          onSave={handleEditSave}
+        />
+      )}
+      <Dialog
+        open={isDeleteDialogOpen}
+        onClose={cancelDelete}
+      >
+        <DialogTitle>Delete Client</DialogTitle>
+        <DialogContent>
+          <DialogContentText>
+            Are you sure you want to delete this client?
+          </DialogContentText>
+        </DialogContent>
+        <DialogActions>
+          <Button onClick={cancelDelete} color="primary">
+            Cancel
+          </Button>
+          <Button onClick={confirmDelete} color="primary" autoFocus>
+            Confirm
+          </Button>
+        </DialogActions>
+      </Dialog>
+      <Snackbar
+        anchorOrigin={{ vertical: "bottom", horizontal: "left" }}
+        open={isSnackbarOpen}
+        autoHideDuration={6000}
+        onClose={handleSnackbarClose}
+      >
+        <SnackbarContent
+          sx={{ backgroundColor: "#4caf50" }}
+          message={snackbarMessage}
+        />
+      </Snackbar>
     </div>
   );
 };

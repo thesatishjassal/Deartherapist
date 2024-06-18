@@ -23,9 +23,11 @@ import { Container } from "@mui/material";
 import Button from "@mui/material/Button";
 import DownloadIcon from "@mui/icons-material/Download";
 import Addprescription from "../../components/Addprescription"; // Correct import path for Addprescription
+import EditPrescription from "../../components/EditPrescription"; // Correct import path for Addprescription
 import useGetClientById from "../../../hooks/useGetClientById";
 import useAppointments from "../../../hooks/useAppointments"; // Adjust the path as necessary
 import { format } from "date-fns"; // Import date-fns format function
+import { CircularProgress } from "@mui/material";
 
 const PatientDetails = ({ params }) => {
   const invoiceRef = useRef();
@@ -34,13 +36,14 @@ const PatientDetails = ({ params }) => {
   const [clientId, setclientId] = React.useState(null);
   const [filltredMeets, setfilltredmeets] = React.useState([]);
   const open = Boolean(anchorEl);
+  const [isLoading, setLoading] = React.useState(false); // State for loading indicator
 
   const apiUrl = "http://localhost:5500/api/clients"; // Replace with your actual API URL
   const { pid } = params;
-  const { client, isLoading, error } = useGetClientById(apiUrl, pid);
+  const { client, clientisLoading, error } = useGetClientById(apiUrl, pid);
   const { appointments, loading, meetserror } = useAppointments(pid);
 
-  if (isLoading) {
+  if (clientisLoading) {
     return <p>Loading...</p>; // Handle loading state
     setclientId(pid);
   }
@@ -115,21 +118,31 @@ const PatientDetails = ({ params }) => {
   }));
 
   const handleDownloadPdf = async () => {
-    const element = invoiceRef.current;
-    const canvas = await html2canvas(element, {
-      scale: 4, // Increase resolution
-      useCORS: true, // Handle cross-origin images
-      backgroundColor: null, // Ensure background transparency
-    });
-    const data = canvas.toDataURL("image/png");
+    try {
+      setLoading(true); // Start loading indicator
 
-    const pdf = new jsPDF("p", "mm", "a4");
-    const imgProps = pdf.getImageProperties(data);
-    const pdfWidth = pdf.internal.pageSize.getWidth();
-    const pdfHeight = (imgProps.height * pdfWidth) / imgProps.width;
+      // Generate PDF
+      const element = invoiceRef.current;
+      const canvas = await html2canvas(element, {
+        scale: 4, // Increase resolution
+        useCORS: true, // Handle cross-origin images
+        backgroundColor: null, // Ensure background transparency
+      });
+      const data = canvas.toDataURL("image/png");
 
-    pdf.addImage(data, "PNG", 0, 0, pdfWidth, pdfHeight);
-    pdf.save("invoice.pdf");
+      const pdf = new jsPDF("p", "mm", "a4");
+      const imgProps = pdf.getImageProperties(data);
+      const pdfWidth = pdf.internal.pageSize.getWidth();
+      const pdfHeight = (imgProps.height * pdfWidth) / imgProps.width;
+
+      pdf.addImage(data, "PNG", 0, 0, pdfWidth, pdfHeight);
+      pdf.save("invoice.pdf");
+
+      setLoading(false); // Stop loading indicator after download
+    } catch (error) {
+      console.error("Error generating PDF:", error);
+      setLoading(false); // Ensure loading indicator is stopped on error
+    }
   };
 
   const handlePrint = () => {
@@ -467,7 +480,6 @@ const PatientDetails = ({ params }) => {
           </Grid>
           <Grid item xs={12} sm={12} md={3}>
             <Box
-              ref={invoiceRef}
               className="invoice-content"
               sx={{
                 margin: "30px auto",
@@ -476,6 +488,7 @@ const PatientDetails = ({ params }) => {
                 backgroundColor: "#fff",
               }}
             >
+              {/* <EditPrescription clientId={pid} /> */}
               <Addprescription clientId={pid} />
               <Divider
                 sx={{
@@ -488,8 +501,14 @@ const PatientDetails = ({ params }) => {
                 sx={{
                   width: "100%",
                 }}
+                onClick={handleDownloadPdf}
+                disabled={isLoading} // Disable button during loading
               >
-                Download Pdf
+                {isLoading ? (
+                  <CircularProgress size={24} />  // Display loading indicator if isLoading is true
+                ) : (
+                  "Download Pdf"
+                )}
               </Button>
             </Box>
           </Grid>
