@@ -28,10 +28,12 @@ import { useRouter } from "next/navigation";
 import useGetClients from "../../hooks/useGetClients";
 import axios from "axios";
 import { format } from "date-fns";
+import useAuth from "../../hooks/useAuth"; // Adjust the import path as needed
 
 const ActionsMenu = ({ rowId, onEdit, onDelete }) => {
   const [anchorEl, setAnchorEl] = React.useState(null);
   const router = useRouter();
+  const { user, handleLogout } = useAuth();
 
   const handleClick = (event) => {
     setAnchorEl(event.currentTarget);
@@ -78,9 +80,13 @@ const ActionsMenu = ({ rowId, onEdit, onDelete }) => {
         <MenuItem onClick={handleEdit}>
           <EditIcon /> &nbsp; Edit
         </MenuItem>
-        <MenuItem onClick={handleDelete}>
-          <DeleteIcon /> &nbsp; Delete
-        </MenuItem>
+        {user && user.role == "admin" ? (
+          <MenuItem onClick={handleDelete}>
+            <DeleteIcon /> &nbsp; Delete
+          </MenuItem>
+        ) : (
+          ""
+        )}
       </Menu>
     </>
   );
@@ -97,6 +103,7 @@ const ClientsTable = () => {
   const [isSnackbarOpen, setSnackbarOpen] = useState(false);
   const [snackbarMessage, setSnackbarMessage] = useState("");
   const { clients, isLoading: isTLoading, error } = useGetClients();
+  const { user, handleLogout } = useAuth();
 
   useEffect(() => {
     if (isTLoading) {
@@ -152,9 +159,14 @@ const ClientsTable = () => {
 
   const handleEditSave = async (updatedClient) => {
     try {
-      const response = await axios.patch(`http://localhost:5500/api/clients/${updatedClient._id}`, updatedClient);
+      const response = await axios.patch(
+        `http://localhost:5500/api/clients/${updatedClient._id}`,
+        updatedClient
+      );
       setRows((prevRows) =>
-        prevRows.map((row) => (row._id === updatedClient._id ? response.data : row))
+        prevRows.map((row) =>
+          row._id === updatedClient._id ? response.data : row
+        )
       );
       setEditModalOpen(false);
       setSnackbarMessage("Client updated successfully");
@@ -172,9 +184,18 @@ const ClientsTable = () => {
       const clientData = response.data;
 
       // Construct CSV content
-      let csvContent = "Sr. NO,Client ID,Date,Name,Gender,Age,Mobile No,Country,Occupation,Address,Informant,Emergency Contact,Medical History,Personal History,Find Us,Remarks\n";
+      let csvContent =
+        "Sr. NO,Client ID,Date,Name,Gender,Age,Mobile No,Country,Occupation,Address,Informant,Emergency Contact,Medical History,Personal History,Find Us,Remarks\n";
       clientData.forEach((row, index) => {
-        csvContent += `${index + 1},${row.ClientID},${row.date},${row.name},${row.gender},${row.age},${row.mobile},${row.country},${row.occupation || ""},${row.address || ""},${row.informant || ""},${row.emergencyContact || ""},${row.medicalHistory || ""},${row.personalHistory || ""},${row.findUs || ""},${row.remarks || ""}\n`;
+        csvContent += `${index + 1},${row.ClientID},${row.date},${row.name},${
+          row.gender
+        },${row.age},${row.mobile},${row.country},${row.occupation || ""},${
+          row.address || ""
+        },${row.informant || ""},${row.emergencyContact || ""},${
+          row.medicalHistory || ""
+        },${row.personalHistory || ""},${row.findUs || ""},${
+          row.remarks || ""
+        }\n`;
       });
 
       // Trigger download
@@ -238,12 +259,20 @@ const ClientsTable = () => {
           size="small"
           placeholder="Search Name"
           value={searchText}
-          onChange={handleSearch} 
+          onChange={handleSearch}
           sx={{ marginRight: 2 }}
         />
-        <Button onClick={handleExport}  variant="outlined"   sx={{ marginRight: 2 }}>
-          Export Data
-        </Button>
+        {user && user.role == "admin" ? (
+          <Button
+            onClick={handleExport}
+            variant="outlined"
+            sx={{ marginRight: 2 }}
+          >
+            Export Data
+          </Button>
+        ) : (
+          ""
+        )}
         <AddClients />
       </Toolbar>
       {isLoading ? (
@@ -283,10 +312,7 @@ const ClientsTable = () => {
           onSave={handleEditSave}
         />
       )}
-      <Dialog
-        open={isDeleteDialogOpen}
-        onClose={cancelDelete}
-      >
+      <Dialog open={isDeleteDialogOpen} onClose={cancelDelete}>
         <DialogTitle>Delete Client</DialogTitle>
         <DialogContent>
           <DialogContentText>

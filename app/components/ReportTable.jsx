@@ -2,107 +2,77 @@
 
 import * as React from "react";
 import { DataGrid, GridToolbar } from "@mui/x-data-grid";
-import { createTheme, ThemeProvider } from '@mui/material/styles';
+import { createTheme, ThemeProvider } from "@mui/material/styles";
+import useGetClients from "../../hooks/useGetClients";
+import useTodayAppointments from "../../hooks/useTodayAppointments"; // Assuming the file path is correct
+import { useRouter } from "next/navigation"; // Corrected import
+import { format } from "date-fns"; // Import date-fns format function
+import { calculateTotalAmount } from "../../utils"; // Import the utility function
+import TotalAmount from "./TotalAmount";
 
 export default function ReportTable() {
-  const initialRows = [
-    {
-        id: 1,
-        SrNo: 1,
-        clientId: "C001",
-        date: "2024-06-01",
-        name: "John Doe",
-        online_offline: "Online",
-        Service: "Consultation",
-        Facilated_By: "Jane Smith",
-        Amount: 150,
-      },
-      {
-        id: 2,
-        SrNo: 2,
-        clientId: "C002",
-        date: "2024-06-02",
-        name: "Alice Johnson",
-        online_offline: "Offline",
-        Service: "Therapy Session",
-        Facilated_By: "Michael Brown",
-        Amount: 200,
-      },
-      {
-        id: 3,
-        SrNo: 3,
-        clientId: "C003",
-        date: "2024-06-03",
-        name: "Robert Brown",
-        online_offline: "Online",
-        Service: "Medical Checkup",
-        Facilated_By: "Emily White",
-        Amount: 250,
-      },
-      {
-        id: 4,
-        SrNo: 4,
-        clientId: "C004",
-        date: "2024-06-04",
-        name: "Emma Wilson",
-        online_offline: "Offline",
-        Service: "Consultation",
-        Facilated_By: "David Miller",
-        Amount: 150,
-      },
-      {
-        id: 5,
-        SrNo: 5,
-        clientId: "C005",
-        date: "2024-06-05",
-        name: "Liam Martinez",
-        online_offline: "Online",
-        Service: "Therapy Session",
-        Facilated_By: "Sophia Garcia",
-        Amount: 200,
-      }
-  ];
+  const calculateTotalAmount = (appointments) => {
+    return appointments
+      .map((appointment) => appointment.amount)
+      .reduce((sum, current) => sum + current, 0);
+  };
 
   const columns = [
-    { field: "SrNo", headerName: "Sr. NO", width: 50 },
-    { field: "clientId", headerName: "Client ID", width: 100 },
+    { field: "appointmentID", headerName: "Sr. NO", width: 50 },
     { field: "date", headerName: "Date", width: 140 },
-    { field: "name", headerName: "Name", width: 150 },
-    { field: "online_offline", headerName: "Service Type", width: 130 },
-    { field: "Service", headerName: "Service", width: 130 },
-    { field: "Facilated_By", headerName: "Facilated_By", width: 130 },
-    { field: "Amount", headerName: "Amount", width: 100 },
+    { field: "time", headerName: "Time", width: 140 },
+    { field: "channel", headerName: "Mode", width: 130 },
+    { field: "service", headerName: "Service", width: 130 },
+    { field: "facilitatedBy", headerName: "Facilated By", width: 130 },
+    { field: "amount", headerName: "Amount", width: 100 },
   ];
-  const [rows, setRows] = React.useState(initialRows);
+
+  const { clients, isLoading: isTLoading, error } = useGetClients(); // Rename isLoading to avoid conflict
+  const todayAppointments = useTodayAppointments(clients);
+  const [rows, setRows] = React.useState(clients);
+  const [totalAmount, setTotalAmount] = React.useState(0);
+
+  React.useEffect(() => {
+    const formattedRows = todayAppointments.map((appointment) => ({
+      ...appointment,
+      date: format(new Date(appointment.date), "dd-MM-yyyy"), // Format date correctly
+      time: format(new Date(appointment.time), "HH:mm a"), // Format time correctly
+    }));
+    setRows(formattedRows);
+
+    const totalAmountCalculated = calculateTotalAmount(formattedRows);
+    setTotalAmount(totalAmountCalculated);
+    console.log(totalAmount);
+  }, [todayAppointments]); // Update when todayAppointments changes
 
   const theme = createTheme({
     components: {
       MuiDataGrid: {
         styleOverrides: {
           cell: {
-            fontSize: '0.75rem', // Decrease font size here
+            fontSize: "0.75rem", // Decrease font size here
           },
           columnHeaders: {
-            fontSize: '0.8rem', // Decrease font size for header cells
+            fontSize: "0.8rem", // Decrease font size for header cells
           },
         },
       },
     },
   });
-  const handleAddClient = () => {
-  };
 
   return (
     <ThemeProvider theme={theme}>
-    <div style={{ height: 500, width: "100%" }}>
-      <DataGrid
-        rows={rows}
-        columns={columns}
-        pageSize={10}
-        rowsPerPageOptions={[5]}
-        components={{ Toolbar: GridToolbar }}
-      />
-    </div>
+      <div style={{ height: 500, width: "100%" }}>
+        {isTLoading ? <TotalAmount price={totalAmount} /> : ""}
+        <DataGrid
+          rows={rows}
+          columns={columns}
+          pageSize={10}
+          getRowId={(row) => row._id}
+          rowsPerPageOptions={[5]}
+          components={{ Toolbar: GridToolbar }}
+        />
+      </div>
     </ThemeProvider>
   );
 }

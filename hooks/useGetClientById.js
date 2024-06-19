@@ -1,33 +1,29 @@
 import { useState, useEffect } from 'react';
+import axios from 'axios';
 
-const useGetClientById = (apiUrl, Id) => {
+const useGetClientById = (apiUrl, id) => {
   const [client, setClient] = useState(null);
-  const [loading, setLoading] = useState(false);
+  const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
 
   useEffect(() => {
-    if (!Id) return;
-
     const fetchClient = async () => {
-      setLoading(true);
-      setError(null);
-      setClient(null);
       try {
-        const response = await fetch(`${apiUrl}/${Id}`);
-        if (!response.ok) {
-          throw new Error(`Error fetching client: ${response.statusText}`);
-        }
-        const data = await response.json();
-        setClient(data);
+        const response = await axios.get(`${apiUrl}/${id}`);
+        setClient(response.data);
       } catch (err) {
-        setError(err.message);
+        setError(err.message || 'An error occurred');
       } finally {
         setLoading(false);
       }
     };
 
-    fetchClient();
-  }, [apiUrl, Id]);
+    if (id) {
+      fetchClient();
+    } else {
+      setLoading(false);  // Set loading to false if no ID is provided
+    }
+  }, [apiUrl, id]);
 
   return { client, loading, error };
 };

@@ -1,75 +1,42 @@
-// src/components/UserProfile.js
-"use client";
-
 import React, { useState } from 'react';
-import {
-  Card, CardContent, Typography, Avatar, Grid, TextField, Button, Dialog, DialogActions, DialogContent, DialogContentText, DialogTitle
-} from '@mui/material';
+import { Card, CardContent, Typography, Button, TextField } from '@mui/material';
 
 const UserProfile = ({ user, onUpdatePassword }) => {
-  const [open, setOpen] = useState(false);
   const [newPassword, setNewPassword] = useState('');
+  const [isEditing, setIsEditing] = useState(false);
 
-  const handleClickOpen = () => {
-    setOpen(true);
-  };
-
-  const handleClose = () => {
-    setOpen(false);
-  };
-
-  const handleUpdatePassword = () => {
-    onUpdatePassword(user.email, newPassword);
-    setOpen(false);
+  const handlePasswordChange = () => {
+    onUpdatePassword(user._id, newPassword);
+    setNewPassword('');
+    setIsEditing(false);
   };
 
   return (
-    <Card sx={{margin: '1rem' }}>
+    <Card>
       <CardContent>
-        <Grid container spacing={2} alignItems="center">
-          <Grid item>
-            <Avatar alt={user.name} src={user.avatar} />
-          </Grid>
-          <Grid item xs={12}>
-            <Typography variant="h5" component="div">
-              {user.name}
-            </Typography>
-            <Typography variant="body2" color="text.secondary">
-              {user.role}
-            </Typography>
-            <Typography variant="body2" color="text.secondary">
-              {user.email}
-            </Typography>
-          </Grid>
-          <Grid item xs={12}>
-            <Button variant="outlined" onClick={handleClickOpen}>
-              Edit Password
+        <Typography variant="h5">{user.name}</Typography>
+        <Typography variant="body2">{user.email}</Typography>
+        {isEditing ? (
+          <>
+            <TextField
+              label="New Password"
+              type="password"
+              value={newPassword}
+              onChange={(e) => setNewPassword(e.target.value)}
+              fullWidth
+            />
+            <Button onClick={handlePasswordChange} variant="contained" color="primary">
+              Update Password
             </Button>
-            <Dialog open={open} onClose={handleClose}>
-              <DialogTitle>Edit Password</DialogTitle>
-              <DialogContent>
-                <DialogContentText>
-                  Enter a new password for {user.name}.
-                </DialogContentText>
-                <TextField
-                  autoFocus
-                  margin="dense"
-                  id="password"
-                  label="New Password"
-                  type="password"
-                  fullWidth
-                  variant="standard"
-                  value={newPassword}
-                  onChange={(e) => setNewPassword(e.target.value)}
-                />
-              </DialogContent>
-              <DialogActions>
-                <Button onClick={handleClose}>Cancel</Button>
-                <Button onClick={handleUpdatePassword}>Update</Button>
-              </DialogActions>
-            </Dialog>
-          </Grid>
-        </Grid>
+            <Button onClick={() => setIsEditing(false)} variant="contained" color="secondary">
+              Cancel
+            </Button>
+          </>
+        ) : (
+          <Button onClick={() => setIsEditing(true)} variant="contained" color="primary">
+            Change Password
+          </Button>
+        )}
       </CardContent>
     </Card>
   );

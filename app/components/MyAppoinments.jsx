@@ -3,22 +3,15 @@ import { DataGrid, GridToolbar } from "@mui/x-data-grid";
 import {
   Box,
   Button,
-  IconButton,
-  Menu,
-  MenuItem,
+  CircularProgress,
   TextField,
   Toolbar,
   Typography,
 } from "@mui/material";
-import MoreVertIcon from "@mui/icons-material/MoreVert";
-import EditIcon from "@mui/icons-material/Edit";
-import DeleteIcon from "@mui/icons-material/DeleteOutlined";
-import VisibilityIcon from "@mui/icons-material/Visibility";
-import AddIcon from "@mui/icons-material/Add";
 import AddAppointment from "./MakeAppointment";
 import useTodayAppointments from "../../hooks/useTodayAppointments"; // Assuming the file path is correct
 import useGetClients from "../../hooks/useGetClients"; // Path to your custom hook
-import { useRouter } from "next/navigation"; // Corrected import
+import { useRouter } from "next/router"; // Corrected import
 import { format } from "date-fns"; // Import date-fns format function
 
 const ActionsMenu = ({ rowId }) => {
@@ -108,19 +101,25 @@ export default function MyAppointments() {
         />
         <AddAppointment />
       </Toolbar>
-      <DataGrid
-        rows={filteredRows}
-        columns={columns}
-        pageSize={5}
-        rowsPerPageOptions={[5]}
-        getRowId={(row) => row._id}
-        components={{ Toolbar: GridToolbar }}
-        initialState={{
-          sorting: {
-            sortModel: [{ field: 'date', sort: 'desc' }],
-          },
-        }}
-      />
+      {isTLoading ? (
+        <Box display="flex" justifyContent="center" alignItems="center" height="100vh">
+          <CircularProgress />
+        </Box>
+      ) : (
+        <DataGrid
+          rows={filteredRows}
+          columns={columns}
+          pageSize={5}
+          rowsPerPageOptions={[5]}
+          getRowId={(row) => row._id}
+          components={{ Toolbar: GridToolbar }}
+          initialState={{
+            sorting: {
+              sortModel: [{ field: 'date', sort: 'desc' }],
+            },
+          }}
+        />
+      )}
     </div>
   );
 }

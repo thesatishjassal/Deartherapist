@@ -3,6 +3,7 @@ import HeaderBar from "./components/Header";
 import "./globals.css";
 import Container from "@mui/material/Container";
 import { AppRouterCacheProvider } from '@mui/material-nextjs/v13-appRouter';
+import { AuthProvider } from './context/AuthContext';
 const inter = Inter({ subsets: ["latin"] });
 
 export const metadata = {
@@ -12,6 +13,7 @@ export const metadata = {
 
 export default function RootLayout({ children }) {
   return (
+    <AuthProvider>
     <html lang="en">
       <body className={inter.className}>
         <HeaderBar />
@@ -20,5 +22,6 @@ export default function RootLayout({ children }) {
         </AppRouterCacheProvider>
       </body>
     </html>
+    </ AuthProvider>
   );
 }

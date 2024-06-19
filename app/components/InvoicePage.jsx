@@ -8,26 +8,37 @@ import Box from "@mui/material/Box";
 import Typography from "@mui/material/Typography";
 import Image from "next/image";
 import ReportTable from "../components/ReportTable";
+import TotalAmount from "./TotalAmount";
 
 const InvoicePage = () => {
   const invoiceRef = useRef();
 
   const handleDownloadPdf = async () => {
-    const element = invoiceRef.current;
-    const canvas = await html2canvas(element, {
-      scale: 4, // Increase resolution
-      useCORS: true, // Handle cross-origin images
-      backgroundColor: null, // Ensure background transparency
-    });
-    const data = canvas.toDataURL("image/png");
+    try {
+      setLoading(true); // Start loading indicator
 
-    const pdf = new jsPDF("p", "mm", "a4");
-    const imgProps = pdf.getImageProperties(data);
-    const pdfWidth = pdf.internal.pageSize.getWidth();
-    const pdfHeight = (imgProps.height * pdfWidth) / imgProps.width;
+      // Generate PDF
+      const element = invoiceRef.current;
+      const canvas = await html2canvas(element, {
+        scale: 4, // Increase resolution
+        useCORS: true, // Handle cross-origin images
+        backgroundColor: null, // Ensure background transparency
+      });
+      const data = canvas.toDataURL("image/png");
 
-    pdf.addImage(data, "PNG", 0, 0, pdfWidth, pdfHeight);
-    pdf.save("invoice.pdf");
+      const pdf = new jsPDF("p", "mm", "a4");
+      const imgProps = pdf.getImageProperties(data);
+      const pdfWidth = pdf.internal.pageSize.getWidth();
+      const pdfHeight = (imgProps.height * pdfWidth) / imgProps.width;
+
+      pdf.addImage(data, "PNG", 0, 0, pdfWidth, pdfHeight);
+      pdf.save("invoice.pdf");
+
+      setLoading(false); // Stop loading indicator after download
+    } catch (error) {
+      console.error("Error generating PDF:", error);
+      setLoading(false); // Ensure loading indicator is stopped on error
+    }
   };
 
   const handlePrint = () => {
@@ -75,7 +86,7 @@ const InvoicePage = () => {
             </Box>
             <Box>
               <Typography variant="h6">Total</Typography>
-              <Typography component="strong">0.00</Typography>
+              <Typography component="strong"><TotalAmount /></Typography>
             </Box>
           </Box>
           {/* <Button variant="contained" color="primary" onClick={handleDownloadPdf}>

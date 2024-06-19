@@ -1,7 +1,7 @@
 // app/patient-detail/[pid]/page.jsx
 "use client";
 
-import React, { useRef } from "react";
+import React, { useRef, useEffect } from "react";
 import { jsPDF } from "jspdf";
 import html2canvas from "html2canvas";
 import Box from "@mui/material/Box";
@@ -14,10 +14,6 @@ import AccordionSummary from "@mui/material/AccordionSummary";
 import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
 import Divider from "@mui/material/Divider";
 import Menu from "@mui/material/Menu";
-import MenuItem from "@mui/material/MenuItem";
-import EditIcon from "@mui/icons-material/Edit";
-import AddIcon from "@mui/icons-material/Add";
-import KeyboardArrowDownIcon from "@mui/icons-material/KeyboardArrowDown";
 import { styled, alpha } from "@mui/material/styles";
 import { Container } from "@mui/material";
 import Button from "@mui/material/Button";
@@ -25,6 +21,7 @@ import DownloadIcon from "@mui/icons-material/Download";
 import Addprescription from "../../components/Addprescription"; // Correct import path for Addprescription
 import EditPrescription from "../../components/EditPrescription"; // Correct import path for Addprescription
 import useGetClientById from "../../../hooks/useGetClientById";
+import useProtectedRoute from "../../../hooks/useProtectedRoute";
 import useAppointments from "../../../hooks/useAppointments"; // Adjust the path as necessary
 import { format } from "date-fns"; // Import date-fns format function
 import { CircularProgress } from "@mui/material";
@@ -40,17 +37,9 @@ const PatientDetails = ({ params }) => {
 
   const apiUrl = "http://localhost:5500/api/clients"; // Replace with your actual API URL
   const { pid } = params;
+  const user = useProtectedRoute();
   const { client, clientisLoading, error } = useGetClientById(apiUrl, pid);
   const { appointments, loading, meetserror } = useAppointments(pid);
-
-  if (clientisLoading) {
-    return <p>Loading...</p>; // Handle loading state
-    setclientId(pid);
-  }
-
-  if (error) {
-    return <p>Error: {error.message}</p>; // Handle error state
-  }
 
   const handleClick = (event) => {
     setAnchorEl(event.currentTarget);
@@ -64,7 +53,7 @@ const PatientDetails = ({ params }) => {
     setExpanded(isExpanded ? panel : false);
   };
 
-  React.useEffect(() => {
+  useEffect(() => {
     const formattedRows = appointments.map((appointment) => ({
       ...appointment,
       date: format(new Date(appointment.date), "dd-MM-yyyy"), // Format date correctly
@@ -73,6 +62,19 @@ const PatientDetails = ({ params }) => {
     setfilltredmeets(formattedRows);
     console.log(filltredMeets);
   }, [appointments]); // Update when todayAppointments changes
+
+  if (!user) {
+    return null; // Optionally render a loading state or a redirect message
+  }
+
+  if (clientisLoading) {
+    return <p>Loading...</p>; // Handle loading state
+    setclientId(pid);
+  }
+
+  if (error) {
+    return <p>Error: {error.message}</p>; // Handle error state
+  }
 
   const StyledMenu = styled((props) => (
     <Menu
@@ -148,12 +150,6 @@ const PatientDetails = ({ params }) => {
   const handlePrint = () => {
     window.print();
   };
-
-  // const handleGetAppointmentID = (client) => {
-  //  const appointments =  client.appointments.map((appointment) => (
-
-  //  )}
-  // };
 
   return (
     <Box sx={{ width: "100%" }}>
@@ -398,6 +394,16 @@ const PatientDetails = ({ params }) => {
                                 }}
                               >
                                 <Typography component="p">
+                                  <strong>Diagnoses: </strong>{" "}
+                                  {prescription.diagnoses}
+                                </Typography>
+                              </Box>
+                              <Box
+                                sx={{
+                                  padding: 2,
+                                }}
+                              >
+                                <Typography component="p">
                                   <strong>Suggestions: </strong>{" "}
                                   {prescription.suggestions}
                                 </Typography>
@@ -409,21 +415,11 @@ const PatientDetails = ({ params }) => {
                                 }}
                               >
                                 <Typography component="p">
-                                  <strong>Symptoms: </strong>{" "}
+                                  <strong>Presenting Problem: </strong>{" "}
                                   {prescription.symptoms}
                                 </Typography>
                               </Box>
-                              <Divider />
-                              <Box
-                                sx={{
-                                  padding: 2,
-                                }}
-                              >
-                                <Typography component="p">
-                                  <strong>Diagnoses: </strong>{" "}
-                                  {prescription.diagnoses}
-                                </Typography>
-                              </Box>
+
                               <Divider />
                               <Box
                                 sx={{
@@ -505,7 +501,7 @@ const PatientDetails = ({ params }) => {
                 disabled={isLoading} // Disable button during loading
               >
                 {isLoading ? (
-                  <CircularProgress size={24} />  // Display loading indicator if isLoading is true
+                  <CircularProgress size={24} /> // Display loading indicator if isLoading is true
                 ) : (
                   "Download Pdf"
                 )}
