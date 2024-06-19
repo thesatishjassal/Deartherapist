@@ -1,7 +1,4 @@
-// app/patient-detail/[pid]/page.jsx
-"use client";
-
-import React, { useRef, useEffect } from "react";
+import React, { useRef, useState, useEffect } from "react";
 import { jsPDF } from "jspdf";
 import html2canvas from "html2canvas";
 import Box from "@mui/material/Box";
@@ -19,7 +16,7 @@ import { Container } from "@mui/material";
 import Button from "@mui/material/Button";
 import DownloadIcon from "@mui/icons-material/Download";
 import Addprescription from "../../components/Addprescription"; // Correct import path for Addprescription
-import EditPrescription from "../../components/EditPrescription"; // Correct import path for Addprescription
+import EditPrescription from "../../components/EditPrescription"; // Correct import path for EditPrescription
 import useGetClientById from "../../../hooks/useGetClientById";
 import useProtectedRoute from "../../../hooks/useProtectedRoute";
 import useAppointments from "../../../hooks/useAppointments"; // Adjust the path as necessary
@@ -28,12 +25,11 @@ import { CircularProgress } from "@mui/material";
 
 const PatientDetails = ({ params }) => {
   const invoiceRef = useRef();
-  const [expanded, setExpanded] = React.useState(false);
-  const [anchorEl, setAnchorEl] = React.useState(null);
-  const [clientId, setclientId] = React.useState(null);
-  const [filltredMeets, setfilltredmeets] = React.useState([]);
-  const open = Boolean(anchorEl);
-  const [isLoading, setLoading] = React.useState(false); // State for loading indicator
+  const [expanded, setExpanded] = useState(false);
+  const [anchorEl, setAnchorEl] = useState(null);
+  const [clientId, setclientId] = useState(null);
+  const [filltredMeets, setfilltredmeets] = useState([]);
+  const [isLoading, setLoading] = useState(false); // State for loading indicator
 
   const apiUrl = "http://localhost:5500/api/clients"; // Replace with your actual API URL
   const { pid } = params;
@@ -60,8 +56,7 @@ const PatientDetails = ({ params }) => {
       time: format(new Date(appointment.time), "HH:mm a"), // Format time correctly
     }));
     setfilltredmeets(formattedRows);
-    console.log(filltredMeets);
-  }, [appointments]); // Update when todayAppointments changes
+  }, [appointments]);
 
   if (!user) {
     return null; // Optionally render a loading state or a redirect message
@@ -69,7 +64,6 @@ const PatientDetails = ({ params }) => {
 
   if (clientisLoading) {
     return <p>Loading...</p>; // Handle loading state
-    setclientId(pid);
   }
 
   if (error) {
@@ -107,7 +101,7 @@ const PatientDetails = ({ params }) => {
         "& .MuiSvgIcon-root": {
           fontSize: 18,
           color: theme.palette.text.secondary,
-          marginright: theme.spacing(1.5),
+          marginRight: theme.spacing(1.5),
         },
         "&:active": {
           backgroundColor: alpha(
@@ -323,7 +317,7 @@ const PatientDetails = ({ params }) => {
               >
                 <Box>
                   <Typography component="p">
-                    Informamt name and relationship:{" "}
+                    Informant name and relationship:{" "}
                     <strong>{client && client.informant}</strong>
                   </Typography>
                 </Box>
@@ -337,124 +331,91 @@ const PatientDetails = ({ params }) => {
               </Box>
 
               <Box sx={{ my: 5 }}>
-                {filltredMeets &&
-                  filltredMeets.map((appointment) => (
-                    <Accordion
-                      className="accordian-theme"
-                      expanded={
-                        expanded ===
-                        `${appointment && appointment.appointmentID}`
-                      }
-                      onChange={handleChange(
-                        `${appointment && appointment.appointmentID}`
-                      )}
+                {filltredMeets.map((appointment) => (
+                  <Accordion
+                    key={appointment.appointmentID} // Adding key prop here
+                    className="accordian-theme"
+                    expanded={expanded === appointment.appointmentID}
+                    onChange={handleChange(appointment.appointmentID)}
+                  >
+                    <AccordionSummary
+                      expandIcon={<ExpandMoreIcon />}
+                      aria-controls={appointment.appointmentID}
+                      id={appointment.appointmentID}
                     >
-                      <AccordionSummary
-                        expandIcon={<ExpandMoreIcon />}
-                        aria-controls={appointment && appointment.appointmentID}
-                        id={appointment && appointment.appointmentID}
+                      <Typography sx={{ width: "70%" }}>
+                        {appointment.appointmentID}
+                      </Typography>
+                      <Typography sx={{ width: "100%" }}>Precision</Typography>
+                      <Typography sx={{ width: "33%" }}>
+                        {appointment.date}
+                      </Typography>
+                    </AccordionSummary>
+                    <AccordionDetails>
+                      <Box
+                        sx={{
+                          display: "flex",
+                          justifyContent: "space-between",
+                          padding: 2,
+                        }}
                       >
-                        <Typography sx={{ width: "70%" }}>
-                          {appointment && appointment.appointmentID}
-                        </Typography>
-                        <Typography sx={{ width: "100%" }}>Precison</Typography>
-                        <Typography sx={{ width: "33%" }}>
-                          {appointment && appointment.date}
-                        </Typography>
-                      </AccordionSummary>
-                      <AccordionDetails>
-                        <Box
-                          sx={{
-                            display: "flex",
-                            justifyContent: "space-between",
-                            padding: 2,
-                          }}
-                        >
-                          <Box>
-                            <Typography component="p">
-                              <strong>Service: </strong>{" "}
-                              {appointment && appointment.service}
-                            </Typography>
-                          </Box>
-                          <Box>
-                            <Typography component="p">
-                              <strong>Faclilated By: </strong>{" "}
-                              {appointment && appointment.facilitatedBy}
-                            </Typography>
-                          </Box>
-                        </Box>
-
-                        <Divider />
-                        {appointment &&
-                          appointment.prescriptions.map((prescription) => (
-                            <>
-                              <Box
-                                sx={{
-                                  padding: 2,
-                                }}
-                              >
-                                <Typography component="p">
-                                  <strong>Diagnoses: </strong>{" "}
-                                  {prescription.diagnoses}
-                                </Typography>
-                              </Box>
-                              <Box
-                                sx={{
-                                  padding: 2,
-                                }}
-                              >
-                                <Typography component="p">
-                                  <strong>Suggestions: </strong>{" "}
-                                  {prescription.suggestions}
-                                </Typography>
-                              </Box>
-                              <Divider />
-                              <Box
-                                sx={{
-                                  padding: 2,
-                                }}
-                              >
-                                <Typography component="p">
-                                  <strong>Presenting Problem: </strong>{" "}
-                                  {prescription.symptoms}
-                                </Typography>
-                              </Box>
-
-                              <Divider />
-                              <Box
-                                sx={{
-                                  padding: 2,
-                                }}
-                              >
-                                <Typography component="p">
-                                  <strong>Follow Up: </strong>{" "}
-                                  {prescription.followUp}
-                                </Typography>
-                              </Box>
-                            </>
-                          ))}
-                        {appointment &&
-                        appointment.prescriptions.length == "0" ? (
-                          <Typography
-                            component="h6"
-                            className="my-5 center-text"
-                          >
-                            🙁 prescription not updated for{" "}
-                            {client && client.name}.
+                        <Box>
+                          <Typography component="p">
+                            <strong>Service: </strong> {appointment.service}
                           </Typography>
-                        ) : (
-                          ""
-                        )}
-                      </AccordionDetails>
-                    </Accordion>
-                  ))}
+                        </Box>
+                        <Box>
+                          <Typography component="p">
+                            <strong>Facilitated By: </strong>{" "}
+                            {appointment.facilitatedBy}
+                          </Typography>
+                        </Box>
+                      </Box>
 
-                {filltredMeets && filltredMeets.lenght == 0 ? (
+                      <Divider />
+                      {appointment.prescriptions.map((prescription, index) => (
+                        <React.Fragment key={index}>
+                          <Box sx={{ padding: 2 }}>
+                            <Typography component="p">
+                              <strong>Diagnoses: </strong>{" "}
+                              {prescription.diagnoses}
+                            </Typography>
+                          </Box>
+                          <Box sx={{ padding: 2 }}>
+                            <Typography component="p">
+                              <strong>Suggestions: </strong>{" "}
+                              {prescription.suggestions}
+                            </Typography>
+                          </Box>
+                          <Divider />
+                          <Box sx={{ padding: 2 }}>
+                            <Typography component="p">
+                              <strong>Presenting Problem: </strong>{" "}
+                              {prescription.symptoms}
+                            </Typography>
+                          </Box>
+
+                          <Divider />
+                          <Box sx={{ padding: 2 }}>
+                            <Typography component="p">
+                              <strong>Follow Up: </strong>{" "}
+                              {prescription.followUp}
+                            </Typography>
+                          </Box>
+                        </React.Fragment>
+                      ))}
+                      {appointment.prescriptions.length === 0 && (
+                        <Typography component="h6" className="my-5 center-text">
+                          🙁 Prescription not updated for {client.name}.
+                        </Typography>
+                      )}
+                    </AccordionDetails>
+                  </Accordion>
+                ))}
+                {filltredMeets.length === 0 && (
                   <Typography component="h6" className="my-4 center-text">
-                    🙁 {client && client.name} dont have any appointments.
+                    🙁 {client.name} doesn't have any appointments.
                   </Typography>
-                ) : (
-                  ""
                 )}
               </Box>
 
@@ -467,9 +428,7 @@ const PatientDetails = ({ params }) => {
               >
                 <Box>
                   <Typography component="p">Sign</Typography>
-                  <Typography component="strong">
-                    Dr. Shaweta Bhardwaj
-                  </Typography>
+                  <Typography component="strong">Dr. Shaweta Bhardwaj</Typography>
                 </Box>
               </Box>
             </Box>
@@ -484,13 +443,12 @@ const PatientDetails = ({ params }) => {
                 backgroundColor: "#fff",
               }}
             >
-              {/* <EditPrescription clientId={pid} /> */}
               <Addprescription clientId={pid} />
               <Divider
                 sx={{
                   margin: "15px auto",
                 }}
-              ></Divider>
+              />
               <Button
                 variant="outlined"
                 startIcon={<DownloadIcon />}

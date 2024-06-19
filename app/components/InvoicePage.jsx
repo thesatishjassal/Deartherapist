@@ -65,7 +65,7 @@ const InvoicePage = () => {
             <Typography variant="h5">Client Report</Typography>
           </Box>
           <Box>
-            <Image src="/images/login-logo.png" width="130" height="80" />
+            <Image src="/images/login-logo.png" alt="logo" width="130" height="80" />
           </Box>
         </Box>
 
@@ -89,12 +89,6 @@ const InvoicePage = () => {
               <Typography component="strong"><TotalAmount /></Typography>
             </Box>
           </Box>
-          {/* <Button variant="contained" color="primary" onClick={handleDownloadPdf}>
-            Download PDF
-          </Button>
-          <Button variant="contained" color="secondary" onClick={handlePrint}>
-            Print
-          </Button> */}
       </Box>
     </Box>
   );
