@@ -1,40 +1,62 @@
 import * as React from "react";
 import { DataGrid, GridToolbar } from "@mui/x-data-grid";
 import { createTheme, ThemeProvider } from "@mui/material/styles";
+import { format, isSameMonth } from "date-fns"; // Import isSameMonth function from date-fns
+
+import Box from "@mui/material/Box";
+import Typography from "@mui/material/Typography";
+import FormControl from "@mui/material/FormControl";
+import Select from "@mui/material/Select";
+import MenuItem from "@mui/material/MenuItem";
+
 import useGetClients from "../../hooks/useGetClients";
 import useTodayAppointments from "../../hooks/useTodayAppointments";
-import { format } from "date-fns";
-import { calculateTotalAmount } from '../../utils';
 
 export default function ReportTable() {
-
   const columns = [
-    { field: "appointmentID", headerName: "Sr. NO", width: 50 },
+    { field: "appointmentID", headerName: "Sr. NO", width: 100 },
     { field: "date", headerName: "Date", width: 140 },
     { field: "time", headerName: "Time", width: 140 },
     { field: "channel", headerName: "Mode", width: 130 },
     { field: "service", headerName: "Service", width: 130 },
-    { field: "facilitatedBy", headerName: "Facilated By", width: 130 },
+    { field: "facilitatedBy", headerName: "Facilitated By", width: 130 },
     { field: "amount", headerName: "Amount", width: 100 },
   ];
 
-  const { clients, isLoading: isTLoading, error } = useGetClients();
+  const { clients, isLoading: isCLoading, error: clientsError } = useGetClients();
   const todayAppointments = useTodayAppointments(clients);
+
   const [rows, setRows] = React.useState([]);
-  const [totalAmount, setTotalAmount] = React.useState(0);
+  const [filteredAppointments, setFilteredAppointments] = React.useState([]);
+  const [selectedMonth, setSelectedMonth] = React.useState("");
 
   React.useEffect(() => {
     const formattedRows = todayAppointments.map((appointment) => ({
       ...appointment,
-      id: appointment._id, // Ensure each row has a unique identifier
-      date: format(new Date(appointment.date), "dd-MM-yyyy"),
+      id: appointment._id,
+      date: format(new Date(appointment.date), "MM/yyyy"), // Format date as MM/yyyy
       time: format(new Date(appointment.time), "HH:mm a"),
     }));
     setRows(formattedRows);
-
-    const totalAmountCalculated = calculateTotalAmount(formattedRows);
-    setTotalAmount(totalAmountCalculated);
+    setFilteredAppointments(formattedRows); // Initialize filtered appointments with all data
   }, [todayAppointments]);
+
+  const handleMonthChange = (event) => {
+    const monthYear = event.target.value;
+    setSelectedMonth(monthYear);
+    filterAppointments(monthYear);
+  };
+
+  const filterAppointments = (monthYear) => {
+    if (!monthYear) {
+      setFilteredAppointments(rows); // If no month selected, show all appointments
+    } else {
+      const filtered = rows.filter((row) =>
+        isSameMonth(new Date(row.date), new Date(monthYear))
+      );
+      setFilteredAppointments(filtered);
+    }
+  };
 
   const theme = createTheme({
     components: {
@@ -51,16 +73,58 @@ export default function ReportTable() {
     },
   });
 
+  if (clientsError) {
+    return <Typography variant="h6">Error loading clients data.</Typography>;
+  }
+
   return (
     <ThemeProvider theme={theme}>
-      <div style={{ height: 500, width: "100%" }}>
+      <Box sx={{ p: 2 }}>
+        <Typography variant="h6" sx={{ mb: 2 }}>
+          Appointments Report
+        </Typography>
+        <FormControl sx={{ minWidth: 120, mb: 2 }}>
+          <Select
+            value={selectedMonth}
+            onChange={handleMonthChange}
+            displayEmpty
+            inputProps={{ "aria-label": "Select Month" }}
+          >
+            <MenuItem value="">All Months</MenuItem>
+            <MenuItem value="01/2023">January</MenuItem>
+            <MenuItem value="02/2023">February</MenuItem>
+            <MenuItem value="03/2023">March</MenuItem>
+            <MenuItem value="04/2023">April</MenuItem>
+            <MenuItem value="05/2023">May</MenuItem>
+            <MenuItem value="06/2023">June</MenuItem>
+            <MenuItem value="07/2023">July</MenuItem>
+            <MenuItem value="08/2023">August</MenuItem>
+            <MenuItem value="09/2023">September</MenuItem>
+            <MenuItem value="10/2023">October</MenuItem>
+            <MenuItem value="11/2023">November</MenuItem>
+            <MenuItem value="12/2023">December</MenuItem>
+          </Select>
+        </FormControl>
+      </Box>
+      <div style={{ height: 400, width: "100%" }}>
         <DataGrid
-          rows={rows}
+          rows={filteredAppointments}
           columns={columns}
           pageSize={10}
-          getRowId={(row) => row.id} // Use a unique identifier for each row
-          rowsPerPageOptions={[5]}
+          rowsPerPageOptions={[5, 10, 20]}
           components={{ Toolbar: GridToolbar }}
+          disableSelectionOnClick // Disable row selection
+          disableColumnMenu // Hide column menu
+          disableColumnFilter // Hide column filters
+          disableColumnReorder // Disable column reordering
+          hideFooterPagination // Hide pagination footer
+          hideFooterSelectedRowCount // Hide selected row count in footer
+          hideFooter // Hide entire footer
+          autoHeight // Automatically adjust height
+          disableColumnSelector // Hide column selector
+          disableDensitySelector // Hide density selector
+          disableExport // Disable export options
+          disableColumnResize // Disable column resizing
         />
       </div>
     </ThemeProvider>

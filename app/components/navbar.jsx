@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState } from "react";
 import AppBar from "@mui/material/AppBar";
 import Box from "@mui/material/Box";
 import Toolbar from "@mui/material/Toolbar";
@@ -13,18 +13,17 @@ import MenuItem from "@mui/material/MenuItem";
 import Image from "next/image";
 import Link from "next/link";
 import Button from "@mui/material/Button";
-import useAuth from '../../hooks/useAuth'; // Adjust the import path as needed
+import useAuth from "../../hooks/useAuth"; // Adjust the import path as needed
 
 const pages = [
   { name: "Dashboard", href: "/dashboard" },
-  { name: "Generate Report", href: "/report" },
+  { name: "Generate Report", slug: "report", href: "/report" },
 ];
 
 const settings = [
   { name: "Profile", href: "/profile" },
   { name: "Logout" }, // No href needed here
 ];
-
 
 function NavigationBar() {
   const [anchorElNav, setAnchorElNav] = React.useState(null);
@@ -101,13 +100,6 @@ function NavigationBar() {
               open={Boolean(anchorElNav)}
               onClose={handleCloseNavMenu}
             >
-              <MenuItem onClick={handleCloseNavMenu}>
-                <Typography textAlign="center">
-                  <Link href="/login" passHref>
-                    <Button color="inherit">Login</Button>
-                  </Link>
-                </Typography>
-              </MenuItem>
               {pages.map((page) => (
                 <MenuItem key={page.name} onClick={handleCloseNavMenu}>
                   <Typography textAlign="center">
@@ -121,16 +113,26 @@ function NavigationBar() {
           </Box>
 
           <Box sx={{ flexGrow: 1, display: { xs: "none", md: "flex" } }}>
-            {pages.map((page) => (
-              <Link key={page.name} href={page.href} passHref>
+            <Link href="/dashboard" passHref>
+              <Button
+                onClick={handleCloseNavMenu}
+                sx={{ my: 2, color: "white", display: "block" }}
+              >
+                Dashboard
+              </Button>
+            </Link>
+            {user && user.role == "admin" ? (
+              <Link href="/report" passHref>
                 <Button
                   onClick={handleCloseNavMenu}
                   sx={{ my: 2, color: "white", display: "block" }}
                 >
-                  {page.name}
+                  Generate Report
                 </Button>
               </Link>
-            ))}
+            ) : (
+              ""
+            )}
           </Box>
 
           <Box sx={{ display: "flex", alignItems: "center" }}>
@@ -141,10 +143,14 @@ function NavigationBar() {
             </Tooltip>
             {user && (
               <>
-                <Typography variant="p" className='username' sx={{ marginRight: 1 }}>
-                 {user && user.role == "admin" ? "Dr. Shaveta" : ""}
-                 {user && user.role == "counselor" ? "Counselor" : ""}
-                 {user && user.role == "receptionist" ? "Receptionist" : ""}
+                <Typography
+                  variant="p"
+                  className="username"
+                  sx={{ marginRight: 1 }}
+                >
+                  {user && user.role == "admin" ? "Dr. Shaveta" : ""}
+                  {user && user.role == "counselor" ? "Counselor" : ""}
+                  {user && user.role == "receptionist" ? "Receptionist" : ""}
                 </Typography>
                 <Menu
                   sx={{ mt: "45px" }}
@@ -163,7 +169,14 @@ function NavigationBar() {
                   onClose={handleCloseUserMenu}
                 >
                   {settings.map((setting) => (
-                    <MenuItem key={setting.name} onClick={setting.name === 'Logout' ? handleLogout : handleCloseUserMenu}>
+                    <MenuItem
+                      key={setting.name}
+                      onClick={
+                        setting.name === "Logout"
+                          ? handleLogout
+                          : handleCloseUserMenu
+                      }
+                    >
                       <Typography textAlign="center">
                         {setting.href ? (
                           <Link href={setting.href} passHref>

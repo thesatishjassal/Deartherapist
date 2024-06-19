@@ -1,4 +1,4 @@
-"use client"
+"use client";
 
 import React, { useRef, useState, useEffect } from "react";
 import { jsPDF } from "jspdf";
@@ -24,6 +24,9 @@ import useProtectedRoute from "../../../hooks/useProtectedRoute";
 import useAppointments from "../../../hooks/useAppointments"; // Adjust the path as necessary
 import { format } from "date-fns"; // Import date-fns format function
 import { CircularProgress } from "@mui/material";
+import WhatsAppIcon from "@mui/icons-material/WhatsApp";
+import AttachEmailIcon from "@mui/icons-material/AttachEmail";
+import RedirectToWhatsApp from "../../components/RedirectToWhatsApp";
 
 const PatientDetails = ({ params }) => {
   const invoiceRef = useRef();
@@ -408,7 +411,8 @@ const PatientDetails = ({ params }) => {
                       ))}
                       {appointment.prescriptions.length === 0 && (
                         <Typography component="h6" className="my-5 center-text">
-                          🙁 Prescription not updated for {client && client.name}.
+                          🙁 Prescription not updated for{" "}
+                          {client && client.name}.
                         </Typography>
                       )}
                     </AccordionDetails>
@@ -430,7 +434,9 @@ const PatientDetails = ({ params }) => {
               >
                 <Box>
                   <Typography component="p">Sign</Typography>
-                  <Typography component="strong">Dr. Shaweta Bhardwaj</Typography>
+                  <Typography component="strong">
+                    Dr. Shaweta Bhardwaj
+                  </Typography>
                 </Box>
               </Box>
             </Box>
@@ -451,6 +457,22 @@ const PatientDetails = ({ params }) => {
                   margin: "15px auto",
                 }}
               />
+              <Box
+                sx={{
+                  display: "flex",
+                  justifyContent: "space-between",
+                  margin: "15px auto",
+                }}
+              >
+                <RedirectToWhatsApp client={client} />
+                <Button
+                  variant="outlined"
+                  href={`mailto:${client && client.email}`}
+                  startIcon={<AttachEmailIcon />}
+                >
+                  Mail
+                </Button>
+              </Box>
               <Button
                 variant="outlined"
                 startIcon={<DownloadIcon />}
