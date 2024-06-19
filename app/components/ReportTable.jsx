@@ -4,15 +4,8 @@ import { createTheme, ThemeProvider } from "@mui/material/styles";
 import useGetClients from "../../hooks/useGetClients";
 import useTodayAppointments from "../../hooks/useTodayAppointments";
 import { format } from "date-fns";
-import { calculateTotalAmount } from '../../utils';
 
 export default function ReportTable() {
-  const calculateTotalAmount = (appointments) => {
-    return appointments
-      .map((appointment) => appointment.amount)
-      .reduce((sum, current) => sum + current, 0);
-  };
-
   const columns = [
     { field: "appointmentID", headerName: "Sr. NO", width: 50 },
     { field: "date", headerName: "Date", width: 140 },
@@ -36,9 +29,6 @@ export default function ReportTable() {
       time: format(new Date(appointment.time), "HH:mm a"),
     }));
     setRows(formattedRows);
-
-    const totalAmountCalculated = calculateTotalAmount(formattedRows);
-    setTotalAmount(totalAmountCalculated);
   }, [todayAppointments]);
 
   const theme = createTheme({

@@ -1,6 +1,5 @@
 "use client";
-
-import React, { useRef, useEffect } from "react";
+import React, { useRef, useState } from "react";
 import { jsPDF } from "jspdf";
 import html2canvas from "html2canvas";
 import Typography from "@mui/material/Typography";
@@ -12,17 +11,17 @@ import Container from "@mui/material/Container";
 import Button from "@mui/material/Button";
 import DownloadIcon from "@mui/icons-material/Download";
 import { CircularProgress } from "@mui/material";
-import useProtectedRoute from '../../hooks/useProtectedRoute';
+import useProtectedRoute from "../../hooks/useProtectedRoute";
 
 const DailyReport = () => {
   const invoiceRef = useRef();
-  const [isLoading, setLoading] = React.useState(false); // State for loading indicator
+  const [isLoading, setLoading] = useState(false); // State for loading indicator
   const user = useProtectedRoute();
 
   if (!user) {
-    return null; // Optionally render a loading state or a redirect message
+    return <div>Loading...</div>; // Placeholder for loading state or redirect
   }
-  
+
   const handleDownloadPdf = async () => {
     try {
       setLoading(true); // Start loading indicator
@@ -32,7 +31,6 @@ const DailyReport = () => {
       const canvas = await html2canvas(element, {
         scale: 4, // Increase resolution
         useCORS: true, // Handle cross-origin images
-
         backgroundColor: null, // Ensure background transparency
       });
       const data = canvas.toDataURL("image/png");
@@ -49,112 +47,97 @@ const DailyReport = () => {
     } catch (error) {
       console.error("Error generating PDF:", error);
       setLoading(false); // Ensure loading indicator is stopped on error
+      alert("Error generating PDF. Please try again.");
     }
   };
 
   const handlePrint = () => {
     window.print();
   };
- 
+
   return (
-    <>
-      <Container>
-        <Box sx={{ width: "100%" }}>
-          <Grid
-            container
-            rowSpacing={3}
-            columnSpacing={{ xs: 1, sm: 2, md: 3 }}
-          >
-            <Grid item xs={12} sm={12} md={9}>
-              <Box sx={{ padding: 2 }}>
+    <Container>
+      <Box sx={{ width: "100%" }}>
+        <Grid container rowSpacing={3} columnSpacing={{ xs: 1, sm: 2, md: 3 }}>
+          <Grid item xs={12} sm={12} md={9}>
+            <Box sx={{ padding: 2 }}>
+              <Box
+                ref={invoiceRef}
+                className="invoice-content"
+                sx={{
+                  width: "100%",
+                  maxWidth: "800px",
+                  margin: "auto",
+                  padding: 3,
+                  backgroundColor: "#fff",
+                  boxShadow: 3,
+                }}
+              >
+                {/* Invoice Header */}
                 <Box
-                  ref={invoiceRef}
-                  className="invoice-content"
                   sx={{
-                    width: "100%",
-                    maxWidth: "800px",
-                    margin: "auto",
-                    padding: 3,
-                    backgroundColor: "#fff",
-                    boxShadow: 3,
+                    mt: 3,
+                    display: "flex",
+                    justifyContent: "space-between",
                   }}
                 >
-                  {/* Invoice Header */}
-                  <Box
-                    sx={{
-                      mt: 3,
-                      display: "flex",
-                      justifyContent: "space-between",
-                    }}
-                  >
-                    <Box>
-                      <Typography variant="h5">Client Report</Typography>
-                    </Box>
-                    <Box>
-                      <Image
-                        src="/images/login-logo.png"
-                        width="130"
-                        height="80"
-                      />
-                    </Box>
-                  </Box>
+                  <Typography variant="h5">Client Report</Typography>
+                  <Image src="/images/login-logo.png" width="130" height="80" />
+                </Box>
 
-                  {/* Invoice Body */}
+                {/* Invoice Body */}
+                <Box>
+                  <ReportTable />
+                </Box>
+                <Box
+                  sx={{
+                    mt: 40,
+                    display: "flex",
+                    justifyContent: "space-between",
+                  }}
+                >
                   <Box>
-                    <ReportTable />
+                    <Typography component="p">Sign</Typography>
+                    <Typography component="strong">Dr. Shaweta Bhardwaj</Typography>
                   </Box>
-                  <Box
-                    sx={{
-                      mt: 40,
-                      display: "flex",
-                      justifyContent: "space-between",
-                    }}
-                  >
-                    <Box>
-                      <Typography component="p">Sign</Typography>
-                      <Typography component="strong">
-                        Dr. Shaweta Bhardwaj
-                      </Typography>
-                    </Box>
-                    <Box>
-                      <Typography variant="h6">Total</Typography>
-                      <Typography component="strong"></Typography>
-                    </Box>
+                  <Box>
+                    <Typography variant="h6">Total</Typography>
+                    <Typography component="strong"></Typography>
                   </Box>
                 </Box>
               </Box>
-            </Grid>
-            <Grid item xs={12} sm={12} md={3}>
-              <Box
-                className="invoice-content"
-                sx={{
-                  margin: "30px auto",
-                  padding: 3,
-                  boxShadow: 2,
-                  backgroundColor: "#fff",
-                }}
-              >
-                <Button
-                  variant="outlined"
-                  startIcon={<DownloadIcon />}
-                  sx={{
-                    width: "100%",
-                  }}
-                  onClick={handleDownloadPdf}
-                  disabled={isLoading} // Disable button during loading
-                >
-                  {isLoading ? (
-                    <CircularProgress size={24} /> // Display loading indicator if isLoading is true
-                  ) : (
-                    "Download Pdf"
-                  )}
-                </Button>
-              </Box>
-            </Grid>
+            </Box>
           </Grid>
-        </Box>
-      </Container>
-    </>
+          <Grid item xs={12} sm={12} md={3}>
+            <Box
+              className="invoice-content"
+              sx={{
+                margin: "30px auto",
+                padding: 3,
+                boxShadow: 2,
+                backgroundColor: "#fff",
+              }}
+            >
+              <Button
+                variant="outlined"
+                startIcon={<DownloadIcon />}
+                sx={{
+                  width: "100%",
+                }}
+                onClick={handleDownloadPdf}
+                disabled={isLoading} // Disable button during loading
+              >
+                {isLoading ? (
+                  <CircularProgress size={24} /> // Display loading indicator if isLoading is true
+                ) : (
+                  "Download Pdf"
+                )}
+              </Button>
+            </Box>
+          </Grid>
+        </Grid>
+      </Box>
+    </Container>
   );
 };
 
