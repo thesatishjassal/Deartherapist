@@ -1,14 +1,10 @@
-"use client";
-
 import * as React from "react";
 import { DataGrid, GridToolbar } from "@mui/x-data-grid";
 import { createTheme, ThemeProvider } from "@mui/material/styles";
 import useGetClients from "../../hooks/useGetClients";
-import useTodayAppointments from "../../hooks/useTodayAppointments"; // Assuming the file path is correct
-import { useRouter } from "next/navigation"; // Corrected import
-import { format } from "date-fns"; // Import date-fns format function
-import { calculateTotalAmount } from "../../utils"; // Import the utility function
-import TotalAmount from "./TotalAmount";
+import useTodayAppointments from "../../hooks/useTodayAppointments";
+import { format } from "date-fns";
+import { calculateTotalAmount } from '../../utils';
 
 export default function ReportTable() {
   const calculateTotalAmount = (appointments) => {
@@ -27,33 +23,33 @@ export default function ReportTable() {
     { field: "amount", headerName: "Amount", width: 100 },
   ];
 
-  const { clients, isLoading: isTLoading, error } = useGetClients(); // Rename isLoading to avoid conflict
+  const { clients, isLoading: isTLoading, error } = useGetClients();
   const todayAppointments = useTodayAppointments(clients);
-  const [rows, setRows] = React.useState(clients);
+  const [rows, setRows] = React.useState([]);
   const [totalAmount, setTotalAmount] = React.useState(0);
 
   React.useEffect(() => {
     const formattedRows = todayAppointments.map((appointment) => ({
       ...appointment,
-      date: format(new Date(appointment.date), "dd-MM-yyyy"), // Format date correctly
-      time: format(new Date(appointment.time), "HH:mm a"), // Format time correctly
+      id: appointment._id, // Ensure each row has a unique identifier
+      date: format(new Date(appointment.date), "dd-MM-yyyy"),
+      time: format(new Date(appointment.time), "HH:mm a"),
     }));
     setRows(formattedRows);
 
     const totalAmountCalculated = calculateTotalAmount(formattedRows);
     setTotalAmount(totalAmountCalculated);
-    console.log(totalAmount);
-  }, [todayAppointments]); // Update when todayAppointments changes
+  }, [todayAppointments]);
 
   const theme = createTheme({
     components: {
       MuiDataGrid: {
         styleOverrides: {
           cell: {
-            fontSize: "0.75rem", // Decrease font size here
+            fontSize: "0.75rem",
           },
           columnHeaders: {
-            fontSize: "0.8rem", // Decrease font size for header cells
+            fontSize: "0.8rem",
           },
         },
       },
@@ -63,12 +59,11 @@ export default function ReportTable() {
   return (
     <ThemeProvider theme={theme}>
       <div style={{ height: 500, width: "100%" }}>
-        {isTLoading ? <TotalAmount price={totalAmount} /> : ""}
         <DataGrid
           rows={rows}
           columns={columns}
           pageSize={10}
-          getRowId={(row) => row._id}
+          getRowId={(row) => row.id} // Use a unique identifier for each row
           rowsPerPageOptions={[5]}
           components={{ Toolbar: GridToolbar }}
         />

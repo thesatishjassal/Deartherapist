@@ -16,7 +16,6 @@ import InputLabel from "@mui/material/InputLabel";
 import TextField from "@mui/material/TextField";
 import Box from "@mui/material/Box";
 import CloudUploadIcon from "@mui/icons-material/CloudUpload";
-import Diagnouse from "./Diagnouse";
 import Autocomplete from "@mui/material/Autocomplete";
 import Checkbox from "@mui/material/Checkbox";
 import CheckBoxOutlineBlankIcon from "@mui/icons-material/CheckBoxOutlineBlank";
@@ -27,6 +26,7 @@ import useAppointments from "../../hooks/useAppointments"; // Adjust the path as
 import Alert from "@mui/material/Alert";
 import Backdrop from "@mui/material/Backdrop";
 import CircularProgress from "@mui/material/CircularProgress";
+
 const BootstrapDialog = styled(Dialog)(({ theme }) => ({
   "& .MuiDialogContent-root": {
     padding: theme.spacing(2),
@@ -112,11 +112,9 @@ const Addprescription = (props) => {
       } catch (error) {
         console.error("Error submitting form:", error);
       } finally {
+        setLoading(false); // Stop loading
+        handleClose();
       }
-      console.log("Form Data:", values);
-      // Add your API call logic here
-      setLoading(false); // Start loading
-      handleClose();
     },
   });
 
@@ -135,7 +133,7 @@ const Addprescription = (props) => {
 
   const handleChangeDiagnoses = (event, newValue) => {
     const result = newValue.reduce(
-      (res, el) => res.concat(Array(el.title).fill(el.title)), 
+      (res, el) => res.concat(Array(el.title).fill(el.title)),
       []
     );
     console.log(result);
@@ -209,7 +207,10 @@ const Addprescription = (props) => {
                     >
                       {appointments &&
                         appointments.map((appointment) => (
-                          <MenuItem value={appointment._id}>
+                          <MenuItem
+                            key={appointment._id} // Add key prop here
+                            value={appointment._id}
+                          >
                             {appointment.appointmentID}
                           </MenuItem>
                         ))}
