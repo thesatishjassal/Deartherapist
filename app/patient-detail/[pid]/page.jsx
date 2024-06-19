@@ -416,7 +416,7 @@ const PatientDetails = ({ params }) => {
                 ))}
                 {filltredMeets.length === 0 && (
                   <Typography component="h6" className="my-4 center-text">
-                    🙁 {client.name} doesn't have any appointments.
+                    🙁 {client.name} does not have any appointments.
                   </Typography>
                 )}
               </Box>
