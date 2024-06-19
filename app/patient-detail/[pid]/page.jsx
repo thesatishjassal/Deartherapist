@@ -408,7 +408,7 @@ const PatientDetails = ({ params }) => {
                       ))}
                       {appointment.prescriptions.length === 0 && (
                         <Typography component="h6" className="my-5 center-text">
-                          🙁 Prescription not updated for {client.name}.
+                          🙁 Prescription not updated for {client && client.name}.
                         </Typography>
                       )}
                     </AccordionDetails>
@@ -416,7 +416,7 @@ const PatientDetails = ({ params }) => {
                 ))}
                 {filltredMeets.length === 0 && (
                   <Typography component="h6" className="my-4 center-text">
-                    🙁 {client.name} does not have any appointments.
+                    🙁 {client && client.name} does not have any appointments.
                   </Typography>
                 )}
               </Box>
