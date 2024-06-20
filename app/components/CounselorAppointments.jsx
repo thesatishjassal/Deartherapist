@@ -13,6 +13,7 @@ import useGetClients from "../../hooks/useGetClients";
 import useAuth from "../../hooks/useAuth"; // Adjust the import path as needed
 import { useRouter } from "next/navigation";
 import { format } from "date-fns";
+import Button from "@mui/material/Button";
 
 const ActionsMenu = ({ rowId }) => {
   const [anchorEl, setAnchorEl] = React.useState(null);
