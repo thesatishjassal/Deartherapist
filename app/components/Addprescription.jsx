@@ -23,7 +23,8 @@ import CheckBoxIcon from "@mui/icons-material/CheckBox";
 import { useFormik } from "formik";
 import * as Yup from "yup";
 import useAppointments from "../../hooks/useAppointments"; // Adjust the path as necessary
-import Alert from "@mui/material/Alert";
+import Snackbar from "@mui/material/Snackbar";
+import MuiAlert from "@mui/material/Alert";
 import Backdrop from "@mui/material/Backdrop";
 import CircularProgress from "@mui/material/CircularProgress";
 
@@ -64,13 +65,13 @@ const validationSchema = Yup.object({
 });
 
 const Addprescription = (props) => {
-  const [open, setOpen] = React.useState(false);
   const { appointments, meetloading, error } = useAppointments(props.clientId);
+  const [open, setOpen] = React.useState(false);
+  const [loading, setLoading] = React.useState(false);
+  const [openSuccess, setOpenSuccess] = React.useState(false);
+  const [openError, setOpenError] = React.useState(false);
   const [alertMessage, setAlertMessage] = React.useState("");
-  const [showAlert, setShowAlert] = React.useState(false);
   const [successMessage, setSuccessMessage] = React.useState("");
-  const [showSuccess, setShowSuccess] = React.useState(false);
-  const [loading, setLoading] = React.useState(false); // Loading state
 
   const formik = useFormik({
     initialValues: {
@@ -84,35 +85,46 @@ const Addprescription = (props) => {
     },
     validationSchema: validationSchema,
     onSubmit: async (values) => {
-      // Handle form submission here
-      setLoading(true); // Start loading
-      const apiUrl = `http://localhost:5500/api/clients/${props.clientId}/appointments/${values.appointmentID}/prescriptions`;
-      const requestOptions = {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(values),
-      };
       try {
+        setLoading(true);
+
+        const formData = new FormData();
+        formData.append("appointmentID", values.appointmentID);
+        formData.append("service", values.service);
+        formData.append("suggestions", values.suggestions);
+        formData.append("symptoms", values.symptoms);
+        formData.append("followUp", values.followUp);
+        values.diagnoses.forEach((diagnosis, index) => {
+          formData.append(`diagnoses[${index}]`, diagnosis);
+        });
+        if (values.file) {
+          formData.append("file", values.file);
+        }
+
+        const apiUrl = `http://localhost:5500/api/clients/${props.clientId}/appointments/${values.appointmentID}/prescriptions`;
+        const requestOptions = {
+          method: "POST",
+          body: formData,
+        };
+
         const response = await fetch(apiUrl, requestOptions);
         const data = await response.json();
 
         if (!response.ok) {
-          setShowAlert(true);
-          throw new Error(
-            data.error || `An error occurred: ${response.status}`
-          );
+          setOpenError(true);
+          setAlertMessage(data.error || `An error occurred: ${response.status}`);
+          throw new Error(data.error || `An error occurred: ${response.status}`);
         }
-        // Handle success response
-        console.log("Form submission successful:", data);
+
         setSuccessMessage("Form submitted successfully!");
-        setShowSuccess(true);
+        setOpenSuccess(true);
         setTimeout(() => {
           console.log("Form Data:", values);
         }, 2000);
       } catch (error) {
         console.error("Error submitting form:", error);
       } finally {
-        setLoading(false); // Stop loading
+        setLoading(false);
         handleClose();
       }
     },
@@ -128,7 +140,6 @@ const Addprescription = (props) => {
 
   const handleFileChange = (event) => {
     formik.setFieldValue("file", event.currentTarget.files[0]);
-    console.log(event.currentTarget.files[0]);
   };
 
   const handleChangeDiagnoses = (event, newValue) => {
@@ -136,17 +147,12 @@ const Addprescription = (props) => {
       (res, el) => res.concat(Array(el.title).fill(el.title)),
       []
     );
-    console.log(result);
     formik.setFieldValue("diagnoses", result);
   };
 
   return (
     <React.Fragment>
-      <Button
-        variant="outlined"
-        onClick={handleClickOpen}
-        sx={{ width: "100%" }}
-      >
+      <Button variant="outlined" onClick={handleClickOpen} sx={{ width: "100%" }}>
         Add New Prescription
       </Button>
       <BootstrapDialog
@@ -173,33 +179,14 @@ const Addprescription = (props) => {
         </IconButton>
         <DialogContent dividers className="modalapp-body">
           <Box sx={{ width: "100%", padding: 3 }}>
-            {showAlert && (
-              <Alert severity="error" onClose={() => setShowAlert(false)}>
-                {alertMessage}
-              </Alert>
-            )}
-            {showSuccess && (
-              <Alert severity="success" onClose={() => setShowSuccess(false)}>
-                {successMessage}
-              </Alert>
-            )}
             <form onSubmit={formik.handleSubmit}>
-              <Grid
-                container
-                rowSpacing={3}
-                columnSpacing={{ xs: 1, sm: 2, md: 3 }}
-              >
+              <Grid container rowSpacing={3} columnSpacing={{ xs: 1, sm: 2, md: 3 }}>
                 <Grid item xs={12} sm={12} md={6}>
                   <FormControl
                     fullWidth
-                    error={
-                      formik.touched.appointmentID &&
-                      Boolean(formik.errors.appointmentID)
-                    }
+                    error={formik.touched.appointmentID && Boolean(formik.errors.appointmentID)}
                   >
-                    <InputLabel id="appointmentID">
-                      Select Appointment ID
-                    </InputLabel>
+                    <InputLabel id="appointmentID">Select Appointment ID</InputLabel>
                     <Select
                       labelId="appointmentID"
                       id="appointmentID-control"
@@ -207,16 +194,12 @@ const Addprescription = (props) => {
                     >
                       {appointments &&
                         appointments.map((appointment) => (
-                          <MenuItem
-                            key={appointment._id} // Add key prop here
-                            value={appointment._id}
-                          >
+                          <MenuItem key={appointment._id} value={appointment._id}>
                             {appointment.appointmentID}
                           </MenuItem>
                         ))}
                     </Select>
-                    {formik.touched.appointmentID &&
-                    formik.errors.appointmentID ? (
+                    {formik.touched.appointmentID && formik.errors.appointmentID ? (
                       <Typography variant="caption" sx={{ color: "red" }}>
                         {formik.errors.appointmentID}
                       </Typography>
@@ -226,9 +209,7 @@ const Addprescription = (props) => {
                 <Grid item xs={12} sm={12} md={6}>
                   <FormControl
                     fullWidth
-                    error={
-                      formik.touched.service && Boolean(formik.errors.service)
-                    }
+                    error={formik.touched.service && Boolean(formik.errors.service)}
                   >
                     <InputLabel id="service">Service</InputLabel>
                     <Select
@@ -236,17 +217,11 @@ const Addprescription = (props) => {
                       id="service-control"
                       {...formik.getFieldProps("service")}
                     >
-                      <MenuItem value="Counselling Session">
-                        Counselling Session
-                      </MenuItem>
+                      <MenuItem value="Counselling Session">Counselling Session</MenuItem>
                       <MenuItem value="Couple Session">Couple Session</MenuItem>
                       <MenuItem value="Therapy">Therapy</MenuItem>
-                      <MenuItem value="Astrology Session">
-                        Astrology Session
-                      </MenuItem>
-                      <MenuItem value="Tarot Card Reading">
-                        Tarot Card Reading
-                      </MenuItem>
+                      <MenuItem value="Astrology Session">Astrology Session</MenuItem>
+                      <MenuItem value="Tarot Card Reading">Tarot Card Reading</MenuItem>
                       <MenuItem value="Other">Other</MenuItem>
                     </Select>
                     {formik.touched.service && formik.errors.service ? (
@@ -270,7 +245,7 @@ const Addprescription = (props) => {
                           <Checkbox
                             icon={icon}
                             checkedIcon={checkedIcon}
-                            style={{ marginright: 8 }}
+                            style={{ marginRight: 8 }}
                             checked={selected}
                           />
                           {option.title}
@@ -281,10 +256,7 @@ const Addprescription = (props) => {
                           {...params}
                           label="Choose diagnoses"
                           placeholder="Favorites"
-                          error={
-                            formik.touched.diagnoses &&
-                            Boolean(formik.errors.diagnoses)
-                          }
+                          error={formik.touched.diagnoses && Boolean(formik.errors.diagnoses)}
                         />
                       )}
                     />
@@ -303,10 +275,7 @@ const Addprescription = (props) => {
                     fullWidth
                     rows={2}
                     {...formik.getFieldProps("suggestions")}
-                    error={
-                      formik.touched.suggestions &&
-                      Boolean(formik.errors.suggestions)
-                    }
+                    error={formik.touched.suggestions && Boolean(formik.errors.suggestions)}
                   />
                   {formik.touched.suggestions && formik.errors.suggestions ? (
                     <Typography variant="caption" sx={{ color: "red" }}>
@@ -322,9 +291,7 @@ const Addprescription = (props) => {
                     fullWidth
                     rows={2}
                     {...formik.getFieldProps("symptoms")}
-                    error={
-                      formik.touched.symptoms && Boolean(formik.errors.symptoms)
-                    }
+                    error={formik.touched.symptoms && Boolean(formik.errors.symptoms)}
                   />
                   {formik.touched.symptoms && formik.errors.symptoms ? (
                     <Typography variant="caption" sx={{ color: "red" }}>
@@ -340,9 +307,7 @@ const Addprescription = (props) => {
                     fullWidth
                     rows={2}
                     {...formik.getFieldProps("followUp")}
-                    error={
-                      formik.touched.followUp && Boolean(formik.errors.followUp)
-                    }
+                    error={formik.touched.followUp && Boolean(formik.errors.followUp)}
                   />
                   {formik.touched.followUp && formik.errors.followUp ? (
                     <Typography variant="caption" sx={{ color: "red" }}>
@@ -366,13 +331,13 @@ const Addprescription = (props) => {
                   </Button>
                 </Grid>
               </Grid>
+              <Backdrop
+                sx={{ color: "#fff", zIndex: (theme) => theme.zIndex.drawer + 1 }}
+                open={loading}
+              >
+                <CircularProgress color="inherit" />
+              </Backdrop>
             </form>
-            <Backdrop
-              sx={{ color: "#fff", zIndex: (theme) => theme.zIndex.drawer + 1 }}
-              open={loading}
-            >
-              <CircularProgress color="inherit" />
-            </Backdrop>
           </Box>
         </DialogContent>
         <DialogActions>
@@ -384,6 +349,38 @@ const Addprescription = (props) => {
           </Button>
         </DialogActions>
       </BootstrapDialog>
+
+      {/* Snackbar for Success */}
+      <Snackbar
+        open={openSuccess}
+        autoHideDuration={6000}
+        onClose={() => setOpenSuccess(false)}
+      >
+        <MuiAlert
+          elevation={6}
+          variant="filled"
+          onClose={() => setOpenSuccess(false)}
+          severity="success"
+        >
+          {successMessage}
+        </MuiAlert>
+      </Snackbar>
+
+      {/* Snackbar for Error */}
+      <Snackbar
+        open={openError}
+        autoHideDuration={6000}
+        onClose={() => setOpenError(false)}
+      >
+        <MuiAlert
+          elevation={6}
+          variant="filled"
+          onClose={() => setOpenError(false)}
+          severity="error"
+        >
+          {alertMessage}
+        </MuiAlert>
+      </Snackbar>
     </React.Fragment>
   );
 };

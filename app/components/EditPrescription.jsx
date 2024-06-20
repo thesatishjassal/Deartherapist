@@ -1,4 +1,4 @@
-import * as React from "react";
+import React, { useEffect, useState } from "react";
 import Button from "@mui/material/Button";
 import { styled } from "@mui/material/styles";
 import Dialog from "@mui/material/Dialog";
@@ -23,10 +23,10 @@ import CheckBoxIcon from "@mui/icons-material/CheckBox";
 import { useFormik } from "formik";
 import * as Yup from "yup";
 import useAppointments from "../../hooks/useAppointments"; // Adjust the path as necessary
-import Alert from "@mui/material/Alert";
+import Snackbar from "@mui/material/Snackbar";
+import MuiAlert from "@mui/material/Alert";
 import Backdrop from "@mui/material/Backdrop";
 import CircularProgress from "@mui/material/CircularProgress";
-import usePrescriptions from "../../hooks/usePrescriptions";
 
 const BootstrapDialog = styled(Dialog)(({ theme }) => ({
   "& .MuiDialogContent-root": {
@@ -53,7 +53,6 @@ const icon = <CheckBoxOutlineBlankIcon fontSize="small" />;
 const checkedIcon = <CheckBoxIcon fontSize="small" />;
 
 const validationSchema = Yup.object({
-  prescriptionId: Yup.string().required("PrescriptionId ID is required"),
   appointmentID: Yup.string().required("Appointment ID is required"),
   service: Yup.string().required("Service is required"),
   suggestions: Yup.string().required("Suggestions are required"),
@@ -65,133 +64,131 @@ const validationSchema = Yup.object({
     .required("Diagnoses are required"),
 });
 
-const EditPrescription = (props) => {
-  const [open, setOpen] = React.useState(false);
-  const { appointments, meetloading, error } = useAppointments(props.clientId);
-  const [alertMessage, setAlertMessage] = React.useState("");
-  const [showAlert, setShowAlert] = React.useState(false);
-  const [successMessage, setSuccessMessage] = React.useState("");
-  const [showSuccess, setShowSuccess] = React.useState(false);
-  const [loading, setLoading] = React.useState(false); // Loading state
-  const [prescriptionData, setPrescriptionData] = React.useState(null); // State to hold prescription data
+const Editprescription = ({
+  clientId,
+  appointmentId,
+  prescriptionId,
+  open,
+  handleClose,
+}) => {
+  const [loading, setLoading] = useState(false);
+  const [openSuccess, setOpenSuccess] = useState(false);
+  const [openError, setOpenError] = useState(false);
+  const [alertMessage, setAlertMessage] = useState("");
+  const [successMessage, setSuccessMessage] = useState("");
+  const { appointments, meetloading, error } = useAppointments(clientId);
 
   const formik = useFormik({
     initialValues: {
-      prescriptionId: "",
       appointmentID: "",
       service: "",
       suggestions: "",
       symptoms: "",
       followUp: "",
       diagnoses: [],
-      file: null,
+      file: null, // Optional file upload field
     },
     validationSchema: validationSchema,
     onSubmit: async (values) => {
-      setLoading(true); // Start loading
-
-      const apiUrl = `http://localhost:5500/api/clients/${props.clientId}/appointments/${values.appointmentID}/prescriptions/${props.prescriptionId}`;
-      const requestOptions = {
-        method: "PUT", // Use PUT for update
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(values),
-      };
-
       try {
+        setLoading(true);
+
+        const formData = new FormData();
+        formData.append("appointmentID", values.appointmentID);
+        formData.append("service", values.service);
+        formData.append("suggestions", values.suggestions);
+        formData.append("symptoms", values.symptoms);
+        formData.append("followUp", values.followUp);
+        values.diagnoses.forEach((diagnosis, index) => {
+          formData.append(`diagnoses[${index}]`, diagnosis);
+        });
+        if (values.file) {
+          formData.append("file", values.file);
+        }
+
+        if (prescriptionId) {
+          // If editing existing prescription, update API endpoint and method
+          apiUrl = `http://localhost:5500/api/clients/${clientId}/appointments/${values.appointmentID}/prescriptions/${prescriptionId}`;
+          requestOptions = {
+            method: "PUT",
+            body: formData,
+          };
+        }
+
         const response = await fetch(apiUrl, requestOptions);
         const data = await response.json();
 
         if (!response.ok) {
-          setShowAlert(true);
+          setOpenError(true);
+          setAlertMessage(
+            data.error || `An error occurred: ${response.status}`
+          );
           throw new Error(
             data.error || `An error occurred: ${response.status}`
           );
         }
 
-        // Handle success response
-        console.log("Form submission successful:", data);
-        setSuccessMessage("Form updated successfully!");
-        setShowSuccess(true);
-
+        setSuccessMessage("Prescription saved successfully!");
+        setOpenSuccess(true);
         setTimeout(() => {
           console.log("Form Data:", values);
+          handleClose(); // Close the modal after successful submission
         }, 2000);
       } catch (error) {
         console.error("Error submitting form:", error);
       } finally {
-        setLoading(false); // Stop loading
-        handleClose();
+        setLoading(false);
       }
     },
   });
 
-  // Function to fetch prescription details based on prescription ID (props.prescriptionId)
-  const fetchPrescriptionDetails = async () => {
-    const apiUrl = `http://localhost:5500/api/clients/${props.clientId}/appointments/${props.appointmentId}/prescriptions/${props.prescriptionId}`;
-    try {
-      const response = await fetch(apiUrl);
-      const data = await response.json();
-      if (!response.ok) {
-        throw new Error(
-          data.error ||
-            `Failed to fetch prescription details: ${response.status}`
-        );
+  useEffect(() => {
+    async function fetchPrescriptionData() {
+      if (prescriptionId) {
+        try {
+          const apiUrl = `http://localhost:5500/api/clients/${clientId}/appointments/${appointmentId}/prescriptions/${prescriptionId}`;
+          const response = await fetch(apiUrl);
+          const data = await response.json();
+          console.log(data);
+          if (response.ok) {
+            // Populate formik values with existing prescription data
+            formik.setValues({
+              ...formik.values,
+              service: data.service,
+              suggestions: data.suggestions,
+              symptoms: data.symptoms,
+              followUp: data.followUp,
+              diagnoses: data.diagnoses,
+            });
+          } else {
+            throw new Error(
+              data.error || `Failed to fetch prescription: ${response.status}`
+            );
+          }
+        } catch (error) {
+          console.error("Error fetching prescription:", error);
+          // Handle error fetching prescription data
+        }
       }
-      // Set formik values with fetched data
-      formik.setValues({
-        appointmentID: data.appointmentID,
-        service: data.service,
-        suggestions: data.suggestions,
-        symptoms: data.symptoms,
-        followUp: data.followUp,
-        diagnoses: data.diagnoses,
-        file: null, // Assuming file upload isn't included in fetched data
-      });
-      setPrescriptionData(data);
-    } catch (error) {
-      console.error("Error fetching prescription details:", error);
-      setAlertMessage(`Error fetching prescription details: ${error.message}`);
-      setShowAlert(true);
     }
-  };
 
-  // Function to handle opening the dialog and fetch prescription details
-  const handleClickOpen = async () => {
-    await fetchPrescriptionDetails();
-    setOpen(true);
-  };
+    fetchPrescriptionData();
+  }, [clientId, appointmentId, prescriptionId, formik]);
 
-  // Function to handle closing the dialog
-  const handleClose = () => {
-    setOpen(false);
-  };
-
-  // Function to handle file input change
   const handleFileChange = (event) => {
     formik.setFieldValue("file", event.currentTarget.files[0]);
-    console.log(event.currentTarget.files[0]);
   };
 
-  // Function to handle diagnoses selection change
   const handleChangeDiagnoses = (event, newValue) => {
     const result = newValue.reduce(
       (res, el) => res.concat(Array(el.title).fill(el.title)),
       []
     );
-    console.log(result);
     formik.setFieldValue("diagnoses", result);
   };
 
- 
   return (
     <React.Fragment>
-      <Button
-        variant="outlined"
-        onClick={handleClickOpen}
-        sx={{ width: "100%" }}
-      >
-        Edit Prescription
-      </Button>
       <BootstrapDialog
         sx={{ width: "100%" }}
         className="responsive-dialog"
@@ -200,7 +197,7 @@ const EditPrescription = (props) => {
         open={open}
       >
         <DialogTitle sx={{ m: 0, p: 2 }} id="customized-dialog-title">
-          Edit Prescription
+          Add Prescription
         </DialogTitle>
         <IconButton
           aria-label="close"
@@ -216,16 +213,6 @@ const EditPrescription = (props) => {
         </IconButton>
         <DialogContent dividers className="modalapp-body">
           <Box sx={{ width: "100%", padding: 3 }}>
-            {showAlert && (
-              <Alert severity="error" onClose={() => setShowAlert(false)}>
-                {alertMessage}
-              </Alert>
-            )}
-            {showSuccess && (
-              <Alert severity="success" onClose={() => setShowSuccess(false)}>
-                {successMessage}
-              </Alert>
-            )}
             <form onSubmit={formik.handleSubmit}>
               <Grid
                 container
@@ -240,24 +227,18 @@ const EditPrescription = (props) => {
                       Boolean(formik.errors.appointmentID)
                     }
                   >
-                    <InputLabel id="appointmentID">
-                      Select Appointment ID
-                    </InputLabel>
-                    <Select
-                      labelId="appointmentID"
+                    <TextField
                       id="appointmentID-control"
+                      label="Select Appointment ID"
+                      fullWidth
+                      disabled
+                      value={formik.values.appointmentID}
                       {...formik.getFieldProps("appointmentID")}
-                    >
-                      {appointments &&
-                        appointments.map((appointment) => (
-                          <MenuItem
-                            key={appointment._id}
-                            value={appointment._id}
-                          >
-                            {appointment.appointmentID}
-                          </MenuItem>
-                        ))}
-                    </Select>
+                      error={
+                        formik.touched.appointmentID &&
+                        Boolean(formik.errors.appointmentID)
+                      }
+                    />
                     {formik.touched.appointmentID &&
                     formik.errors.appointmentID ? (
                       <Typography variant="caption" sx={{ color: "red" }}>
@@ -270,63 +251,19 @@ const EditPrescription = (props) => {
                   <FormControl
                     fullWidth
                     error={
-                      formik.touched.prescriptionId &&
-                      Boolean(formik.errors.prescriptionId)
-                    }
-                  >
-                    <InputLabel id="prescriptionId">
-                      Select PrescriptionId ID
-                    </InputLabel>
-                    <Select
-                      labelId="prescriptionId"
-                      id="prescriptionId-control"
-                      {...formik.getFieldProps("prescriptionId")}
-                    >
-                      {appointments && appointments.lenght > 0
-                        ? prescriptions.map((prescription) => (
-                            <MenuItem
-                              key={prescription._id}
-                              value={prescription._id}
-                            >
-                              {prescription.id}
-                            </MenuItem>
-                          ))
-                        : ""}
-                    </Select>
-                    {formik.touched.prescriptionId &&
-                    formik.errors.prescriptionId ? (
-                      <Typography variant="caption" sx={{ color: "red" }}>
-                        {formik.errors.prescriptionId}
-                      </Typography>
-                    ) : null}
-                  </FormControl>
-                </Grid>
-                <Grid item xs={12} sm={12} md={12}>
-                  <FormControl
-                    fullWidth
-                    error={
                       formik.touched.service && Boolean(formik.errors.service)
                     }
                   >
-                    <InputLabel id="service">Service</InputLabel>
-                    <Select
-                      labelId="service"
+                    <TextField
                       id="service-control"
+                      labelId="service"
+                      fullWidth
                       {...formik.getFieldProps("service")}
-                    >
-                      <MenuItem value="Counselling Session">
-                        Counselling Session
-                      </MenuItem>
-                      <MenuItem value="Couple Session">Couple Session</MenuItem>
-                      <MenuItem value="Therapy">Therapy</MenuItem>
-                      <MenuItem value="Astrology Session">
-                        Astrology Session
-                      </MenuItem>
-                      <MenuItem value="Tarot Card Reading">
-                        Tarot Card Reading
-                      </MenuItem>
-                      <MenuItem value="Other">Other</MenuItem>
-                    </Select>
+                      error={
+                        formik.touched.appointmentID &&
+                        Boolean(formik.errors.appointmentID)
+                      }
+                    />
                     {formik.touched.service && formik.errors.service ? (
                       <Typography variant="caption" sx={{ color: "red" }}>
                         {formik.errors.service}
@@ -341,6 +278,7 @@ const EditPrescription = (props) => {
                       id="checkboxes-tags-demo"
                       options={diagnoses}
                       disableCloseOnSelect
+                      // value={formik.values.diagnoses} // Set value prop to maintain selected diagnoses
                       onChange={handleChangeDiagnoses}
                       getOptionLabel={(option) => option.title}
                       renderOption={(props, option, { selected }) => (
@@ -444,13 +382,16 @@ const EditPrescription = (props) => {
                   </Button>
                 </Grid>
               </Grid>
+              <Backdrop
+                sx={{
+                  color: "#fff",
+                  zIndex: (theme) => theme.zIndex.drawer + 1,
+                }}
+                open={loading}
+              >
+                <CircularProgress color="inherit" />
+              </Backdrop>
             </form>
-            <Backdrop
-              sx={{ color: "#fff", zIndex: (theme) => theme.zIndex.drawer + 1 }}
-              open={loading}
-            >
-              <CircularProgress color="inherit" />
-            </Backdrop>
           </Box>
         </DialogContent>
         <DialogActions>
@@ -462,6 +403,38 @@ const EditPrescription = (props) => {
           </Button>
         </DialogActions>
       </BootstrapDialog>
+
+      {/* Snackbar for Success */}
+      <Snackbar
+        open={openSuccess}
+        autoHideDuration={6000}
+        onClose={() => setOpenSuccess(false)}
+      >
+        <MuiAlert
+          elevation={6}
+          variant="filled"
+          onClose={() => setOpenSuccess(false)}
+          severity="success"
+        >
+          {successMessage}
+        </MuiAlert>
+      </Snackbar>
+
+      {/* Snackbar for Error */}
+      <Snackbar
+        open={openError}
+        autoHideDuration={6000}
+        onClose={() => setOpenError(false)}
+      >
+        <MuiAlert
+          elevation={6}
+          variant="filled"
+          onClose={() => setOpenError(false)}
+          severity="error"
+        >
+          {alertMessage}
+        </MuiAlert>
+      </Snackbar>
     </React.Fragment>
   );
 };
@@ -486,4 +459,4 @@ const diagnoses = [
   { title: "OTHER" },
 ];
 
-export default EditPrescription;
+export default Editprescription;

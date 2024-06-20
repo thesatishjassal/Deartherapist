@@ -27,14 +27,19 @@ import { CircularProgress } from "@mui/material";
 import WhatsAppIcon from "@mui/icons-material/WhatsApp";
 import AttachEmailIcon from "@mui/icons-material/AttachEmail";
 import RedirectToWhatsApp from "../../components/RedirectToWhatsApp";
+import { IconButton } from "@mui/material";
+import EditIcon from "@mui/icons-material/Edit";
 
 const PatientDetails = ({ params }) => {
   const invoiceRef = useRef();
   const [expanded, setExpanded] = useState(false);
   const [anchorEl, setAnchorEl] = useState(null);
-  const [clientId, setclientId] = useState(null);
   const [filltredMeets, setfilltredmeets] = useState([]);
   const [isLoading, setLoading] = useState(false); // State for loading indicator
+  const [clientId, setClientId] = useState(null); // State to store clientId for Addprescription
+  const [appointmentId, setAppointmentId] = useState(null); // State to store appointmentId for Addprescription
+  const [prescriptionId, setPrescriptionId] = useState(null); // State to store prescriptionId for Addprescription
+  const [isModalOpen, setIsModalOpen] = useState(false); // State to control modal open/close
 
   const apiUrl = "http://localhost:5500/api/clients"; // Replace with your actual API URL
   const { pid } = params;
@@ -42,13 +47,29 @@ const PatientDetails = ({ params }) => {
   const { client, clientisLoading, error } = useGetClientById(apiUrl, pid);
   const { appointments, loading, meetserror } = useAppointments(pid);
 
+  const handleEdit = (clientId, appointmentId, prescriptionId) => {
+    // Open modal for editing prescription
+    setIsModalOpen(true);
+    setClientId(clientId);
+    setAppointmentId(appointmentId);
+    setPrescriptionId(prescriptionId);
+  };
+
+  const handleClose = () => {
+    // Close modal and reset states
+    setIsModalOpen(false);
+    setClientId(null);
+    setAppointmentId(null);
+    setPrescriptionId(null);
+    setAnchorEl(null);
+  };
+
   const handleClick = (event) => {
     setAnchorEl(event.currentTarget);
   };
 
-  const handleClose = () => {
-    setAnchorEl(null);
-  };
+  // const handleClose = () => {
+  // };
 
   const handleChange = (panel) => (event, isExpanded) => {
     setExpanded(isExpanded ? panel : false);
@@ -338,8 +359,8 @@ const PatientDetails = ({ params }) => {
               <Box sx={{ my: 5 }}>
                 {filltredMeets.map((appointment) => (
                   <Accordion
-                    key={appointment.appointmentID} // Adding key prop here
-                    className="accordian-theme"
+                    key={appointment.appointmentID}
+                    className="accordion-theme"
                     expanded={expanded === appointment.appointmentID}
                     onChange={handleChange(appointment.appointmentID)}
                   >
@@ -351,7 +372,9 @@ const PatientDetails = ({ params }) => {
                       <Typography sx={{ width: "70%" }}>
                         {appointment.appointmentID}
                       </Typography>
-                      <Typography sx={{ width: "100%" }}>Precision</Typography>
+                      <Typography sx={{ width: "100%" }}>
+                        Prescription
+                      </Typography>
                       <Typography sx={{ width: "33%" }}>
                         {appointment.date}
                       </Typography>
@@ -361,6 +384,8 @@ const PatientDetails = ({ params }) => {
                         sx={{
                           display: "flex",
                           justifyContent: "space-between",
+                          alignItems: "center",
+                          width: "100%",
                           padding: 2,
                         }}
                       >
@@ -378,6 +403,7 @@ const PatientDetails = ({ params }) => {
                       </Box>
 
                       <Divider />
+
                       {appointment.prescriptions.map((prescription, index) => (
                         <React.Fragment key={index}>
                           <Box sx={{ padding: 2 }}>
@@ -407,8 +433,33 @@ const PatientDetails = ({ params }) => {
                               {prescription.followUp}
                             </Typography>
                           </Box>
+
+                          {/* Edit Button */}
+                          <Box
+                            sx={{
+                              display: "flex",
+                              justifyContent: "flex-end",
+                              padding: 2,
+                            }}
+                          >
+                            <IconButton
+                              aria-label="edit"
+                              onClick={() =>
+                                handleEdit(
+                                  pid,
+                                  appointment._id,
+                                  prescription._id
+                                )
+                              }
+                            >
+                              <EditIcon />
+                            </IconButton>
+                          </Box>
+
+                          <Divider />
                         </React.Fragment>
                       ))}
+
                       {appointment.prescriptions.length === 0 && (
                         <Typography component="h6" className="my-5 center-text">
                           🙁 Prescription not updated for{" "}
@@ -418,11 +469,21 @@ const PatientDetails = ({ params }) => {
                     </AccordionDetails>
                   </Accordion>
                 ))}
+
                 {filltredMeets.length === 0 && (
                   <Typography component="h6" className="my-4 center-text">
                     🙁 {client && client.name} does not have any appointments.
                   </Typography>
                 )}
+
+                {/* Addprescription Modal */}
+                <EditPrescription
+                  clientId={clientId}
+                  appointmentId={appointmentId}
+                  prescriptionId={prescriptionId}
+                  open={isModalOpen}
+                  handleClose={handleClose}
+                />
               </Box>
 
               <Box

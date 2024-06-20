@@ -69,7 +69,7 @@ const ChangePasswordForm = () => {
         />
       </Box>
 
-      <Button variant="contained" color="primary" onClick={handlePasswordChange}>
+      <Button className="btn" onClick={handlePasswordChange}>
         Change Password
       </Button>
       </Paper>

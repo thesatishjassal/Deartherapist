@@ -87,9 +87,9 @@ export default function EditClient({ open, onClose, client, onSave }) {
           <TextField
             margin="dense"
             label="Mobile No"
-            name="mobileNo"
+            name="mobile"
             fullWidth
-            value={formData?.mobileNo || ""}
+            value={formData?.mobile || ""}
             onChange={handleChange}
           />
           <TextField

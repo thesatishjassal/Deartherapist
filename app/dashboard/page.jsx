@@ -12,7 +12,8 @@ import TabPanel from "@mui/lab/TabPanel";
 import { Box, Button } from "@mui/material";
 import MyAppointments from "../components/MyAppoinments";
 import useAuth from "../../hooks/useAuth"; // Adjust the import path as needed
-import useProtectedRoute from '../../hooks/useProtectedRoute';
+import useProtectedRoute from "../../hooks/useProtectedRoute";
+import CounselorAppointments from "../components/CounselorAppointments";
 
 export default function Dashboard() {
   const [value, setValue] = React.useState("1");
@@ -30,9 +31,11 @@ export default function Dashboard() {
     <Card className="main__dashboard">
       <CardContent>
         <Typography gutterBottom variant="h5" component="div" className="mb-4">
-           {user && user.role == "admin" ? "Welcome 👋 Dr. Shaveta" : ""}
-           {user && user.role == "counselor" ? "Welcome 👋 Counselor" : ""}
-          {user && user.role == "receptionist" ? " Welcome 👋 Receptionist" : ""}
+          {user && user.role == "admin" ? "Welcome 👋 Dr. Shaveta" : ""}
+          {user && user.role == "counselor" ? "Welcome 👋 Counselor" : ""}
+          {user && user.role == "receptionist"
+            ? " Welcome 👋 Receptionist"
+            : ""}
         </Typography>
       </CardContent>
       <Box sx={{ width: "100%", typography: "body1" }}>
@@ -47,7 +50,11 @@ export default function Dashboard() {
             <ClientsTable />
           </TabPanel>
           <TabPanel value="2">
-            <MyAppointments />
+            {user && user.role == "counselor" ? (
+              <CounselorAppointments />
+            ) : (
+              <MyAppointments />
+            )}
           </TabPanel>
         </TabContext>
       </Box>
