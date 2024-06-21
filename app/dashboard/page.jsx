@@ -17,10 +17,10 @@ import CounselorAppointments from "../components/CounselorAppointments";
 
 export default function Dashboard() {
   const [value, setValue] = React.useState("1");
-  const { user, handleLogout } = useAuth();
-  const loguser = useProtectedRoute();
+  // const { user, handleLogout } = useAuth();
+  const user = useProtectedRoute();
 
-  if (!loguser) {
+  if (!user) {
     return null; // Optionally render a loading state or a redirect message
   }
   const handleChange = (event, newValue) => {
