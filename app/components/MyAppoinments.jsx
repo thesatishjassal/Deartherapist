@@ -53,13 +53,14 @@ const ActionsMenu = ({ rowId }) => {
 
 export default function MyAppointments() {
   const columns = [
+    { field: "Srno", headerName: "Sr No", width: 150 },
     { field: "appointmentID", headerName: "Appointment ID", width: 150 },
     { field: "date", headerName: "Date", width: 130 },
     { field: "time", headerName: "Time", width: 120 },
     { field: "channel", headerName: "Channel", width: 180 },
     { field: "service", headerName: "Service", width: 180 },
     { field: "facilitatedBy", headerName: "Facilitated By", width: 180 },
-    { field: "amount", headerName: "Amount", width: 110 }
+    { field: "amount", headerName: "Amount", width: 110 },
   ];
 
   const [searchText, setSearchText] = React.useState("");
@@ -80,10 +81,12 @@ export default function MyAppointments() {
     setSearchText(event.target.value);
   };
 
-  const filteredRows = rows.filter((row) => {
-    const rowName = row.name || ""; // Handle case where row.name is undefined or null
-    return rowName.toLowerCase().includes(searchText.toLowerCase());
-  });
+  const filteredRows = rows.filter(
+    (row) =>
+      row.name.toLowerCase().includes(searchText.toLowerCase()) ||
+      row.appointmentID.toLowerCase().includes(searchText.toLowerCase()) ||
+      row.facilitatedBy.toLowerCase().includes(searchText.toLowerCase())
+  );
 
   return (
     <div style={{ width: "100%" }}>
@@ -102,7 +105,12 @@ export default function MyAppointments() {
         <AddAppointment />
       </Toolbar>
       {isTLoading ? (
-        <Box display="flex" justifyContent="center" alignItems="center" height="100vh">
+        <Box
+          display="flex"
+          justifyContent="center"
+          alignItems="center"
+          height="100vh"
+        >
           <CircularProgress />
         </Box>
       ) : (
@@ -115,7 +123,7 @@ export default function MyAppointments() {
           components={{ Toolbar: GridToolbar }}
           initialState={{
             sorting: {
-              sortModel: [{ field: 'date', sort: 'desc' }],
+              sortModel: [{ field: "date", sort: "desc" }],
             },
           }}
         />

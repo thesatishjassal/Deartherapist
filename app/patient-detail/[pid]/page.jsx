@@ -29,6 +29,7 @@ import AttachEmailIcon from "@mui/icons-material/AttachEmail";
 import RedirectToWhatsApp from "../../components/RedirectToWhatsApp";
 import { IconButton } from "@mui/material";
 import EditIcon from "@mui/icons-material/Edit";
+import { Link } from "@mui/material";
 
 const PatientDetails = ({ params }) => {
   const invoiceRef = useRef();
@@ -433,13 +434,25 @@ const PatientDetails = ({ params }) => {
                               {prescription.followUp}
                             </Typography>
                           </Box>
-
+                          <Divider />
+                          <Box sx={{ padding: 2 }}>
+                            {prescription.file && (
+                              <Typography key={index} component="p">
+                                <strong>Download File: </strong>{" "}
+                                <Link
+                                  href={`http://localhost:5500/uploads/${prescription.file.name}`}
+                                  download
+                                >
+                                  {prescription.file.name}
+                                </Link>
+                              </Typography>
+                            )}
+                          </Box>
                           {/* Edit Button */}
                           <Box
                             sx={{
                               display: "flex",
                               justifyContent: "flex-end",
-                              padding: 2,
                             }}
                           >
                             <IconButton
@@ -455,8 +468,6 @@ const PatientDetails = ({ params }) => {
                               <EditIcon />
                             </IconButton>
                           </Box>
-
-                          <Divider />
                         </React.Fragment>
                       ))}
 
@@ -496,7 +507,7 @@ const PatientDetails = ({ params }) => {
                 <Box>
                   <Typography component="p">Sign</Typography>
                   <Typography component="strong">
-                    Dr. Shaweta Bhardwaj
+                    Dr. Shaveta Bhardwaj
                   </Typography>
                 </Box>
               </Box>
@@ -548,6 +559,7 @@ const PatientDetails = ({ params }) => {
                 ) : (
                   "Download Pdf"
                 )}
+                x
               </Button>
             </Box>
           </Grid>

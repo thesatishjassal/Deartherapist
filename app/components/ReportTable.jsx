@@ -14,9 +14,9 @@ import useTodayAppointments from "../../hooks/useTodayAppointments";
 
 export default function ReportTable() {
   const columns = [
-    { field: "appointmentID", headerName: "Sr. NO", width: 100 },
+    { field: "Srno", headerName: "Sr. NO", width: 100 },
     { field: "date", headerName: "Date", width: 140 },
-    { field: "time", headerName: "Time", width: 140 },
+    { field: "name", headerName: "Name", width: 140 },
     { field: "channel", headerName: "Mode", width: 130 },
     { field: "service", headerName: "Service", width: 130 },
     { field: "facilitatedBy", headerName: "Facilitated By", width: 130 },
@@ -113,18 +113,6 @@ export default function ReportTable() {
           pageSize={10}
           rowsPerPageOptions={[5, 10, 20]}
           components={{ Toolbar: GridToolbar }}
-          disableSelectionOnClick // Disable row selection
-          disableColumnMenu // Hide column menu
-          disableColumnFilter // Hide column filters
-          disableColumnReorder // Disable column reordering
-          hideFooterPagination // Hide pagination footer
-          hideFooterSelectedRowCount // Hide selected row count in footer
-          hideFooter // Hide entire footer
-          autoHeight // Automatically adjust height
-          disableColumnSelector // Hide column selector
-          disableDensitySelector // Hide density selector
-          disableExport // Disable export options
-          disableColumnResize // Disable column resizing
         />
       </div>
     </ThemeProvider>

@@ -23,6 +23,14 @@ import Alert from "@mui/material/Alert";
 
 const steps = ["Personal Detail", "Medical Detail"];
 
+const findUsOptions = [
+  { label: "Google Search", value: "Google Search" },
+  { label: "Social Media", value: "Social Media" },
+  { label: "Friend/Family Referral", value: "Friend/Family Referral" },
+  { label: "Advertisement", value: "Advertisement" },
+  { label: "Other", value: "Other" },
+];
+
 const HorizontalLinearStepper = () => {
   const validationSchema = Yup.object({
     name: Yup.string().required("Name is required"),
@@ -83,7 +91,7 @@ const HorizontalLinearStepper = () => {
   const [alertMessage, setAlertMessage] = React.useState("");
   const [showAlert, setShowAlert] = React.useState(false);
   const [successMessage, setSuccessMessage] = React.useState("");
-const [showSuccess, setShowSuccess] = React.useState(false);
+  const [showSuccess, setShowSuccess] = React.useState(false);
 
   const isStepOptional = (step) => {
     return step === 1;
@@ -153,13 +161,13 @@ const [showSuccess, setShowSuccess] = React.useState(false);
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify(formData),
     };
-  
+
     setShowModalProgress(true);
-  
+
     try {
       const response = await fetch(apiUrl, requestOptions);
       const data = await response.json();
-  
+
       if (!response.ok) {
         // Set specific error message from API response
         if (data.error.includes("Mobile number")) {
@@ -169,23 +177,26 @@ const [showSuccess, setShowSuccess] = React.useState(false);
         } else {
           setAlertMessage("An error occurred. Please try again.");
         }
+        if (response.status === 409) {
+          // Assuming 409 is for duplicate key error
+          setAlertMessage("A client with this Srno already exists.");
+        }
         setShowAlert(true);
         throw new Error(data.error || `An error occurred: ${response.status}`);
       }
-  
+
       // Handle success response
       console.log("Form submission successful:", data);
       setSuccessMessage("Form submitted successfully!");
       setShowSuccess(true);
       setIsFinished(true);
+      window.location.reload(); // Reload the page after successful form submission
     } catch (error) {
       console.error("Error submitting form:", error);
     } finally {
       setShowModalProgress(false);
     }
   };
-  
-
 
   const handleCloseModal = () => {
     setShowModalProgress(false);
@@ -195,16 +206,16 @@ const [showSuccess, setShowSuccess] = React.useState(false);
     <Box sx={{ width: "100%" }}>
       <form onSubmit={handleSubmit}>
         <Box sx={{ width: "100%" }}>
-        {showAlert && (
-          <Alert severity="error" onClose={() => setShowAlert(false)}>
-            {alertMessage}
-          </Alert>
-        )}
-        {showSuccess && (
-          <Alert severity="success" onClose={() => setShowSuccess(false)}>
-            {successMessage}
-          </Alert>
-        )}
+          {showAlert && (
+            <Alert severity="error" onClose={() => setShowAlert(false)}>
+              {alertMessage}
+            </Alert>
+          )}
+          {showSuccess && (
+            <Alert severity="success" onClose={() => setShowSuccess(false)}>
+              {successMessage}
+            </Alert>
+          )}
           {isFinished ? (
             <Box sx={{ textAlign: "center", mt: 2 }}>
               {/* <Typography variant="h6" gutterBottom>
@@ -515,22 +526,37 @@ const [showSuccess, setShowSuccess] = React.useState(false);
                       />
                     </Grid>
                     <Grid item xs={12} sm={6}>
-                      <TextField
-                        id="findUs"
-                        name="findUs"
-                        label="How did you find us?"
-                        multiline
+                      <FormControl
                         fullWidth
-                        variant="outlined"
-                        rows={2}
-                        {...formik.getFieldProps("findUs")}
                         error={
                           formik.touched.findUs && Boolean(formik.errors.findUs)
                         }
-                        helperText={
-                          formik.touched.findUs && formik.errors.findUs
-                        }
-                      />
+                      >
+                        <InputLabel id="findUs-label">
+                          How did you find us?
+                        </InputLabel>
+                        <Select
+                          labelId="findUs-label"
+                          id="findUs"
+                          name="findUs"
+                          value={formik.values.findUs}
+                          onChange={formik.handleChange}
+                          onBlur={formik.handleBlur}
+                          label="How did you find us?"
+                        >
+                          <MenuItem value="">Select</MenuItem>
+                          {findUsOptions.map((option) => (
+                            <MenuItem key={option.value} value={option.value}>
+                              {option.label}
+                            </MenuItem>
+                          ))}
+                        </Select>
+                        {formik.touched.findUs && formik.errors.findUs && (
+                          <FormHelperText>
+                            {formik.errors.findUs}
+                          </FormHelperText>
+                        )}
+                      </FormControl>
                     </Grid>
                     <Grid item xs={12} sm={6}>
                       <TextField

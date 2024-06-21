@@ -70,7 +70,7 @@ export default function HorizontalLinearStepper() {
   const formik = useFormik({
     initialValues: {
       mobileNumber: "",
-      // email: "",
+      name: "",
       date: null,
       time: null,
       channel: "",
@@ -101,7 +101,7 @@ export default function HorizontalLinearStepper() {
         console.log("Form submission successful:", data);
         setSuccessMessage("Form submitted successfully!");
         setShowSuccess(true);
-
+        window.location.reload(); // Reload the page after successful form submission
         setTimeout(() => {
           console.log("Form Data:", values);
           setIsFinished(true);
@@ -149,16 +149,15 @@ export default function HorizontalLinearStepper() {
   };
 
   const handleMobileNumber = (event, value) => {
-    console.log(value);
-    formik.setFieldValue("mobileNumber", value); // Update Formik field value
+    formik.setFieldValue("mobileNumber", value);
     setclientMobile(value);
-    const sortedlients = clients.filter((client) => client.mobile === value);
-    setfilteredClients(sortedlients);
-    const matchedClientId = sortedlients ? sortedlients[0]._id : null;
+    const sortedClients = clients.filter((client) => client.mobile === value);
+    setfilteredClients(sortedClients);
+    const matchedClientId = sortedClients.length > 0 ? sortedClients[0]._id : null;
     setAppointmentID(matchedClientId);
-    console.log("Matched Client ID:", matchedClientId); // Output: Matched Client ID: 2
+    formik.setFieldValue("name", sortedClients.length > 0 ? sortedClients[0].name : "");
   };
-
+  
   const PersonalDetailStep = () => (
     <Box sx={{ width: "100%", px: 1, py: 3 }}>
       <Grid container rowSpacing={3} columnSpacing={{ xs: 1, sm: 2, md: 3 }}>

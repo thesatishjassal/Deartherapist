@@ -222,7 +222,9 @@ const ClientsTable = () => {
   };
 
   const filteredRows = rows.filter((row) =>
-    row.name.toLowerCase().includes(searchText.toLowerCase())
+    row.name.toLowerCase().includes(searchText.toLowerCase()) ||
+    row.mobile.toLowerCase().includes(searchText.toLowerCase()) ||
+    row.ClientID.toLowerCase().includes(searchText.toLowerCase())
   );
 
   const columns = [
@@ -297,11 +299,6 @@ const ClientsTable = () => {
           pagination
           getRowId={(row) => row._id}
           components={{ Toolbar: GridToolbar }}
-          initialState={{
-            sorting: {
-              sortModel: [{ field: "date", sort: "desc" }],
-            },
-          }}
         />
       )}
       {selectedRow && (

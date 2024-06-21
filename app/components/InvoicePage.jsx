@@ -82,7 +82,7 @@ const InvoicePage = () => {
           >
             <Box>
               <Typography component="p">Sign</Typography>
-              <Typography component="strong">Dr. Shaweta Bhardwaj</Typography>
+              <Typography component="strong">Dr. Shaveta Bhardwaj</Typography>
             </Box>
             <Box>
               <Typography variant="h6">Total</Typography>

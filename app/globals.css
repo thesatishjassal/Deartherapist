@@ -214,3 +214,6 @@ p.grey_light {
 .accordian-theme {
   background: #f1f1f1 !important;
 }
+strong, p {
+  word-break: break-all;
+}

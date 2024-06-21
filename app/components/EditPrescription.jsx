@@ -53,15 +53,12 @@ const icon = <CheckBoxOutlineBlankIcon fontSize="small" />;
 const checkedIcon = <CheckBoxIcon fontSize="small" />;
 
 const validationSchema = Yup.object({
-  appointmentID: Yup.string().required("Appointment ID is required"),
-  service: Yup.string().required("Service is required"),
-  suggestions: Yup.string().required("Suggestions are required"),
-  symptoms: Yup.string().required("Symptoms are required"),
-  followUp: Yup.string().required("Follow-up is required"),
-  diagnoses: Yup.array()
-    .min(1, "Select at least one diagnosis")
-    .max(4, "You can select up to 4 diagnoses")
-    .required("Diagnoses are required"),
+  // appointmentID: Yup.string().required("Appointment ID is required"),
+  service: Yup.string(),
+  suggestions: Yup.string(),
+  symptoms: Yup.string(),
+  followUp: Yup.string(),
+  diagnoses: Yup.array(),
 });
 
 const Editprescription = ({
@@ -76,8 +73,9 @@ const Editprescription = ({
   const [openError, setOpenError] = useState(false);
   const [alertMessage, setAlertMessage] = useState("");
   const [successMessage, setSuccessMessage] = useState("");
+  const [savedData, setsavedData] = useState("");
   const { appointments, meetloading, error } = useAppointments(clientId);
-
+  console.log(clientId, appointmentId, prescriptionId);
   const formik = useFormik({
     initialValues: {
       appointmentID: "",
@@ -86,7 +84,7 @@ const Editprescription = ({
       symptoms: "",
       followUp: "",
       diagnoses: [],
-      file: null, // Optional file upload field
+      file: null, 
     },
     validationSchema: validationSchema,
     onSubmit: async (values) => {
@@ -106,15 +104,11 @@ const Editprescription = ({
           formData.append("file", values.file);
         }
 
-        if (prescriptionId) {
-          // If editing existing prescription, update API endpoint and method
-          apiUrl = `http://localhost:5500/api/clients/${clientId}/appointments/${values.appointmentID}/prescriptions/${prescriptionId}`;
-          requestOptions = {
-            method: "PUT",
-            body: formData,
-          };
-        }
-
+        let apiUrl = `http://localhost:5500/api/clients/${clientId}/appointments/${appointmentId}/prescriptions/${prescriptionId}`;
+        const requestOptions = {
+          method: "PATCH",
+          body: formData,
+        };
         const response = await fetch(apiUrl, requestOptions);
         const data = await response.json();
 
@@ -128,8 +122,9 @@ const Editprescription = ({
           );
         }
 
-        setSuccessMessage("Prescription saved successfully!");
+        setSuccessMessage("Prescription Updated successfully!");
         setOpenSuccess(true);
+        window.location.reload(); // Reload the page after successful form submission
         setTimeout(() => {
           console.log("Form Data:", values);
           handleClose(); // Close the modal after successful submission
@@ -141,39 +136,6 @@ const Editprescription = ({
       }
     },
   });
-
-  useEffect(() => {
-    async function fetchPrescriptionData() {
-      if (prescriptionId) {
-        try {
-          const apiUrl = `http://localhost:5500/api/clients/${clientId}/appointments/${appointmentId}/prescriptions/${prescriptionId}`;
-          const response = await fetch(apiUrl);
-          const data = await response.json();
-          console.log(data);
-          if (response.ok) {
-            // Populate formik values with existing prescription data
-            formik.setValues({
-              ...formik.values,
-              service: data.service,
-              suggestions: data.suggestions,
-              symptoms: data.symptoms,
-              followUp: data.followUp,
-              diagnoses: data.diagnoses,
-            });
-          } else {
-            throw new Error(
-              data.error || `Failed to fetch prescription: ${response.status}`
-            );
-          }
-        } catch (error) {
-          console.error("Error fetching prescription:", error);
-          // Handle error fetching prescription data
-        }
-      }
-    }
-
-    fetchPrescriptionData();
-  }, [clientId, appointmentId, prescriptionId, formik]);
 
   const handleFileChange = (event) => {
     formik.setFieldValue("file", event.currentTarget.files[0]);
@@ -219,51 +181,32 @@ const Editprescription = ({
                 rowSpacing={3}
                 columnSpacing={{ xs: 1, sm: 2, md: 3 }}
               >
-                <Grid item xs={12} sm={12} md={6}>
-                  <FormControl
-                    fullWidth
-                    error={
-                      formik.touched.appointmentID &&
-                      Boolean(formik.errors.appointmentID)
-                    }
-                  >
-                    <TextField
-                      id="appointmentID-control"
-                      label="Select Appointment ID"
-                      fullWidth
-                      disabled
-                      value={formik.values.appointmentID}
-                      {...formik.getFieldProps("appointmentID")}
-                      error={
-                        formik.touched.appointmentID &&
-                        Boolean(formik.errors.appointmentID)
-                      }
-                    />
-                    {formik.touched.appointmentID &&
-                    formik.errors.appointmentID ? (
-                      <Typography variant="caption" sx={{ color: "red" }}>
-                        {formik.errors.appointmentID}
-                      </Typography>
-                    ) : null}
-                  </FormControl>
-                </Grid>
-                <Grid item xs={12} sm={12} md={6}>
+                <Grid item xs={12} sm={12} md={12}>
                   <FormControl
                     fullWidth
                     error={
                       formik.touched.service && Boolean(formik.errors.service)
                     }
                   >
-                    <TextField
-                      id="service-control"
+                    <InputLabel id="service">Service</InputLabel>
+                    <Select
                       labelId="service"
-                      fullWidth
+                      id="service-control"
                       {...formik.getFieldProps("service")}
-                      error={
-                        formik.touched.appointmentID &&
-                        Boolean(formik.errors.appointmentID)
-                      }
-                    />
+                    >
+                      <MenuItem value="Counselling Session">
+                        Counselling Session
+                      </MenuItem>
+                      <MenuItem value="Couple Session">Couple Session</MenuItem>
+                      <MenuItem value="Therapy">Therapy</MenuItem>
+                      <MenuItem value="Astrology Session">
+                        Astrology Session
+                      </MenuItem>
+                      <MenuItem value="Tarot Card Reading">
+                        Tarot Card Reading
+                      </MenuItem>
+                      <MenuItem value="Other">Other</MenuItem>
+                    </Select>
                     {formik.touched.service && formik.errors.service ? (
                       <Typography variant="caption" sx={{ color: "red" }}>
                         {formik.errors.service}

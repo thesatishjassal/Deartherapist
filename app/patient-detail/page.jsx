@@ -392,7 +392,7 @@ const PatientDetails = () => {
                 <Box>
                   <Typography component="p">Sign</Typography>
                   <Typography component="strong">
-                    Dr. Shaweta Bhardwaj
+                    Dr. Shaveta Bhardwaj
                   </Typography>
                 </Box>
               </Box>

@@ -118,6 +118,7 @@ const Addprescription = (props) => {
 
         setSuccessMessage("Form submitted successfully!");
         setOpenSuccess(true);
+        window.location.reload(); // Reload the page after successful form submission
         setTimeout(() => {
           console.log("Form Data:", values);
         }, 2000);
