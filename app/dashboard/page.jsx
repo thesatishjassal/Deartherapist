@@ -21,7 +21,7 @@ export default function Dashboard() {
   const user = useProtectedRoute();
 
   if (!user) {
-    return null; // Optionally render a loading state or a redirect message
+   <p>Loading...</p>
   }
   const handleChange = (event, newValue) => {
     setValue(newValue);
