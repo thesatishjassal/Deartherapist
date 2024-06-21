@@ -7,8 +7,9 @@ const useAuth = () => {
   const router = useRouter();
 
   const handleLogout = () => {
-    localStorage.removeItem('token'); // Adjust this according to your token storage method
-    router.push('/');
+    localStorage.removeItem('token');
+    setUser(null); // Clear user state
+    router.push('/'); // Redirect to login page
   };
 
   useEffect(() => {
@@ -19,8 +20,11 @@ const useAuth = () => {
         setUser(decoded);
       } catch (error) {
         console.error('Error decoding token:', error);
-        handleLogout(); // Optionally log the user out if the token is invalid
+        handleLogout(); // Handle token errors by logging out
       }
+    } else {
+      setUser(null); // Ensure user state is cleared if no token found
+      router.push('/'); // Redirect to login page if no token found
     }
   }, []);
 
