@@ -8,7 +8,7 @@ const useAuth = () => {
 
   const handleLogout = () => {
     localStorage.removeItem('token');
-    setUser(null); // Clear user state
+    setUser(null);
     router.push('/'); // Redirect to login page
   };
 
@@ -17,15 +17,20 @@ const useAuth = () => {
     if (token) {
       try {
         const decoded = jwtDecode(token);
+        const currentTime = Date.now() / 1000; // Current time in seconds
+        if (decoded.exp < currentTime) {
+          throw new Error('Token expired');
+        }
         setUser(decoded);
       } catch (error) {
-        console.error('Error decoding token:', error);
-        handleLogout(); // Handle token decoding errors by logging out
+        console.error('Error decoding token or token expired:', error);
+        handleLogout();
       }
     } else {
-      setUser(null); // Ensure user state is cleared if no token found
+      setUser(null);
+      router.push('/'); // Redirect to login if no token found
     }
-  }, []); // Empty dependency array ensures useEffect runs only once on mount
+  }, []);
 
   return { user, handleLogout };
 };
