@@ -106,7 +106,6 @@ export default function MyAppointments() {
           value={searchText}
           onChange={handleSearch}
           sx={{ marginRight: 2 }}
-          fullWidth
         />
         <AddAppointment />
       </Toolbar>
