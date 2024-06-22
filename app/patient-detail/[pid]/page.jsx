@@ -44,12 +44,10 @@ const PatientDetails = ({ params }) => {
 
   const apiUrl = "http://localhost:5500/api/clients"; // Replace with your actual API URL
   const { pid } = params;
-  const user = useProtectedRoute();
   const { client, clientisLoading, error } = useGetClientById(apiUrl, pid);
   const { appointments, loading, meetserror } = useAppointments(pid);
 
   const handleEdit = (clientId, appointmentId, prescriptionId) => {
-    // Open modal for editing prescription
     setIsModalOpen(true);
     setClientId(clientId);
     setAppointmentId(appointmentId);
@@ -57,7 +55,6 @@ const PatientDetails = ({ params }) => {
   };
 
   const handleClose = () => {
-    // Close modal and reset states
     setIsModalOpen(false);
     setClientId(null);
     setAppointmentId(null);
@@ -68,9 +65,6 @@ const PatientDetails = ({ params }) => {
   const handleClick = (event) => {
     setAnchorEl(event.currentTarget);
   };
-
-  // const handleClose = () => {
-  // };
 
   const handleChange = (panel) => (event, isExpanded) => {
     setExpanded(isExpanded ? panel : false);
@@ -85,9 +79,15 @@ const PatientDetails = ({ params }) => {
     setfilltredmeets(formattedRows);
   }, [appointments]);
 
-  if (!user) {
-    return null; // Optionally render a loading state or a redirect message
-  }
+  useEffect(() => {
+    const fetchData = () => {
+      setTimeout(() => {
+        console.log("Fetching data after 3 seconds...");
+        console.log(filltredMeets);
+      }, 3000);
+    };
+    fetchData();
+  }, [filltredMeets]);
 
   if (clientisLoading) {
     return <p>Loading...</p>; // Handle loading state

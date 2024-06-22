@@ -9,14 +9,13 @@ import {
   Typography,
 } from "@mui/material";
 import AddAppointment from "./MakeAppointment";
-import useTodayAppointments from "../../hooks/useTodayAppointments"; // Assuming the file path is correct
-import useGetClients from "../../hooks/useGetClients"; // Path to your custom hook
-import { useRouter } from "next/router"; // Corrected import
-import { format } from "date-fns"; // Import date-fns format function
+import useTodayAppointments from "../../hooks/useTodayAppointments";
+import useGetClients from "../../hooks/useGetClients";
+import { useRouter } from "next/navigation";
 
 const ActionsMenu = ({ rowId }) => {
   const [anchorEl, setAnchorEl] = React.useState(null);
-  const router = useRouter(); // Initialize useRouter
+  const router = useRouter();
 
   const handleClick = (event) => {
     setAnchorEl(event.currentTarget);
@@ -38,7 +37,7 @@ const ActionsMenu = ({ rowId }) => {
 
   const handleView = () => {
     console.log("View", rowId);
-    router.push(`/patient-detail/${rowId}`); // Navigate to the detailed view
+    router.push(`/patient-detail/${rowId}`);
     handleClose();
   };
 
@@ -64,18 +63,24 @@ export default function MyAppointments() {
   ];
 
   const [searchText, setSearchText] = React.useState("");
-  const { clients, isLoading: isTLoading, error } = useGetClients(); // Rename isLoading to avoid conflict
+  const { clients, isLoading: isTLoading, error } = useGetClients();
   const todayAppointments = useTodayAppointments(clients);
   const [rows, setRows] = React.useState([]);
 
+  const fetchAppointments = React.useCallback(() => {
+    setRows(todayAppointments);
+  }, [todayAppointments]);
+
   React.useEffect(() => {
-    const formattedRows = todayAppointments.map((appointment) => ({
-      ...appointment,
-      date: format(new Date(appointment.date), "dd-MM-yyyy"), // Format date correctly
-      time: format(new Date(appointment.time), "HH:mm a"), // Format time correctly
-    }));
-    setRows(formattedRows);
-  }, [todayAppointments]); // Update when todayAppointments changes
+    fetchAppointments();
+  }, [fetchAppointments]);
+
+  React.useEffect(() => {
+    const interval = setInterval(() => {
+      fetchAppointments();
+    }, 2000);
+    return () => clearInterval(interval);
+  }, [fetchAppointments]);
 
   const handleSearch = (event) => {
     setSearchText(event.target.value);
@@ -100,7 +105,7 @@ export default function MyAppointments() {
           placeholder="Search by name"
           value={searchText}
           onChange={handleSearch}
-          sx={{ marginRight: 2 }} // Corrected marginRight spelling
+          sx={{ marginRight: 2 }}
         />
         <AddAppointment />
       </Toolbar>
@@ -121,11 +126,6 @@ export default function MyAppointments() {
           rowsPerPageOptions={[5]}
           getRowId={(row) => row._id}
           components={{ Toolbar: GridToolbar }}
-          initialState={{
-            sorting: {
-              sortModel: [{ field: "date", sort: "desc" }],
-            },
-          }}
         />
       )}
     </div>

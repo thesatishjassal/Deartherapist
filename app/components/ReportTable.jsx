@@ -39,7 +39,7 @@ export default function ReportTable() {
     }));
     setRows(formattedRows);
     setFilteredAppointments(formattedRows); // Initialize filtered appointments with all data
-  }, [todayAppointments]);
+  }, [rows]);
 
   const handleMonthChange = (event) => {
     const monthYear = event.target.value;

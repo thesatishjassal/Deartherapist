@@ -190,7 +190,6 @@ const HorizontalLinearStepper = () => {
       setSuccessMessage("Form submitted successfully!");
       setShowSuccess(true);
       setIsFinished(true);
-      window.location.reload(); // Reload the page after successful form submission
     } catch (error) {
       console.error("Error submitting form:", error);
     } finally {

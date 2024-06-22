@@ -2,7 +2,7 @@
 
 import React, { useState } from "react";
 import { Container, Grid } from "@mui/material";
-import useProtectedRoute from "../../hooks/useProtectedRoute";
+// import useProtectedRoute from "../../hooks/useProtectedRoute";
 import ChangePasswordForm from "../components/UserProfile"; // Adjust the path if necessary
 import CounselorChangePasswordForm from "../components/CounselorChangePasswordForm";
 import ReceptionistChangePasswordForm from "../components/ReceptionistChangePasswordForm";

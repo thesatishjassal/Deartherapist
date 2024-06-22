@@ -33,7 +33,7 @@ import useAuth from "../../hooks/useAuth"; // Adjust the import path as needed
 const ActionsMenu = ({ rowId, onEdit, onDelete }) => {
   const [anchorEl, setAnchorEl] = React.useState(null);
   const router = useRouter();
-  const { user, handleLogout } = useAuth();
+  const { user } = useAuth();
 
   const handleClick = (event) => {
     setAnchorEl(event.currentTarget);
@@ -80,13 +80,11 @@ const ActionsMenu = ({ rowId, onEdit, onDelete }) => {
         <MenuItem onClick={handleEdit}>
           <EditIcon /> &nbsp; Edit
         </MenuItem>
-        {user && user.role == "admin" ? (
+        {user && user.role === "admin" ? (
           <MenuItem onClick={handleDelete}>
             <DeleteIcon /> &nbsp; Delete
           </MenuItem>
-        ) : (
-          ""
-        )}
+        ) : null}
       </Menu>
     </>
   );
@@ -103,14 +101,10 @@ const ClientsTable = () => {
   const [isSnackbarOpen, setSnackbarOpen] = useState(false);
   const [snackbarMessage, setSnackbarMessage] = useState("");
   const { clients, isLoading: isTLoading, error } = useGetClients();
-  const { user, handleLogout } = useAuth();
+  const { user } = useAuth();
 
   useEffect(() => {
-    if (isTLoading) {
-      return;
-    }
-
-    setTimeout(() => {
+    if (!isTLoading) {
       const formattedRows = clients.map((client, index) => ({
         ...client,
         Srno: index + 1,
@@ -118,8 +112,30 @@ const ClientsTable = () => {
       }));
       setRows(formattedRows);
       setIsLoading(false);
-    }, 2000);
+    }
   }, [clients, isTLoading]);
+
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        const response = await axios.get("http://localhost:5500/api/clients");
+        const clientData = response.data;
+        const formattedRows = clientData.map((client, index) => ({
+          ...client,
+          Srno: index + 1,
+          date: format(new Date(client.date), "yyyy-MM-dd"),
+        }));
+        setRows(formattedRows);
+        setIsLoading(false);
+      } catch (error) {
+        console.error("Error fetching clients:", error);
+      }
+    };
+
+    const interval = setInterval(fetchData, 2000); // Fetch data every 3 seconds
+
+    return () => clearInterval(interval); // Clear interval on component unmount
+  }, []);
 
   const handleSearch = (event) => {
     setSearchText(event.target.value);
@@ -221,10 +237,11 @@ const ClientsTable = () => {
     setSnackbarOpen(false);
   };
 
-  const filteredRows = rows.filter((row) =>
-    row.name.toLowerCase().includes(searchText.toLowerCase()) ||
-    row.mobile.toLowerCase().includes(searchText.toLowerCase()) ||
-    row.ClientID.toLowerCase().includes(searchText.toLowerCase())
+  const filteredRows = rows.filter(
+    (row) =>
+      row.name.toLowerCase().includes(searchText.toLowerCase()) ||
+      row.mobile.toLowerCase().includes(searchText.toLowerCase()) ||
+      row.ClientID.toLowerCase().includes(searchText.toLowerCase())
   );
 
   const columns = [
@@ -264,17 +281,11 @@ const ClientsTable = () => {
           onChange={handleSearch}
           sx={{ marginRight: 2 }}
         />
-        {user && user.role == "admin" ? (
-          <Button
-            onClick={handleExport}
-            variant="outlined"
-            sx={{ marginRight: 2 }}
-          >
+        {user && user.role === "admin" ? (
+          <Button onClick={handleExport} variant="outlined" sx={{ marginRight: 2 }}>
             Export Data
           </Button>
-        ) : (
-          ""
-        )}
+        ) : null}
         <AddClients />
       </Toolbar>
       {isLoading ? (

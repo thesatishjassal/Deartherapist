@@ -24,7 +24,7 @@ import MenuItem from "@mui/material/MenuItem";
 import Container from '@mui/material/Container';
 
 const DailyReport = () => {
-  const user = useProtectedRoute();
+  // const user = useProtectedRoute();
   const invoiceRef = React.useRef();
   
   // State variables
@@ -107,8 +107,6 @@ const DailyReport = () => {
     const formattedRows = todayAppointments.map((appointment) => ({
       ...appointment,
       id: appointment._id,
-      date: format(new Date(appointment.date), "MM/yyyy"),
-      time: format(new Date(appointment.time), "HH:mm a"),
     }));
     setRows(formattedRows);
     setFilteredAppointments(formattedRows); // Initialize filtered appointments with all data

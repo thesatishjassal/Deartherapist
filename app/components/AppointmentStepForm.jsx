@@ -101,7 +101,6 @@ export default function HorizontalLinearStepper() {
         console.log("Form submission successful:", data);
         setSuccessMessage("Form submitted successfully!");
         setShowSuccess(true);
-        window.location.reload(); // Reload the page after successful form submission
         setTimeout(() => {
           console.log("Form Data:", values);
           setIsFinished(true);

@@ -1,16 +1,23 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect } from "react";
+import { format } from "date-fns";
 
-// Custom hook to filter appointments that match today's date
 const useTodayAppointments = (clients) => {
-const [allAppointments, setAllAppointments] = useState([]);
+  const [allAppointments, setAllAppointments] = useState([]);
 
   useEffect(() => {
-    const flattenAppointments = clients.reduce((acc, client) => {
-      return acc.concat(client.appointments);
-    }, []);
+    if (clients && clients.length > 0) {
+      const flattenAppointments = clients.reduce((acc, client) => {
+        return acc.concat(client.appointments);
+      }, []);
 
-    // Set state with all appointments
-    setAllAppointments(flattenAppointments);
+      const formattedAppointments = flattenAppointments.map((appointment) => ({
+        ...appointment,
+        date: format(new Date(appointment.date), "dd-MM-yyyy"),
+        time: format(new Date(appointment.time), "HH:mm a"),
+      }));
+
+      setAllAppointments(formattedAppointments);
+    }
   }, [clients]);
 
   return allAppointments;
