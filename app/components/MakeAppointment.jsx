@@ -14,10 +14,14 @@ import DialogActions from "@mui/material/DialogActions";
 import IconButton from "@mui/material/IconButton";
 import CloseIcon from "@mui/icons-material/Close";
 import Box from "@mui/material/Box";
+import AddIcon from "@mui/icons-material/Add";
 
 export default function AddAppointment() {
   const [open, setOpen] = React.useState(false);
-  
+
+  const theme = useTheme();
+  const isMobile = useMediaQuery(theme.breakpoints.down("sm"));
+
   const handleClickOpen = () => {
     setOpen(true);
   };
@@ -33,41 +37,52 @@ export default function AddAppointment() {
       padding: theme.spacing(1),
     },
   }));
-  
+
   return (
     <React.Fragment>
-    <Button variant="outlined" onClick={handleClickOpen}>
-      Add Appointments 
-    </Button>
-    <BootstrapDialog
-      sx={{ width: "100%" }}
-      className="responsive-dialog"
-      onClose={handleClose}
-      aria-labelledby="customized-dialog-title"
-      open={open}
-    >
-      <DialogTitle sx={{ m: 0, p: 2 }} id="customized-dialog-title">
-      Add  Appointments
-      </DialogTitle>
-      <IconButton
-        aria-label="close"
-        onClick={handleClose}
-        sx={{
-          position: "absolute",
-          right: 8,
-          top: 8,
-          color: (theme) => theme.palette.grey[500],
-        }}
+      <Button
+        variant="outlined"
+        onClick={handleClickOpen}
+        className="hidemobile"
       >
-        <CloseIcon />
-      </IconButton>
-      <DialogContent dividers className="modalapp-body">
-        <Box sx={{ width: "100%", padding: 3 }}>
-        <MyAppointments />
-        </Box>
-      </DialogContent>
+        Add Appointments
+      </Button>
+      <Button
+        variant="outlined"
+        startIcon={<AddIcon />}
+        className="hidedesktop"
+        onClick={handleClickOpen}
+      >
+        Add
+      </Button>
+      <BootstrapDialog
+        sx={{ width: "100%" }}
+        className="responsive-dialog"
+        onClose={handleClose}
+        aria-labelledby="customized-dialog-title"
+        open={open}
+      >
+        <DialogTitle sx={{ m: 0, p: 2 }} id="customized-dialog-title">
+          Add Appointments
+        </DialogTitle>
+        <IconButton
+          aria-label="close"
+          onClick={handleClose}
+          sx={{
+            position: "absolute",
+            right: 8,
+            top: 8,
+            color: (theme) => theme.palette.grey[500],
+          }}
+        >
+          <CloseIcon />
+        </IconButton>
+        <DialogContent dividers className="modalapp-body">
+          <Box sx={{ width: "100%", padding: 3 }}>
+            <MyAppointments />
+          </Box>
+        </DialogContent>
       </BootstrapDialog>
-  </React.Fragment>
-
+    </React.Fragment>
   );
 }

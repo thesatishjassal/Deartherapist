@@ -2,18 +2,16 @@ import * as React from "react";
 import { DataGrid, GridToolbar } from "@mui/x-data-grid";
 import {
   Box,
+  Button,
   CircularProgress,
   TextField,
   Toolbar,
   Typography,
 } from "@mui/material";
 import AddAppointment from "./MakeAppointment";
-import useTodayAppointments from "../../hooks/useTodayAppointments";
+import useTodayAppointments from "../../hooks/useCounselorAppointments";
 import useGetClients from "../../hooks/useGetClients";
-import useAuth from "../../hooks/useAuth"; // Adjust the import path as needed
 import { useRouter } from "next/navigation";
-import { format } from "date-fns";
-import Button from "@mui/material/Button";
 
 const ActionsMenu = ({ rowId }) => {
   const [anchorEl, setAnchorEl] = React.useState(null);
@@ -25,6 +23,16 @@ const ActionsMenu = ({ rowId }) => {
 
   const handleClose = () => {
     setAnchorEl(null);
+  };
+
+  const handleEdit = () => {
+    console.log("Edit", rowId);
+    handleClose();
+  };
+
+  const handleDelete = () => {
+    console.log("Delete", rowId);
+    handleClose();
   };
 
   const handleView = () => {
@@ -42,8 +50,9 @@ const ActionsMenu = ({ rowId }) => {
   );
 };
 
-const CounselorAppointments = () => {
+export default function MyAppointments() {
   const columns = [
+    { field: "Srno", headerName: "Sr No", width: 150 },
     { field: "appointmentID", headerName: "Appointment ID", width: 150 },
     { field: "date", headerName: "Date", width: 130 },
     { field: "time", headerName: "Time", width: 120 },
@@ -57,36 +66,37 @@ const CounselorAppointments = () => {
   const { clients, isLoading: isTLoading, error } = useGetClients();
   const todayAppointments = useTodayAppointments(clients);
   const [rows, setRows] = React.useState([]);
-  const { user } = useAuth(); // Assuming useAuth provides user details including email
+
+  const fetchAppointments = React.useCallback(() => {
+    setRows(todayAppointments);
+  }, [todayAppointments]);
 
   React.useEffect(() => {
-    if (!user) return;
+    fetchAppointments();
+  }, [fetchAppointments]);
 
-    const filteredAppointments = todayAppointments.filter(
-      (appointment) => appointment.facilitatedBy === "counselor"
-    );
-
-    const formattedRows = filteredAppointments.map((appointment) => ({
-      ...appointment,
-      date: format(new Date(appointment.date), "dd-MM-yyyy"),
-      time: format(new Date(appointment.time), "HH:mm a"),
-    }));
-
-    setRows(formattedRows);
-  }, [todayAppointments, user]);
+  React.useEffect(() => {
+    const interval = setInterval(() => {
+      fetchAppointments();
+    }, 2000);
+    return () => clearInterval(interval);
+  }, [fetchAppointments]);
 
   const handleSearch = (event) => {
     setSearchText(event.target.value);
   };
 
-  const filteredRows = rows.filter((row) =>
-    row.name.toLowerCase().includes(searchText.toLowerCase())
+  const filteredRows = rows.filter(
+    (row) =>
+      row.name.toLowerCase().includes(searchText.toLowerCase()) ||
+      row.appointmentID.toLowerCase().includes(searchText.toLowerCase()) ||
+      row.facilitatedBy.toLowerCase().includes(searchText.toLowerCase())
   );
 
   return (
     <div style={{ width: "100%" }}>
       <Toolbar>
-        <Typography variant="h6" component="div" sx={{ flexGrow: 1 }}>
+        <Typography variant="h6" className="hidemobile" component="div" sx={{ flexGrow: 1 }}>
           My Appointments
         </Typography>
         <TextField
@@ -116,15 +126,8 @@ const CounselorAppointments = () => {
           rowsPerPageOptions={[5]}
           getRowId={(row) => row._id}
           components={{ Toolbar: GridToolbar }}
-          initialState={{
-            sorting: {
-              sortModel: [{ field: "date", sort: "desc" }],
-            },
-          }}
         />
       )}
     </div>
   );
-};
-
-export default CounselorAppointments;
+}

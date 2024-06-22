@@ -95,8 +95,8 @@ export default function MyAppointments() {
 
   return (
     <div style={{ width: "100%" }}>
-      <Toolbar>
-        <Typography variant="h6" component="div" sx={{ flexGrow: 1 }}>
+      <Toolbar sx={{ px: "0" ,  py: "3"}}>
+        <Typography variant="h6" className="hidemobile" component="div" sx={{ flexGrow: 1 }} >
           My Appointments
         </Typography>
         <TextField
@@ -106,6 +106,7 @@ export default function MyAppointments() {
           value={searchText}
           onChange={handleSearch}
           sx={{ marginRight: 2 }}
+          fullWidth
         />
         <AddAppointment />
       </Toolbar>

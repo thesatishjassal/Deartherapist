@@ -45,8 +45,15 @@ export default function AddClietns() {
 
   return (
     <React.Fragment>
-      <Button variant="outlined" onClick={handleClickOpen}>
-       Add Clients
+      <Button variant="outlined" onClick={handleClickOpen} className="hidemobile">
+        Add Clients
+      </Button>
+      <Button
+        startIcon={<AddIcon />}
+        variant="outlined" 
+        onClick={handleClickOpen} className="hidedesktop"
+      >
+        Add
       </Button>
       <BootstrapDialog
         sx={{ width: "100%" }}
