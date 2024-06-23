@@ -59,15 +59,7 @@ export default function MyAppointments() {
     { field: "channel", headerName: "Channel", width: 180 },
     { field: "service", headerName: "Service", width: 180 },
     { field: "facilitatedBy", headerName: "Facilitated By", width: 180 },
-    { field: "amount", headerName: "Amount", width: 110 },
-    {
-      field: "actions",
-      headerName: "Actions",
-      width: 120,
-      renderCell: (params) => (
-        <ActionsMenu rowId={params.row._id} />
-      ),
-    },
+    { field: "amount", headerName: "Amount", width: 110 }
   ];
 
   const [searchText, setSearchText] = React.useState("");
@@ -103,13 +95,8 @@ export default function MyAppointments() {
 
   return (
     <div style={{ width: "100%" }}>
-      <Toolbar sx={{ px: "0", py: "3" }}>
-        <Typography
-          variant="h6"
-          className="hidemobile"
-          component="div"
-          sx={{ flexGrow: 1 }}
-        >
+      <Toolbar sx={{ px: "0" ,  py: "3"}}>
+        <Typography variant="h6" className="hidemobile" component="div" sx={{ flexGrow: 1 }} >
           My Appointments
         </Typography>
         <TextField
