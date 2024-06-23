@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react';
 
 const useClientContacts = (apiUrl) => {
-  const [contacts, setContacts] = useState({ mobileNumbers: [], emails: [] });
+  const [contacts, setContacts] = useState({ mobileNumbers: [], emails: [], clientIds: [] });
   const [wait, setLoading] = useState(true);
   const [error, setError] = useState(null);
 
@@ -17,7 +17,8 @@ const useClientContacts = (apiUrl) => {
         const data = await response.json();
         const mobileNumbers = data.map(client => client.mobile);
         const emails = data.map(client => client.email);
-        setContacts({ mobileNumbers, emails });
+        const clientIds = data.map(client => client.ClientID);
+        setContacts({ mobileNumbers, emails, clientIds });
       } catch (err) {
         setError(err.message);
       } finally {

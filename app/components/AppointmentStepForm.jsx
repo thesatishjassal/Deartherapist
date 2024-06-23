@@ -32,11 +32,16 @@ import CircularProgress from "@mui/material/CircularProgress";
 import useClientContacts from "../../hooks/useClientContacts"; // Adjust the path as needed
 import useGetClients from "../../hooks/useGetClients"; // Path to your custom hook
 import Alert from "@mui/material/Alert";
-
+import ListItemDecorator from "@mui/joy/ListItemDecorator";
+import Radio from "@mui/joy/Radio";
+import RadioGroup from "@mui/joy/RadioGroup";
+import Person from "@mui/icons-material/Person";
+import People from "@mui/icons-material/People";
+import Apartment from "@mui/icons-material/Apartment";
 const steps = ["Search Client", "Personal Details"];
 
 const validationSchema = Yup.object({
-  mobileNumber: Yup.string().required("Mobile number is required"),
+  mobileNumber: Yup.string(),
   date: Yup.date().required("Date is required"),
   time: Yup.date().required("Time is required"),
   channel: Yup.string().required("Session type is required"),
@@ -61,6 +66,7 @@ export default function HorizontalLinearStepper() {
   const [showAlert, setShowAlert] = React.useState(false);
   const [successMessage, setSuccessMessage] = React.useState("");
   const [showSuccess, setShowSuccess] = React.useState(false);
+  const [selectedClientId, setSelectedClientId] = React.useState(null);
 
   const apiUrl = "https://93.127.199.158/api/clients";
 
@@ -150,26 +156,48 @@ export default function HorizontalLinearStepper() {
   const handleMobileNumber = (event, value) => {
     formik.setFieldValue("mobileNumber", value);
     setclientMobile(value);
+    console.log(value);
     const sortedClients = clients.filter((client) => client.mobile === value);
     setfilteredClients(sortedClients);
-    const matchedClientId = sortedClients.length > 0 ? sortedClients[0]._id : null;
+    const matchedClientId =
+      sortedClients.length > 0 ? sortedClients[0]._id : null;
     setAppointmentID(matchedClientId);
-    formik.setFieldValue("name", sortedClients.length > 0 ? sortedClients[0].name : "");
+    setSelectedClientId("");
+    formik.setFieldValue(
+      "name",
+      sortedClients.length > 0 ? sortedClients[0].name : ""
+    );
   };
-  
+
+  const handleclientIds = (event, value) => {
+    setSelectedClientId(value);
+    const sortedClients = clients.filter((client) => client.ClientID === value);
+    console.log(value);
+    setfilteredClients(sortedClients);
+    const matchedClientId =
+      sortedClients.length > 0 ? sortedClients[0]._id : null;
+    setAppointmentID(matchedClientId);
+    formik.setFieldValue("mobileNumber", "");
+    formik.setFieldValue(
+      "name",
+      sortedClients.length > 0 ? sortedClients[0].name : ""
+    );
+  };
+
   const PersonalDetailStep = () => (
     <Box sx={{ width: "100%", px: 1, py: 3 }}>
       <Grid container rowSpacing={3} columnSpacing={{ xs: 1, sm: 2, md: 3 }}>
         <Grid item xs={12} sm={12} md={12}>
           <Autocomplete
-            fullWidth 
+            fullWidth
             id="client-mobileno"
             options={contacts && contacts.mobileNumbers}
             value={formik.values.mobileNumber}
             onChange={handleMobileNumber}
             onBlur={() => formik.setFieldTouched("mobileNumber", true)}
             renderInput={(params) => (
-              <TextField fullWidth
+              <TextField
+                fullWidth
                 {...params}
                 label="Select Client Mobile No"
                 error={
@@ -183,24 +211,18 @@ export default function HorizontalLinearStepper() {
             )}
           />
         </Grid>
-        {/* <Grid item xs={12} sm={12} md={6}>
+        <Grid item xs={12} sm={12} md={12}>
           <Autocomplete
             fullWidth
-            id="client-email"
-            options={contacts.emails}
-            value={formik.values.email}
-            onChange={handleEmailAdreess}
-            onBlur={() => formik.setFieldTouched("email", true)}
+            id="client-Id"
+            options={contacts && contacts.clientIds}
+            onChange={handleclientIds}
+            value={selectedClientId}
             renderInput={(params) => (
-              <TextField
-                {...params}
-                label="Select Client Email"
-                error={formik.touched.email && Boolean(formik.errors.email)}
-                helperText={formik.touched.email && formik.errors.email}
-              />
+              <TextField fullWidth {...params} label="Select Client Id" />
             )}
           />
-        </Grid> */}
+        </Grid>
 
         <Grid item xs={12} sm={12} md={12}>
           <Card>
@@ -390,16 +412,16 @@ export default function HorizontalLinearStepper() {
 
   return (
     <Box sx={{ width: "100%" }}>
-    {showAlert && (
-          <Alert severity="error" onClose={() => setShowAlert(false)}>
-            {alertMessage}
-          </Alert>
-        )}
-        {showSuccess && (
-          <Alert severity="success" onClose={() => setShowSuccess(false)}>
-            {successMessage}
-          </Alert>
-        )}
+      {showAlert && (
+        <Alert severity="error" onClose={() => setShowAlert(false)}>
+          {alertMessage}
+        </Alert>
+      )}
+      {showSuccess && (
+        <Alert severity="success" onClose={() => setShowSuccess(false)}>
+          {successMessage}
+        </Alert>
+      )}
       {isFinished ? (
         <Box sx={{ textAlign: "center", mt: 2 }}>
           {/* <Typography variant="h6" gutterBottom>
