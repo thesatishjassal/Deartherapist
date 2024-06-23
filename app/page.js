@@ -41,8 +41,6 @@ const LoginForm = () => {
             'Content-Type': 'application/json',
           },
           body: JSON.stringify(values),
-          // Temporary workaround to ignore SSL certificate errors (for development only)
-          agent: new https.Agent({ rejectUnauthorized: false }),
         });
 
         if (response.ok) {
