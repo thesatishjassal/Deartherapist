@@ -101,7 +101,7 @@ const Addprescription = (props) => {
           formData.append("file", values.file);
         }
 
-        const apiUrl = `http://localhost:5500/api/clients/${props.clientId}/appointments/${values.appointmentID}/prescriptions`;
+        const apiUrl = `http://93.127.199.158/api/clients/${props.clientId}/appointments/${values.appointmentID}/prescriptions`;
         const requestOptions = {
           method: "POST",
           body: formData,

@@ -34,7 +34,7 @@ const LoginForm = () => {
       setIsLoading(true); // Start loading state
 
       try {
-        const response = await fetch('http://localhost:5500/api/auth/login', {
+        const response = await fetch('http://93.127.199.158/api/auth/login', {
           method: 'POST',
           headers: {
             'Content-Type': 'application/json',

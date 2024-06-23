@@ -155,7 +155,7 @@ const HorizontalLinearStepper = () => {
   };
 
   const submitForm = async (formData) => {
-    const apiUrl = "http://localhost:5500/api/clients";
+    const apiUrl = "http://93.127.199.158/api/clients";
     const requestOptions = {
       method: "POST",
       headers: { "Content-Type": "application/json" },

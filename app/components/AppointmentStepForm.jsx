@@ -62,7 +62,7 @@ export default function HorizontalLinearStepper() {
   const [successMessage, setSuccessMessage] = React.useState("");
   const [showSuccess, setShowSuccess] = React.useState(false);
 
-  const apiUrl = "http://localhost:5500/api/clients";
+  const apiUrl = "http://93.127.199.158/api/clients";
 
   const { contacts, wait, error } = useClientContacts(apiUrl);
   const { clients, isLoading: loadingClients, clienterror } = useGetClients(); // Rename isLoading to avoid conflict
@@ -81,7 +81,7 @@ export default function HorizontalLinearStepper() {
     validationSchema: validationSchema,
     onSubmit: async (values) => {
       setLoading(true); // Start loading
-      const apiUrl = `http://localhost:5500/api/clients/${appointmentID}/appointments`;
+      const apiUrl = `http://93.127.199.158/api/clients/${appointmentID}/appointments`;
       const requestOptions = {
         method: "POST",
         headers: { "Content-Type": "application/json" },
