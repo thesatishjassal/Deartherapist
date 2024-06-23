@@ -31,7 +31,8 @@ const LoginForm = () => {
     },
     validationSchema: validationSchema,
     onSubmit: async (values) => {
-      setIsLoading(true); // Start loading state
+      setIsLoading(true);
+      setError(null);
 
       try {
         const response = await fetch('https://93.127.199.158/api/auth/login', {
@@ -41,26 +42,25 @@ const LoginForm = () => {
           },
           body: JSON.stringify(values),
         });
-  
+
         if (response.ok) {
           const data = await response.json();
           const token = data.token;
-          // Decode the token to get user data
           const decoded = jwtDecode(token);
-          console.log(data); // You can access decoded data like decoded.email, decoded.role, etc.
           localStorage.setItem('token', token);
-            router.push('/dashboard')
+          router.push('/dashboard');
         } else {
-          setError('Invalid email or password');
+          const errorData = await response.json();
+          console.error('Login failed:', errorData);
+          setError(errorData.message || 'Invalid email or password');
         }
       } catch (error) {
         console.error('Login error:', error);
         setError('Login failed. Please try again.');
       }
-      // Simulate API call or async operation
-      await new Promise((resolve) => setTimeout(resolve, 1000)); // Simulate 1 second delay
-      setIsLoading(false); // End loading state
-      formik.resetForm(); // Reset form fields
+      
+      setIsLoading(false);
+      formik.resetForm();
     },
   });
 
