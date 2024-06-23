@@ -14,6 +14,7 @@ import CircularProgress from '@mui/material/CircularProgress'; // Import Circula
 import { useRouter } from 'next/navigation'
 import { jwtDecode } from "jwt-decode";
 import Alert from '@mui/material/Alert';
+import axios from 'axios'; // Import Axios
 
 const LoginForm = () => {
   const [isLoading, setIsLoading] = useState(false); // State for loading indicator
@@ -33,24 +34,23 @@ const LoginForm = () => {
     onSubmit: async (values) => {
       setIsLoading(true);
       setError(null);
-
+  
       try {
-        const response = await fetch('https://93.127.199.158/api/auth/login', {
-          method: 'POST',
+        const response = await axios.post('https://93.127.199.158/api/auth/login/', values, {
           headers: {
             'Content-Type': 'application/json',
           },
-          body: JSON.stringify(values),
+          // You can include other Axios configurations here, such as timeout or authentication tokens
         });
-
-        if (response.ok) {
-          const data = await response.json();
+  
+        if (response.status === 200) {
+          const data = response.data;
           const token = data.token;
           const decoded = jwtDecode(token);
           localStorage.setItem('token', token);
           router.push('/dashboard');
         } else {
-          const errorData = await response.json();
+          const errorData = response.data;
           console.error('Login failed:', errorData);
           setError(errorData.message || 'Invalid email or password');
         }
@@ -58,7 +58,7 @@ const LoginForm = () => {
         console.error('Login error:', error);
         setError('Login failed. Please try again.');
       }
-      
+  
       setIsLoading(false);
       formik.resetForm();
     },
