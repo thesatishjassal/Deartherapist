@@ -104,7 +104,7 @@ const Editprescription = ({
           formData.append("file", values.file);
         }
 
-        let apiUrl = `http://93.127.199.158/api/clients/${clientId}/appointments/${appointmentId}/prescriptions/${prescriptionId}`;
+        let apiUrl = `https://93.127.199.158/api/clients/${clientId}/appointments/${appointmentId}/prescriptions/${prescriptionId}`;
         const requestOptions = {
           method: "PATCH",
           body: formData,

@@ -1,5 +1,5 @@
 const getAppointmentsPrescriptions = async (clientId, appointmentId) => {
-    const url = `http://93.127.199.158/api/clients/${clientId}/appointments/${appointmentId}/prescriptions/`;
+    const url = `https://93.127.199.158/api/clients/${clientId}/appointments/${appointmentId}/prescriptions/`;
 
     try {
         const response = await fetch(url);

@@ -11,7 +11,7 @@ const useGetClients = () => {
   useEffect(() => {
     const fetchClients = async () => {
       try {
-        const response = await axios.get('http://93.127.199.158/api/clients');
+        const response = await axios.get('https://93.127.199.158/api/clients');
         setClients(response.data);
         setIsLoading(false);
       } catch (error) {
