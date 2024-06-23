@@ -39,7 +39,7 @@ const LoginForm = () => {
         const response = await axios.post('https://93.127.199.158/api/auth/login', values, {
           headers: {
             'Content-Type': 'application/json',
-          },
+          },  timeout: 10000,
           // You can include other Axios configurations here, such as timeout or authentication tokens
         });
   
