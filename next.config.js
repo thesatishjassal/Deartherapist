@@ -1,7 +1,7 @@
 /** @type {import('next').NextConfig} */
 const nextConfig = {
   images: {
-    domains: ['flagcdn.com'],
+    domains: ['https://flagcdn.com'],
   },
   env: {
     API_URL: 'https://api.deartherapist.in',
