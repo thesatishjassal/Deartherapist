@@ -36,7 +36,7 @@ const LoginForm = () => {
       setError(null);
   
       try {
-        const response = await axios.post('https://93.127.199.158/api/auth/login', values, {
+        const response = await axios.post('https://api.deartherapist.in/api/auth/login', values, {
           headers: {
             'Content-Type': 'application/json',
           },  timeout: 10000,

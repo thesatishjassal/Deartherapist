@@ -20,7 +20,7 @@ const CounselorChangePasswordForm = () => {
     try {
       const token = localStorage.getItem('token');
       const response = await axios.post(
-        'https://93.127.199.158/api/auth/counselor/change-password',
+        'https://api.deartherapist.in/api/auth/counselor/change-password',
         { currentPassword, newPassword },
         {
           headers: {
