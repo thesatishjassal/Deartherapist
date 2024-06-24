@@ -68,7 +68,7 @@ export default function HorizontalLinearStepper() {
   const [showSuccess, setShowSuccess] = React.useState(false);
   const [selectedClientId, setSelectedClientId] = React.useState(null);
 
-  const apiUrl = "https://api.deartherapist.in/api/clients";
+  const apiUrl = `${process.env.API_URL}/api/clients`;
 
   const { contacts, wait, error } = useClientContacts(apiUrl);
   const { clients, isLoading: loadingClients, clienterror } = useGetClients(); // Rename isLoading to avoid conflict

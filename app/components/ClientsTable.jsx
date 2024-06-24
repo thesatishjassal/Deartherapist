@@ -118,7 +118,7 @@ const ClientsTable = () => {
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const response = await axios.get("https://api.deartherapist.in/api/clients");
+        const response = await axios.get(`${process.env.API_URL}/api/clients`);
         const clientData = response.data;
         const formattedRows = clientData.map((client, index) => ({
           ...client,
@@ -153,7 +153,7 @@ const ClientsTable = () => {
 
   const confirmDelete = async () => {
     try {
-      await axios.delete(`https://api.deartherapist.in/api/clients/${deleteId}`);
+      await axios.delete(`${process.env.API_URL}/api/clients/${deleteId}`);
       setRows((prevRows) => prevRows.filter((row) => row._id !== deleteId));
       setDeleteDialogOpen(false);
       setDeleteId(null);
@@ -176,7 +176,7 @@ const ClientsTable = () => {
   const handleEditSave = async (updatedClient) => {
     try {
       const response = await axios.patch(
-        `https://api.deartherapist.in/api/clients/${updatedClient._id}`,
+        `${process.env.API_URL}/api/clients/${updatedClient._id}`,
         updatedClient
       );
       setRows((prevRows) =>

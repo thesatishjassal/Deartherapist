@@ -1,5 +1,5 @@
 const getAppointmentsPrescriptions = async (clientId, appointmentId) => {
-    const url = `https://api.deartherapist.in/api/clients/${clientId}/appointments/${appointmentId}/prescriptions/`;
+    const url = `${process.env.API_URL}/api/clients/${clientId}/appointments/${appointmentId}/prescriptions/`;
 
     try {
         const response = await fetch(url);
