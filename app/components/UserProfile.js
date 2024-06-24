@@ -13,7 +13,7 @@ const ChangePasswordForm = () => {
   const handlePasswordChange = async () => {
     try {
       const response = await axios.post(
-        'https://api.deartherapist.in/api/auth/change-password',
+        `${process.env.API_URL}/api/auth/change-password`,
         { email: selectedEmail, newPassword },
         {
           headers: {

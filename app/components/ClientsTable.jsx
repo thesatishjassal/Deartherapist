@@ -196,7 +196,7 @@ const ClientsTable = () => {
 
   const handleExport = async () => {
     try {
-      const response = await axios.get("https://api.deartherapist.in/api/clients");
+      const response = await axios.get(`${process.env.API_URL}/api/clients`);
       const clientData = response.data;
 
       // Construct CSV content

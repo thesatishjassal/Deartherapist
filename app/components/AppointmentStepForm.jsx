@@ -87,7 +87,7 @@ export default function HorizontalLinearStepper() {
     validationSchema: validationSchema,
     onSubmit: async (values) => {
       setLoading(true); // Start loading
-      const apiUrl = `https://api.deartherapist.in/api/clients/${appointmentID}/appointments`;
+      const apiUrl = `${process.env.API_URL}/api/clients/${appointmentID}/appointments`;
       const requestOptions = {
         method: "POST",
         headers: { "Content-Type": "application/json" },

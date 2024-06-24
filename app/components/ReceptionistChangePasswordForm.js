@@ -20,7 +20,7 @@ const ReceptionistChangePasswordForm = () => {
     try {
       const token = localStorage.getItem('token');
       const response = await axios.post(
-        'https://api.deartherapist.in/api/auth/receptionist/change-password',
+        `${process.env.API_URL}/api/auth/receptionist/change-password`,
         { currentPassword, newPassword },
         {
           headers: {

@@ -440,7 +440,7 @@ const PatientDetails = ({ params }) => {
                               <Typography key={index} component="p">
                                 <strong>Download File: </strong>{" "}
                                 <Link
-                                  href={`https://api.deartherapist.in/uploads/${prescription.file.name}`}
+                                  href={`${process.env.API_URL}/uploads/${prescription.file.name}`}
                                   download
                                 >
                                   {prescription.file.name}

@@ -9,7 +9,7 @@ const useAppointments = (clientId) => {
   useEffect(() => {
     const fetchAppointments = async () => {
       try {
-        const response = await axios.get(`https://api.deartherapist.in/api/clients/${clientId}/appointments`);
+        const response = await axios.get(`${process.env.API_URL}/api/clients/${clientId}/appointments`);
         setAppointments(response.data);
       } catch (err) {
         setError(err);
