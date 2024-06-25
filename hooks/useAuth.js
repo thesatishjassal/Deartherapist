@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
-import jwtDecode from 'jwt-decode';
-import { useRouter } from 'next/router';
+import { jwtDecode } from "jwt-decode";
+import { useRouter } from 'next/navigation';
 
 const useAuth = () => {
   const [user, setUser] = useState(null);
