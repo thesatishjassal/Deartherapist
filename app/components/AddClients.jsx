@@ -53,7 +53,6 @@ export default function AddClietns() {
         variant="outlined" 
         onClick={handleClickOpen} className="hidedesktop"
       >
-        Add
       </Button>
       <BootstrapDialog
         sx={{ width: "100%" }}
