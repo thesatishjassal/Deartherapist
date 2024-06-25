@@ -44,14 +44,15 @@ const PatientDetails = ({ params }) => {
 
   const apiUrl = `/api/clients` ; // Replace with your actual API URL
   const { pid } = params;
+  
+  const user = useProtectedRoute();
   const { client, clientisLoading, error } = useGetClientById(apiUrl, pid);
   const { appointments, loading, meetserror } = useAppointments(pid);
-  const user = useProtectedRoute();
 
   if (!user) {
     return null; // Optionally render a loading state or a redirect message
   }
-  
+
   const handleEdit = (clientId, appointmentId, prescriptionId) => {
     setIsModalOpen(true);
     setClientId(clientId);
