@@ -271,7 +271,7 @@ const ClientsTable = () => {
   return (
     <div style={{ width: "100%" }}>
       <Toolbar>
-        <Typography variant="h6" component="div" sx={{ flexGrow: 1 }}>
+        <Typography variant="h6" component="div" sx={{ flexGrow: 1 }}  className="hidemobile">
           My Clients
         </Typography>
         <TextField
