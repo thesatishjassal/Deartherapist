@@ -12,19 +12,20 @@ import TabPanel from "@mui/lab/TabPanel";
 import { Box, Button } from "@mui/material";
 import MyAppointments from "../components/MyAppoinments";
 import useAuth from "../../hooks/useAuth"; // Adjust the import path as needed
+// import useProtectedRoute from "../../hooks/useProtectedRoute";
 import CounselorAppointments from "../components/CounselorAppointments";
 import useProtectedRoute from  "../../hooks/useProtectedRoute";
 
 export default function Dashboard() {
   const [value, setValue] = React.useState("1");
-  const { myuser, handleLogout } = useAuth();
-  const user = useProtectedRoute();
+  const myuser = useProtectedRoute();
+  const { user, handleLogout } = useAuth();
 
-  if (!user) {
+  if (!myuser) {
     return null; // Optionally render a loading state or a redirect message
   }
   
-  if (!myuser) {
+  if (!user) {
    <p>Loading...</p>
   }
   const handleChange = (event, newValue) => {
@@ -35,9 +36,9 @@ export default function Dashboard() {
     <Card className="main__dashboard">
       <CardContent>
         <Typography gutterBottom variant="h5" component="div" className="mb-4">
-          {myuser && myuser.role == "admin" ? "Welcome 👋 Dr. Shaveta" : ""}
-          {myuser && myuser.role == "counselor" ? "Welcome 👋 Counselor" : ""}
-          {myuser && myuser.role == "receptionist"
+          {user && user.role == "admin" ? "Welcome 👋 Dr. Shaveta" : ""}
+          {user && user.role == "counselor" ? "Welcome 👋 Counselor" : ""}
+          {user && user.role == "receptionist"
             ? " Welcome 👋 Receptionist"
             : ""}
         </Typography>
@@ -54,7 +55,7 @@ export default function Dashboard() {
             <ClientsTable />
           </TabPanel>
           <TabPanel value="2">
-            {myuser && myuser.role == "counselor" ? (
+            {user && user.role == "counselor" ? (
               <CounselorAppointments />
             ) : (
               <MyAppointments />
