@@ -29,6 +29,7 @@ import useGetClients from "../../hooks/useGetClients";
 import axios from "axios";
 import { format } from "date-fns";
 import useAuth from "../../hooks/useAuth"; // Adjust the import path as needed
+import FileDownloadOutlinedIcon from "@mui/icons-material/FileDownloadOutlined";
 
 const ActionsMenu = ({ rowId, onEdit, onDelete }) => {
   const [anchorEl, setAnchorEl] = React.useState(null);
@@ -282,10 +283,25 @@ const ClientsTable = () => {
           sx={{ marginRight: 2 }}
         />
         {user && user.role === "admin" ? (
-          <Button onClick={handleExport} variant="outlined" sx={{ marginRight: 2 }}>
-            Export Data
-          </Button>
+          <>
+            <Button
+              onClick={handleExport}
+              className="hidemobile"
+              variant="outlined"
+              sx={{ marginRight: 2 }}
+            >
+              Export Data
+            </Button>
+            <Button
+              onClick={handleExport}
+              className="hidedesktop"
+              variant="outlined"
+              sx={{ marginRight: 2 }}
+              endIcon={<FileDownloadOutlinedIcon />}
+            ></Button>
+          </>
         ) : null}
+
         <AddClients />
       </Toolbar>
       {isLoading ? (
