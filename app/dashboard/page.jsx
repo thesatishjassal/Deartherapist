@@ -12,7 +12,6 @@ import TabPanel from "@mui/lab/TabPanel";
 import { Box, Button } from "@mui/material";
 import MyAppointments from "../components/MyAppoinments";
 import useAuth from "../../hooks/useAuth"; // Adjust the import path as needed
-import useProtectedRoute from "../../hooks/useProtectedRoute";
 import CounselorAppointments from "../components/CounselorAppointments";
 import useProtectedRoute from  "../../hooks/useProtectedRoute";
 
