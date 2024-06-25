@@ -46,7 +46,12 @@ const PatientDetails = ({ params }) => {
   const { pid } = params;
   const { client, clientisLoading, error } = useGetClientById(apiUrl, pid);
   const { appointments, loading, meetserror } = useAppointments(pid);
+  const user = useProtectedRoute();
 
+  if (!user) {
+    return null; // Optionally render a loading state or a redirect message
+  }
+  
   const handleEdit = (clientId, appointmentId, prescriptionId) => {
     setIsModalOpen(true);
     setClientId(clientId);

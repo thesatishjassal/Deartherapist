@@ -24,8 +24,11 @@ import MenuItem from "@mui/material/MenuItem";
 import Container from '@mui/material/Container';
 
 const DailyReport = () => {
-  // const user = useProtectedRoute();
-  const invoiceRef = React.useRef();
+  const user = useProtectedRoute();
+
+  if (!user) {
+    return null; // Optionally render a loading state or a redirect message
+  }  const invoiceRef = React.useRef();
   
   // State variables
   const [rows, setRows] = React.useState([]);
