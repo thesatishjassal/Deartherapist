@@ -36,7 +36,7 @@ const LoginForm = () => {
       setError(null);
   
       try {
-        const response = await axios.post(`${process.env.API_URL}/api/auth/login`, values, {
+        const response = await axios.post(`/api/auth/login`, values, {
           headers: {
             'Content-Type': 'application/json',
           },  timeout: 10000,

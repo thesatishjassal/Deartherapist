@@ -101,7 +101,7 @@ const Addprescription = (props) => {
           formData.append("file", values.file);
         }
 
-        const apiUrl = `${process.env.API_URL}/api/clients/${props.clientId}/appointments/${values.appointmentID}/prescriptions`;
+        const apiUrl = `/api/clients/${props.clientId}/appointments/${values.appointmentID}/prescriptions`;
         const requestOptions = {
           method: "POST",
           body: formData,

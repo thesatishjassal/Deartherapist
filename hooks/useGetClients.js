@@ -11,7 +11,7 @@ const useGetClients = () => {
   useEffect(() => {
     const fetchClients = async () => {
       try {
-        const response = await axios.get(`${process.env.API_URL}/api/clients`);
+        const response = await axios.get(`/api/clients`);
         setClients(response.data);
         setIsLoading(false);
       } catch (error) {

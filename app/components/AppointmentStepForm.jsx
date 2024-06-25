@@ -68,7 +68,7 @@ export default function HorizontalLinearStepper() {
   const [showSuccess, setShowSuccess] = React.useState(false);
   const [selectedClientId, setSelectedClientId] = React.useState(null);
 
-  const apiUrl = `${process.env.API_URL}/api/clients`;
+  const apiUrl = `/api/clients`;
 
   const { contacts, wait, error } = useClientContacts(apiUrl);
   const { clients, isLoading: loadingClients, clienterror } = useGetClients(); // Rename isLoading to avoid conflict
@@ -87,7 +87,7 @@ export default function HorizontalLinearStepper() {
     validationSchema: validationSchema,
     onSubmit: async (values) => {
       setLoading(true); // Start loading
-      const apiUrl = `${process.env.API_URL}/api/clients/${appointmentID}/appointments`;
+      const apiUrl = `/api/clients/${appointmentID}/appointments`;
       const requestOptions = {
         method: "POST",
         headers: { "Content-Type": "application/json" },

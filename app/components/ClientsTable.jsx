@@ -118,7 +118,7 @@ const ClientsTable = () => {
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const response = await axios.get(`${process.env.API_URL}/api/clients`);
+        const response = await axios.get(`/api/clients`);
         const clientData = response.data;
         const formattedRows = clientData.map((client, index) => ({
           ...client,
@@ -153,7 +153,7 @@ const ClientsTable = () => {
 
   const confirmDelete = async () => {
     try {
-      await axios.delete(`${process.env.API_URL}/api/clients/${deleteId}`);
+      await axios.delete(`/api/clients/${deleteId}`);
       setRows((prevRows) => prevRows.filter((row) => row._id !== deleteId));
       setDeleteDialogOpen(false);
       setDeleteId(null);
@@ -176,7 +176,7 @@ const ClientsTable = () => {
   const handleEditSave = async (updatedClient) => {
     try {
       const response = await axios.patch(
-        `${process.env.API_URL}/api/clients/${updatedClient._id}`,
+        `/api/clients/${updatedClient._id}`,
         updatedClient
       );
       setRows((prevRows) =>
@@ -196,7 +196,7 @@ const ClientsTable = () => {
 
   const handleExport = async () => {
     try {
-      const response = await axios.get(`${process.env.API_URL}/api/clients`);
+      const response = await axios.get(`/api/clients`);
       const clientData = response.data;
 
       // Construct CSV content
