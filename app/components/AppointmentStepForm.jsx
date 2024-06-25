@@ -104,11 +104,11 @@ export default function HorizontalLinearStepper() {
           );
         }
         // Handle success response
-        console.log("Form submission successful:", data);
+        // console.log("Form submission successful:", data);
         setSuccessMessage("Form submitted successfully!");
         setShowSuccess(true);
         setTimeout(() => {
-          console.log("Form Data:", values);
+          // console.log("Form Data:", values);
           setIsFinished(true);
           setLoading(false); // Stop loading
         }, 2000);

@@ -119,7 +119,7 @@ const Addprescription = (props) => {
         setSuccessMessage("Form submitted successfully!");
         setOpenSuccess(true);
         setTimeout(() => {
-          console.log("Form Data:", values);
+          // console.log("Form Data:", values);
         }, 2000);
       } catch (error) {
         console.error("Error submitting form:", error);

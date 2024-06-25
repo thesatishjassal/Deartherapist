@@ -21,9 +21,9 @@ const appointmentId = '666eda7c0a3f7e83ac127fd4';
 getAppointmentsPrescriptions(clientId, appointmentId)
     .then(prescriptions => {
         if (prescriptions) {
-            console.log('Prescriptions:', prescriptions);
+            // console.log('Prescriptions:', prescriptions);
             // Process prescriptions here
         } else {
-            console.log('No prescriptions found.');
+            // console.log('No prescriptions found.');
         }
     });

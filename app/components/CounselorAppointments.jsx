@@ -26,17 +26,17 @@ const ActionsMenu = ({ rowId }) => {
   };
 
   const handleEdit = () => {
-    console.log("Edit", rowId);
+    // console.log("Edit", rowId);
     handleClose();
   };
 
   const handleDelete = () => {
-    console.log("Delete", rowId);
+    // console.log("Delete", rowId);
     handleClose();
   };
 
   const handleView = () => {
-    console.log("View", rowId);
+    // console.log("View", rowId);
     router.push(`/patient-detail/${rowId}`);
     handleClose();
   };

@@ -82,8 +82,8 @@ const PatientDetails = ({ params }) => {
   useEffect(() => {
     const fetchData = () => {
       setTimeout(() => {
-        console.log("Fetching data after 3 seconds...");
-        console.log(filltredMeets);
+        // console.log("Fetching data after 3 seconds...");
+        // console.log(filltredMeets);
       }, 3000);
     };
     fetchData();

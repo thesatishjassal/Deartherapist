@@ -186,7 +186,7 @@ const HorizontalLinearStepper = () => {
       }
 
       // Handle success response
-      console.log("Form submission successful:", data);
+      // console.log("Form submission successful:", data);
       setSuccessMessage("Form submitted successfully!");
       setShowSuccess(true);
       setIsFinished(true);

@@ -75,7 +75,7 @@ const Editprescription = ({
   const [successMessage, setSuccessMessage] = useState("");
   const [savedData, setsavedData] = useState("");
   const { appointments, meetloading, error } = useAppointments(clientId);
-  console.log(clientId, appointmentId, prescriptionId);
+  // console.log(clientId, appointmentId, prescriptionId);
   const formik = useFormik({
     initialValues: {
       appointmentID: "",
@@ -125,7 +125,7 @@ const Editprescription = ({
         setSuccessMessage("Prescription Updated successfully!");
         setOpenSuccess(true);
         setTimeout(() => {
-          console.log("Form Data:", values);
+          // console.log("Form Data:", values);
           handleClose(); // Close the modal after successful submission
         }, 2000);
       } catch (error) {
