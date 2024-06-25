@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
-import { jwtDecode } from "jwt-decode";
-import { useRouter } from 'next/navigation';
+import jwtDecode from 'jwt-decode';
+import { useRouter } from 'next/router';
 
 const useAuth = () => {
   const [user, setUser] = useState(null);
@@ -8,6 +8,7 @@ const useAuth = () => {
 
   const handleLogout = () => {
     localStorage.removeItem('token'); // Adjust this according to your token storage method
+    setUser(null);
     router.push('/');
   };
 
