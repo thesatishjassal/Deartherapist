@@ -1,6 +1,6 @@
 "use client";
 
-import React from "react";
+import React, { useEffect } from "react";
 import Card from "@mui/material/Card";
 import CardContent from "@mui/material/CardContent";
 import Typography from "@mui/material/Typography";
@@ -12,22 +12,23 @@ import TabPanel from "@mui/lab/TabPanel";
 import { Box, Button } from "@mui/material";
 import MyAppointments from "../components/MyAppoinments";
 import useAuth from "../../hooks/useAuth"; // Adjust the import path as needed
-// import useProtectedRoute from "../../hooks/useProtectedRoute";
 import CounselorAppointments from "../components/CounselorAppointments";
-import useProtectedRoute from  "../../hooks/useProtectedRoute";
+import useProtectedRoute from "../../hooks/useProtectedRoute";
 
 export default function Dashboard() {
   const [value, setValue] = React.useState("1");
-  const myuser = useProtectedRoute();
   const { user, handleLogout } = useAuth();
 
-  if (!myuser) {
-    return null; // Optionally render a loading state or a redirect message
-  }
-  
+  useEffect(() => {
+    if (!user) {
+      router.push("/login");
+    }
+  }, [user]);
+
   if (!user) {
-   <p>Loading...</p>
+    return <p>Loading...</p>;
   }
+
   const handleChange = (event, newValue) => {
     setValue(newValue);
   };

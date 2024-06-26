@@ -30,6 +30,7 @@ import RedirectToWhatsApp from "../../components/RedirectToWhatsApp";
 import { IconButton } from "@mui/material";
 import EditIcon from "@mui/icons-material/Edit";
 import { Link } from "@mui/material";
+import useAuth from "../../../hooks/useAuth";
 
 const PatientDetails = ({ params }) => {
   const invoiceRef = useRef();
@@ -42,10 +43,11 @@ const PatientDetails = ({ params }) => {
   const [prescriptionId, setPrescriptionId] = useState(null); // State to store prescriptionId for Addprescription
   const [isModalOpen, setIsModalOpen] = useState(false); // State to control modal open/close
 
-  const apiUrl = `/api/clients` ; // Replace with your actual API URL
+  const apiUrl = `/api/clients`; // Replace with your actual API URL
   const { pid } = params;
   const { client, clientisLoading, error } = useGetClientById(apiUrl, pid);
   const { appointments, loading, meetserror } = useAppointments(pid);
+  const { user } = useAuth();
 
   const handleEdit = (clientId, appointmentId, prescriptionId) => {
     setIsModalOpen(true);
@@ -88,6 +90,12 @@ const PatientDetails = ({ params }) => {
     };
     fetchData();
   }, [filltredMeets]);
+
+  useEffect(() => {
+    if (!user) {
+      router.push("/");
+    }
+  }, [user]);
 
   if (clientisLoading) {
     return <p>Loading...</p>; // Handle loading state

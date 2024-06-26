@@ -6,10 +6,17 @@ const useAuth = () => {
   const [user, setUser] = useState(null);
   const router = useRouter();
 
+  const handleLogin = (token) => {
+    localStorage.setItem('token', token);
+    const decoded = jwtDecode(token);
+    setUser(decoded);
+    router.push('/dashboard');
+  };
+
   const handleLogout = () => {
-    localStorage.removeItem('token'); // Adjust this according to your token storage method
+    localStorage.removeItem('token');
     setUser(null);
-    router.push('/');
+    router.push('/login');
   };
 
   useEffect(() => {
@@ -20,12 +27,12 @@ const useAuth = () => {
         setUser(decoded);
       } catch (error) {
         console.error('Error decoding token:', error);
-        handleLogout(); // Optionally log the user out if the token is invalid
+        handleLogout();
       }
     }
   }, []);
 
-  return { user, handleLogout };
+  return { user, handleLogin, handleLogout };
 };
 
 export default useAuth;

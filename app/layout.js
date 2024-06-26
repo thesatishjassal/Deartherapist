@@ -1,9 +1,10 @@
 import { Inter } from "next/font/google";
 import HeaderBar from "./components/Header";
-import "./globals.css";
 import Container from "@mui/material/Container";
 import { AppRouterCacheProvider } from '@mui/material-nextjs/v13-appRouter';
-import { AuthProvider } from './context/AuthContext';
+import useAuth from '../hooks/useAuth';
+import "./globals.css";
+
 const inter = Inter({ subsets: ["latin"] });
 
 export const metadata = {
@@ -12,16 +13,18 @@ export const metadata = {
 };
 
 export default function RootLayout({ children }) {
+  const { user } = useAuth();
+
   return (
-    <AuthProvider>
     <html lang="en">
       <body className={inter.className}>
-        <HeaderBar />
+        <HeaderBar user={user} />
         <AppRouterCacheProvider>
-        {children}
+          <Container>
+            {children}
+          </Container>
         </AppRouterCacheProvider>
       </body>
     </html>
-    </AuthProvider>
   );
 }
