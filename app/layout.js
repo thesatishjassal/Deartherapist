@@ -6,7 +6,7 @@ import "./globals.css";
 import Container from "@mui/material/Container";
 import { AppRouterCacheProvider } from '@mui/material-nextjs/v13-appRouter';
 import dynamic from 'next/dynamic';
-import useAuth from './useAuth';
+import useAuth from '../hooks/useAuth';
 import { useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import { metadata } from './metadata'; // Import metadata if needed
