@@ -14,11 +14,13 @@ import MyAppointments from "../components/MyAppoinments";
 import CounselorAppointments from "../components/CounselorAppointments";
 import { useRouter } from 'next/navigation'; // Updated to 'next/router'
 import withAuth from '../components/hoc/withAuth'; // Adjust the import path according to your project structure
+import useAuth from '../../hooks/useAuth'; // Adjust the import path according to your project structure
 
 const Dashboard = () => {
   const [value, setValue] = React.useState("1");
   const router = useRouter(); // Updated to use 'next/router'
-
+  const { user } = useAuth(); 
+  
   const handleChange = (event, newValue) => {
     setValue(newValue);
   };
