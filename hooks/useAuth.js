@@ -9,7 +9,7 @@ const useAuth = () => {
   const handleLogout = () => {
     localStorage.removeItem('token'); // Remove the token from localStorage
     setUser(null); // Clear the user state
-    router.push('/'); // Redirect to the home page or login page
+    router.push('/login'); // Redirect to the login page
   };
 
   useEffect(() => {
@@ -22,8 +22,10 @@ const useAuth = () => {
         console.error('Error decoding token:', error);
         handleLogout(); // Optionally log the user out if the token is invalid
       }
+    } else {
+      router.push('/login'); // Redirect to login if no token is found
     }
-  }, []);
+  }, [router]);
 
   return { user, handleLogout };
 };

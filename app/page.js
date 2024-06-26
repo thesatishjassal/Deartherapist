@@ -19,7 +19,6 @@ import axios from 'axios'; // Import Axios
 const LoginForm = () => {
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState(null);
-  const [timeoutError, setTimeoutError] = useState(false);
   const router = useRouter();
 
   const validationSchema = Yup.object({
@@ -36,28 +35,21 @@ const LoginForm = () => {
     onSubmit: async (values) => {
       setIsLoading(true);
       setError(null);
-      setTimeoutError(false);
-
-      const timeoutId = setTimeout(() => {
-        setTimeoutError(true);
-        setIsLoading(false);
-      }, 10000); // 10 seconds timeout for user feedback
 
       try {
         const response = await axios.post(`/api/auth/login`, values, {
           headers: {
             'Content-Type': 'application/json',
           },
-          timeout: 10000, // 10 seconds timeout for Axios
+          timeout: 10000,
         });
 
-        clearTimeout(timeoutId);
-
         if (response.status === 200) {
-          const data = response.data;
-          const token = data.token;
+          const { token } = response.data;
           const decoded = jwtDecode(token);
+          console.log(decoded)
           localStorage.setItem('token', token);
+          setIsLoading(false);
           router.push('/dashboard');
         } else {
           const errorData = response.data;
@@ -65,7 +57,6 @@ const LoginForm = () => {
           setError(errorData.message || 'Invalid email or password');
         }
       } catch (error) {
-        clearTimeout(timeoutId);
         console.error('Login error:', error);
         setError('Login failed. Please try again.');
       }

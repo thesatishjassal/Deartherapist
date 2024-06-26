@@ -13,7 +13,6 @@ import { Box, Button } from "@mui/material";
 import MyAppointments from "../components/MyAppoinments";
 import useAuth from "../../hooks/useAuth"; // Adjust the import path as needed
 import CounselorAppointments from "../components/CounselorAppointments";
-import useProtectedRoute from "../../hooks/useProtectedRoute";
 import { useRouter } from "next/navigation";
 
 export default function Dashboard() {
