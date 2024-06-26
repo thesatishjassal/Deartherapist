@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState } from "react";
+import React, { useState, useEffect  } from "react";
 import { Container, Grid } from "@mui/material";
 import ChangePasswordForm from "../components/UserProfile"; // Adjust the path if necessary
 import CounselorChangePasswordForm from "../components/CounselorChangePasswordForm";
