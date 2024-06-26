@@ -18,18 +18,6 @@ import { useRouter } from "next/navigation";
 export default function Dashboard() {
   const [value, setValue] = React.useState("1");
   const { user, handleLogout } = useAuth();
-  // const router = useRouter();
-
-  // useEffect(() => {
-  //   if (!user) {
-  //     router.push("/");
-  //   }
-  //   console.log(user)
-  // }, [user, router]);
-
-  // if (!user) {
-  //   return <p>Loading...</p>; // Or a spinner/loader component
-  // }
 
   const handleChange = (event, newValue) => {
     setValue(newValue);
