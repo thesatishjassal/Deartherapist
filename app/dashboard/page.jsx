@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState } from "react";
+import React from "react";
 import Card from "@mui/material/Card";
 import CardContent from "@mui/material/CardContent";
 import Typography from "@mui/material/Typography";
@@ -9,33 +9,38 @@ import Tab from "@mui/material/Tab";
 import TabContext from "@mui/lab/TabContext";
 import TabList from "@mui/lab/TabList";
 import TabPanel from "@mui/lab/TabPanel";
-import { Box } from "@mui/material";
+import { Box, Button } from "@mui/material";
 import MyAppointments from "../components/MyAppoinments";
+import useAuth from "../../hooks/useAuth"; // Adjust the import path as needed
+// import useProtectedRoute from "../../hooks/useProtectedRoute";
 import CounselorAppointments from "../components/CounselorAppointments";
-import { useRouter } from 'next/navigation'; // Corrected import to 'next/router'
-import withAuth from '../components/hoc/withAuth'; // Adjust the import path according to your project structure
-import useAuth from '../../hooks/useAuth'; // Adjust the import path according to your project structure
+import useProtectedRoute from  "../../hooks/useProtectedRoute";
 
-const Dashboard = () => {
-  const [value, setValue] = useState("1");
-  const router = useRouter();
-  const { user } = useAuth(); 
+export default function Dashboard() {
+  const [value, setValue] = React.useState("1");
+  const myuser = useProtectedRoute();
+  const { user, handleLogout } = useAuth();
 
+  if (!myuser) {
+    return null; // Optionally render a loading state or a redirect message
+  }
+  
+  if (!user) {
+   <p>Loading...</p>
+  }
   const handleChange = (event, newValue) => {
     setValue(newValue);
   };
-
-  if (!user) {
-    return null; // or handle unauthorized access
-  }
 
   return (
     <Card className="main__dashboard">
       <CardContent>
         <Typography gutterBottom variant="h5" component="div" className="mb-4">
-          {user.role === "admin" && "Welcome 👋 Dr. Shaveta"}
-          {user.role === "counselor" && "Welcome 👋 Counselor"}
-          {user.role === "receptionist" && "Welcome 👋 Receptionist"}
+          {user && user.role == "admin" ? "Welcome 👋 Dr. Shaveta" : ""}
+          {user && user.role == "counselor" ? "Welcome 👋 Counselor" : ""}
+          {user && user.role == "receptionist"
+            ? " Welcome 👋 Receptionist"
+            : ""}
         </Typography>
       </CardContent>
       <Box sx={{ width: "100%", typography: "body1" }}>
@@ -50,7 +55,7 @@ const Dashboard = () => {
             <ClientsTable />
           </TabPanel>
           <TabPanel value="2">
-            {user.role === "counselor" ? (
+            {user && user.role == "counselor" ? (
               <CounselorAppointments />
             ) : (
               <MyAppointments />
@@ -60,6 +65,4 @@ const Dashboard = () => {
       </Box>
     </Card>
   );
-};
-
-export default withAuth(Dashboard);
+}

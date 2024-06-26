@@ -1,27 +1,18 @@
-"use client"
-
 import { useState, useEffect } from 'react';
-import { jwtDecode } from "jwt-decode";
-import { useRouter } from 'next/navigation';
+import jwtDecode from 'jwt-decode';
+import { useRouter } from 'next/router';
 
 const useAuth = () => {
   const [user, setUser] = useState(null);
   const router = useRouter();
 
-  const handleLogin = (token) => {
-    localStorage.setItem('token', token);
-    const decoded = jwtDecode(token);
-    setUser(decoded);
-    router.push('/dashboard');
-  };
-
   const handleLogout = () => {
-    localStorage.removeItem('token');
+    localStorage.removeItem('token'); // Adjust this according to your token storage method
     setUser(null);
     router.push('/');
   };
 
-  const checkAuthStatus = () => {
+  useEffect(() => {
     const token = localStorage.getItem('token');
     if (token) {
       try {
@@ -29,18 +20,12 @@ const useAuth = () => {
         setUser(decoded);
       } catch (error) {
         console.error('Error decoding token:', error);
-        handleLogout();
+        handleLogout(); // Optionally log the user out if the token is invalid
       }
-    } else {
-      setUser(null);
     }
-  };
-
-  useEffect(() => {
-    checkAuthStatus();
   }, []);
 
-  return { user, handleLogin, handleLogout, checkAuthStatus };
+  return { user, handleLogout };
 };
 
 export default useAuth;
