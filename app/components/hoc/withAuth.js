@@ -1,9 +1,9 @@
 import { useEffect } from 'react';
 import { useRouter } from 'next/navigation';
-import useAuth from '../../../hooks/useAuth'; // Adjust the import path according to your project structure
+import useAuth from './useAuth'; // Adjust the import path as per your project structure
 
 const withAuth = (WrappedComponent) => {
-  return (props) => {
+  const AuthComponent = (props) => {
     const { user, checkAuthStatus } = useAuth();
     const router = useRouter();
 
@@ -20,6 +20,11 @@ const withAuth = (WrappedComponent) => {
 
     return <WrappedComponent {...props} />;
   };
+
+  // Add displayName for better debugging
+  AuthComponent.displayName = `withAuth(${WrappedComponent.displayName || WrappedComponent.name})`;
+
+  return AuthComponent;
 };
 
 export default withAuth;
