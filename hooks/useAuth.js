@@ -18,7 +18,7 @@ const useAuth = () => {
   const handleLogout = () => {
     localStorage.removeItem('token');
     setUser(null);
-    router.push('/login');
+    router.push('/');
   };
 
   useEffect(() => {

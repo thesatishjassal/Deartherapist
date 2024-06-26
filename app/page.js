@@ -116,7 +116,7 @@ const LoginForm = () => {
                 type="submit"
                 variant="contained"
                 size="medium"
-                fullWidth
+                fullWidth className="btn"
                 disabled={!formik.dirty || !formik.isValid || isLoading}
               >
                 {isLoading ? <CircularProgress size={24} color="inherit" /> : 'Login'}
