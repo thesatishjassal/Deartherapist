@@ -30,7 +30,7 @@ import RedirectToWhatsApp from "../../components/RedirectToWhatsApp";
 import { IconButton } from "@mui/material";
 import EditIcon from "@mui/icons-material/Edit";
 import { Link } from "@mui/material";
-import useAuth from "../../../hooks/useAuth";
+import withAuth from '../../components/hoc/withAuth'; // Adjust the import path according to your project structure
 
 const PatientDetails = ({ params }) => {
   const invoiceRef = useRef();
@@ -47,7 +47,6 @@ const PatientDetails = ({ params }) => {
   const { pid } = params;
   const { client, clientisLoading, error } = useGetClientById(apiUrl, pid);
   const { appointments, loading, meetserror } = useAppointments(pid);
-  const { user } = useAuth();
 
   const handleEdit = (clientId, appointmentId, prescriptionId) => {
     setIsModalOpen(true);
@@ -90,16 +89,6 @@ const PatientDetails = ({ params }) => {
     };
     fetchData();
   }, [filltredMeets]);
-
-  useEffect(() => {
-    if (!user) {
-      router.push("/");
-    }
-  }, [user]);
-
-  if (clientisLoading) {
-    return <p>Loading...</p>; // Handle loading state
-  }
 
   if (error) {
     return <p>Error: {error.message}</p>; // Handle error state
@@ -577,4 +566,5 @@ const PatientDetails = ({ params }) => {
   );
 };
 
-export default PatientDetails;
+export default withAuth(PatientDetails);
+

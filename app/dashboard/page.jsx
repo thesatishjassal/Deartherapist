@@ -11,25 +11,13 @@ import TabList from "@mui/lab/TabList";
 import TabPanel from "@mui/lab/TabPanel";
 import { Box, Button } from "@mui/material";
 import MyAppointments from "../components/MyAppoinments";
-import useAuth from "../../hooks/useAuth"; // Adjust the import path as needed
 import CounselorAppointments from "../components/CounselorAppointments";
-import useProtectedRoute from "../../hooks/useProtectedRoute";
 import { useRouter } from 'next/navigation'; // Updated to 'next/router'
+import withAuth from '../components/hoc/withAuth'; // Adjust the import path according to your project structure
 
-export default function Dashboard() {
+const Dashboard = () => {
   const [value, setValue] = React.useState("1");
-  const { user, handleLogout } = useAuth();
   const router = useRouter(); // Updated to use 'next/router'
-
-  useEffect(() => {
-    if (!user) {
-      router.push("/");
-    }
-  }, [user]);
-
-  if (!user) {
-    return <p>Loading...</p>;
-  }
 
   const handleChange = (event, newValue) => {
     setValue(newValue);
@@ -69,3 +57,4 @@ export default function Dashboard() {
     </Card>
   );
 }
+export default withAuth(Dashboard); 

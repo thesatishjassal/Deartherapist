@@ -5,20 +5,8 @@ import { Container, Grid } from "@mui/material";
 import ChangePasswordForm from "../components/UserProfile"; // Adjust the path if necessary
 import CounselorChangePasswordForm from "../components/CounselorChangePasswordForm";
 import ReceptionistChangePasswordForm from "../components/ReceptionistChangePasswordForm";
-import useAuth from "../../hooks/useAuth"; // Adjust the import path as needed
 
 const ProfilePage = () => {
-  const { user } = useAuth();
-
-  useEffect(() => {
-    if (!user) {
-      router.push("/");
-    }
-  }, [user]);
-
-  if (!user) {
-    return <p>Loading...</p>;
-  }
 
   return (
     <Container sx={{ marginTop: "2rem" }}>
@@ -33,4 +21,4 @@ const ProfilePage = () => {
   );
 };
 
-export default ProfilePage;
+export default withAuth(ProfilePage);

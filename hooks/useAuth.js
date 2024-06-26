@@ -21,7 +21,7 @@ const useAuth = () => {
     router.push('/');
   };
 
-  useEffect(() => {
+  const checkAuthStatus = () => {
     const token = localStorage.getItem('token');
     if (token) {
       try {
@@ -31,10 +31,16 @@ const useAuth = () => {
         console.error('Error decoding token:', error);
         handleLogout();
       }
+    } else {
+      setUser(null);
     }
+  };
+
+  useEffect(() => {
+    checkAuthStatus();
   }, []);
 
-  return { user, handleLogin, handleLogout };
+  return { user, handleLogin, handleLogout, checkAuthStatus };
 };
 
 export default useAuth;

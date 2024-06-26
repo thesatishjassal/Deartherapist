@@ -10,7 +10,6 @@ import Grid from "@mui/material/Grid"; // Grid version 1
 import Button from "@mui/material/Button";
 import DownloadIcon from "@mui/icons-material/Download";
 import { CircularProgress } from "@mui/material";
-import useAuth from "../../hooks/useAuth";
 import Divider from "@mui/material/Divider";
 import { DataGrid, GridToolbar } from "@mui/x-data-grid";
 import { createTheme, ThemeProvider } from "@mui/material/styles";
@@ -22,6 +21,7 @@ import FormControl from "@mui/material/FormControl";
 import Select from "@mui/material/Select";
 import MenuItem from "@mui/material/MenuItem";
 import Container from "@mui/material/Container";
+import withAuth from '../components/hoc/withAuth'; // Adjust the import path according to your project structure
 
 const DailyReport = () => {
   const { user } = useAuth();
@@ -118,12 +118,6 @@ const DailyReport = () => {
     setTotalAmount(total); // Set total amount in state
   }, [todayAppointments]);
 
-  React.useEffect(() => {
-    if (!user) {
-      router.push("/");
-    }
-  }, [user]);
-
   const theme = createTheme({
     components: {
       MuiDataGrid: {
@@ -138,10 +132,6 @@ const DailyReport = () => {
       },
     },
   });
-
-  if (!user) {
-    return <p>Loading...</p>;
-  }
 
   if (clientsError) {
     return <Typography variant="h6">Error loading clients data.</Typography>;
@@ -275,4 +265,4 @@ const DailyReport = () => {
   );
 };
 
-export default DailyReport;
+export default withAuth(DailyReport);
