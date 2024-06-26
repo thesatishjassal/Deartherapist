@@ -10,18 +10,20 @@ import useAuth from "../../hooks/useAuth"; // Adjust the import path as needed
 const ProfilePage = () => {
   const { user, handleLogout } = useAuth();
 
+  if (!user) {
+    return <div>Loading...</div>; // or some other loading state
+  }
+
   return (
     <Container sx={{ marginTop: "2rem" }}>
-      {user && user.role == "admin" ? (
+      {user.role === "admin" ? (
         <ChangePasswordForm />
-      ) : user.role == "counselor" ? (
+      ) : user.role === "counselor" ? (
         <CounselorChangePasswordForm />
+      ) : user.role === "receptionist" ? (
+        <ReceptionistChangePasswordForm />
       ) : (
-        (user.role = "recptionist" ? (
-          <ReceptionistChangePasswordForm />
-        ) : (
-          ""
-        ))
+        <div>Invalid role</div>
       )}
     </Container>
   );
