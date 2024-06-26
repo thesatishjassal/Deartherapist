@@ -13,11 +13,24 @@ import { Box, Button } from "@mui/material";
 import MyAppointments from "../components/MyAppoinments";
 import useAuth from "../../hooks/useAuth"; // Adjust the import path as needed
 import CounselorAppointments from "../components/CounselorAppointments";
-import useProtectedRoute from  "../../hooks/useProtectedRoute";
+import useProtectedRoute from "../../hooks/useProtectedRoute";
+import { useRouter } from "next/navigation";
 
 export default function Dashboard() {
   const [value, setValue] = React.useState("1");
   const { user, handleLogout } = useAuth();
+  const router = useRouter();
+
+  useEffect(() => {
+    if (!user) {
+      router.push("/");
+    }
+  }, [user, router]);
+
+  if (!user) {
+    return <p>Loading...</p>; // Or a spinner/loader component
+  }
+
   const handleChange = (event, newValue) => {
     setValue(newValue);
   };
