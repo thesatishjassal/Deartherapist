@@ -15,8 +15,8 @@ export const metadata = {
 export default function RootLayout({ children }) {
   const { user } = useAuth();
 
+  // Avoid rendering client-specific logic during SSR
   if (typeof window === 'undefined') {
-    // Avoid rendering client-specific logic during SSR
     return null;
   }
 
