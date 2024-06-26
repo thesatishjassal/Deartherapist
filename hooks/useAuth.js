@@ -9,7 +9,7 @@ const useAuth = () => {
   const handleLogout = () => {
     localStorage.removeItem('token'); // Remove the token from localStorage
     setUser(null); // Clear the user state
-    router.push('/login'); // Redirect to the login page
+    router.push('/'); // Redirect to the login page
   };
 
   useEffect(() => {
@@ -23,7 +23,7 @@ const useAuth = () => {
         handleLogout(); // Optionally log the user out if the token is invalid
       }
     } else {
-      router.push('/login'); // Redirect to login if no token is found
+      router.push('/'); // Redirect to login if no token is found
     }
   }, [router]);
 
