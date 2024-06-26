@@ -1,6 +1,6 @@
 import { useEffect } from 'react';
 import { useRouter } from 'next/navigation';
-import useAuth from './useAuth'; // Adjust the import path as per your project structure
+import useAuth from '../../../hooks/useAuth'; // Adjust the import path as per your project structure
 
 const withAuth = (WrappedComponent) => {
   const AuthComponent = (props) => {
