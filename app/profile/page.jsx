@@ -12,9 +12,9 @@ const ProfilePage = () => {
   // const user = useProtectedRoute();
   const { user, handleLogout } = useAuth();
 
-  if (!user) {
-    return null; // Optionally render a loading state or a redirect message
-  }
+  // if (!user) {
+  //   return null; // Optionally render a loading state or a redirect message
+  // }
   return (
     <Container sx={{ marginTop: "2rem" }}>
       {user && user.role == "admin" ? (

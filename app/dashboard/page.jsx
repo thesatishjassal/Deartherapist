@@ -12,22 +12,12 @@ import TabPanel from "@mui/lab/TabPanel";
 import { Box, Button } from "@mui/material";
 import MyAppointments from "../components/MyAppoinments";
 import useAuth from "../../hooks/useAuth"; // Adjust the import path as needed
-// import useProtectedRoute from "../../hooks/useProtectedRoute";
 import CounselorAppointments from "../components/CounselorAppointments";
 import useProtectedRoute from  "../../hooks/useProtectedRoute";
 
 export default function Dashboard() {
   const [value, setValue] = React.useState("1");
-  const myuser = useProtectedRoute();
   const { user, handleLogout } = useAuth();
-
-  if (!myuser) {
-    return null; // Optionally render a loading state or a redirect message
-  }
-  
-  if (!user) {
-   <p>Loading...</p>
-  }
   const handleChange = (event, newValue) => {
     setValue(newValue);
   };
