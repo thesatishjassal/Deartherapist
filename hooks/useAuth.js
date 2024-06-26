@@ -7,9 +7,9 @@ const useAuth = () => {
   const router = useRouter();
 
   const handleLogout = () => {
-    localStorage.removeItem('token'); // Adjust this according to your token storage method
-    setUser(null);
-    router.push('/');
+    localStorage.removeItem('token'); // Remove the token from localStorage
+    setUser(null); // Clear the user state
+    router.push('/'); // Redirect to the home page or login page
   };
 
   useEffect(() => {
