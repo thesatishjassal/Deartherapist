@@ -4,41 +4,37 @@ import { useState, useEffect } from 'react';
 import { jwtDecode } from "jwt-decode";
 import { useRouter } from 'next/navigation';
 
-export default function useAuth () {
+const useAuth = () => {
   const [user, setUser] = useState(null);
   const router = useRouter();
 
   const handleLogin = (token) => {
-    if (typeof window !== 'undefined') {
-      localStorage.setItem('token', token);
-      const decoded = jwtDecode(token);
-      setUser(decoded);
-      router.push('/dashboard');
-    }
+    localStorage.setItem('token', token);
+    const decoded = jwtDecode(token);
+    setUser(decoded);
+    router.push('/dashboard');
   };
 
   const handleLogout = () => {
-    if (typeof window !== 'undefined') {
-      localStorage.removeItem('token');
-      setUser(null);
-      router.push('/');
-    }
+    localStorage.removeItem('token');
+    setUser(null);
+    router.push('/login');
   };
 
   useEffect(() => {
-    if (typeof window !== 'undefined') {
-      const token = localStorage.getItem('token');
-      if (token) {
-        try {
-          const decoded = jwtDecode(token);
-          setUser(decoded);
-        } catch (error) {
-          console.error('Error decoding token:', error);
-          handleLogout();
-        }
+    const token = localStorage.getItem('token');
+    if (token) {
+      try {
+        const decoded = jwtDecode(token);
+        setUser(decoded);
+      } catch (error) {
+        console.error('Error decoding token:', error);
+        handleLogout();
       }
     }
   }, []);
 
   return { user, handleLogin, handleLogout };
 };
+
+export default useAuth;
