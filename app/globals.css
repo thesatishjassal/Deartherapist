@@ -234,12 +234,15 @@ p {
   .MuiBox-root.mui-gg4vpm {
     flex-direction: column !important;
   }
+  .MuiBox-root.mui-1n6uzld {
+    flex-direction: column;
+  }
   .spacer {
     margin: 10px 0 !important;
-}
-.MuiPaper-root.MuiPaper-elevation.MuiPaper-rounded.MuiPaper-elevation1.MuiAccordion-root.MuiAccordion-rounded.MuiAccordion-gutters.accordion-theme.mui-1aj41gs {
-  background: #f1f1f1 !important;
-}
+  }
+  .MuiPaper-root.MuiPaper-elevation.MuiPaper-rounded.MuiPaper-elevation1.MuiAccordion-root.MuiAccordion-rounded.MuiAccordion-gutters.accordion-theme.mui-1aj41gs {
+    background: #f1f1f1 !important;
+  }
 }
 @media only screen and (min-width: 600px) {
   .hidedesktop {
