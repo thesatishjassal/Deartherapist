@@ -5,6 +5,7 @@ import { Container, Grid } from "@mui/material";
 import ChangePasswordForm from "../components/UserProfile"; // Adjust the path if necessary
 import CounselorChangePasswordForm from "../components/CounselorChangePasswordForm";
 import ReceptionistChangePasswordForm from "../components/ReceptionistChangePasswordForm";
+import withAuth from '../components/hoc/withAuth'; // Adjust the import path according to your project structure
 
 const ProfilePage = () => {
 
