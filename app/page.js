@@ -47,7 +47,6 @@ const LoginForm = () => {
         if (response.status === 200) {
           const { token } = response.data;
           const decoded = jwtDecode(token);
-          console.log(decoded)
           localStorage.setItem('token', token);
           setIsLoading(false);
           router.push('/dashboard');
@@ -65,7 +64,7 @@ const LoginForm = () => {
       formik.resetForm();
     },
   });
-
+  
   return (
     <Box
       sx={{
