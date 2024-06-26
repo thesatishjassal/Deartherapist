@@ -4,7 +4,7 @@ import { useState, useEffect } from 'react';
 import { jwtDecode } from "jwt-decode";
 import { useRouter } from 'next/navigation';
 
-const useAuth = () => {
+export default function useAuth () {
   const [user, setUser] = useState(null);
   const router = useRouter();
 
@@ -42,5 +42,3 @@ const useAuth = () => {
 
   return { user, handleLogin, handleLogout };
 };
-
-export default useAuth;
