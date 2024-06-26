@@ -15,6 +15,11 @@ export const metadata = {
 export default function RootLayout({ children }) {
   const { user } = useAuth();
 
+  if (typeof window === 'undefined') {
+    // Avoid rendering client-specific logic during SSR
+    return null;
+  }
+
   return (
     <html lang="en">
       <body className={inter.className}>

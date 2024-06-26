@@ -9,27 +9,33 @@ const useAuth = () => {
   const router = useRouter();
 
   const handleLogin = (token) => {
-    localStorage.setItem('token', token);
-    const decoded = jwtDecode(token);
-    setUser(decoded);
-    router.push('/dashboard');
+    if (typeof window !== 'undefined') {
+      localStorage.setItem('token', token);
+      const decoded = jwtDecode(token);
+      setUser(decoded);
+      router.push('/dashboard');
+    }
   };
 
   const handleLogout = () => {
-    localStorage.removeItem('token');
-    setUser(null);
-    router.push('/login');
+    if (typeof window !== 'undefined') {
+      localStorage.removeItem('token');
+      setUser(null);
+      router.push('/');
+    }
   };
 
   useEffect(() => {
-    const token = localStorage.getItem('token');
-    if (token) {
-      try {
-        const decoded = jwtDecode(token);
-        setUser(decoded);
-      } catch (error) {
-        console.error('Error decoding token:', error);
-        handleLogout();
+    if (typeof window !== 'undefined') {
+      const token = localStorage.getItem('token');
+      if (token) {
+        try {
+          const decoded = jwtDecode(token);
+          setUser(decoded);
+        } catch (error) {
+          console.error('Error decoding token:', error);
+          handleLogout();
+        }
       }
     }
   }, []);
