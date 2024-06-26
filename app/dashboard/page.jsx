@@ -10,7 +10,7 @@ import TabContext from "@mui/lab/TabContext";
 import TabList from "@mui/lab/TabList";
 import TabPanel from "@mui/lab/TabPanel";
 import { Box } from "@mui/material";
-import MyAppointments from "../components/MyAppointments";
+import MyAppointments from "../components/MyAppoinments";
 import CounselorAppointments from "../components/CounselorAppointments";
 import { useRouter } from 'next/navigation'; // Corrected import to 'next/router'
 import withAuth from '../components/hoc/withAuth'; // Adjust the import path according to your project structure
