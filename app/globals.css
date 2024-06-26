@@ -199,34 +199,41 @@ p.grey_light {
 .mui-1t1j96h-MuiPaper-root-MuiDialog-paper {
   width: 100% !important;
 }
-.white{
+.white {
   color: #fff !important;
 }
 .username {
   color: #373737;
 }
-.themeBg{
+.themeBg {
   background-color: #ffecec !important;
 }
-.center-text{
+.center-text {
   text-align: center;
 }
 .accordian-theme {
   background: #f1f1f1 !important;
 }
-strong, p {
+strong,
+p {
   word-break: break-all;
 }
 @media only screen and (max-width: 600px) {
-  .hidemobile{
+  .hidemobile {
     display: none !important;
   }
   .MuiToolbar-root.MuiToolbar-gutters.MuiToolbar-regular.mui-i6s8oy {
     padding: 0;
   }
+  .responsive-dialog .MuiPaper-root {
+    margin: 10px !important;
+  }
+  .responsive-dialog .MuiPaper-root .MuiBox-root.mui-1r4ai6y {
+    padding: 0px !important;
+  }
 }
 @media only screen and (min-width: 600px) {
-  .hidedesktop{
+  .hidedesktop {
     display: none !important;
   }
 }
