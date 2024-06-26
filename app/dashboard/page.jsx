@@ -14,14 +14,16 @@ import MyAppointments from "../components/MyAppoinments";
 import useAuth from "../../hooks/useAuth"; // Adjust the import path as needed
 import CounselorAppointments from "../components/CounselorAppointments";
 import useProtectedRoute from "../../hooks/useProtectedRoute";
+import { useRouter } from 'next/navigation'; // Updated to 'next/router'
 
 export default function Dashboard() {
   const [value, setValue] = React.useState("1");
   const { user, handleLogout } = useAuth();
+  const router = useRouter(); // Updated to use 'next/router'
 
   useEffect(() => {
     if (!user) {
-      router.push("/login");
+      router.push("/");
     }
   }, [user]);
 
