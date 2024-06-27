@@ -416,9 +416,16 @@ export default function HorizontalLinearStepper() {
             label="Amount"
             fullWidth
             variant="outlined"
-            onChange={(e) => formik.setFieldValue("amount", e.target.value)}
-            name="amount"
-            error={formik.touched.amount}
+            onChange={(e) => {
+              formik.handleChange(e);
+              console.log("Formik Values:", formik.values); // Check if amount updates here
+            }}
+            onBlur={(e) => {
+              formik.handleBlur(e);
+              console.log("Formik Touched:", formik.touched); // Check if amount touched state updates
+            }}
+            value={formik.values.amount}
+            error={formik.touched.amount && Boolean(formik.errors.amount)}
             helperText={formik.touched.amount && formik.errors.amount}
           />
         </Grid>
