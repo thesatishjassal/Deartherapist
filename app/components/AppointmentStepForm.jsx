@@ -49,7 +49,9 @@ const validationSchema = Yup.object({
   facilitatedBy: Yup.string().required("Facilitated by is required"),
   service: Yup.string().required("Service is required"),
   amount: Yup.number()
-    .required("Amount is required")
+  .required("Amount is required")
+  .positive("Amount must be positive")
+  .integer("Amount must be an integer"),
 });
 
 export default function HorizontalLinearStepper() {
