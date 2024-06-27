@@ -13,7 +13,7 @@ import useTodayAppointments from "../../hooks/useTodayAppointments";
 
 export default function ReportTable() {
   const columns = [
-    { field: "Srno", headerName: "Sr. NO", width: 100 },
+    { field: "Srno", headerName: "Sr.NO", width: 100 },
     { field: "date", headerName: "Date", width: 140 },
     { field: "name", headerName: "Name", width: 140 },
     { field: "channel", headerName: "Mode", width: 130 },
@@ -42,7 +42,7 @@ export default function ReportTable() {
     const formattedRows = todayAppointments.map((appointment, index) => ({
       ...appointment,
       id: appointment._id,
-      date: format(new Date(appointment.date), "MM/yyyy"), // Format date as MM/yyyy
+      date: format(new Date(appointment.date), "DD/MM/yy"), // Format date as MM/yyyy
       time: format(new Date(appointment.time), "HH:mm a"),
       monthName: monthNames[index], // Add month name
     }));
