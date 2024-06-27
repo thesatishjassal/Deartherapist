@@ -1,7 +1,8 @@
 import * as React from "react";
 import { DataGrid, GridToolbar } from "@mui/x-data-grid";
 import { createTheme, ThemeProvider } from "@mui/material/styles";
-import { parse, format, isSameMonth } from "date-fns";
+import { format, isSameMonth } from "date-fns"; // Import isSameMonth function from date-fns
+
 import Box from "@mui/material/Box";
 import Typography from "@mui/material/Typography";
 import FormControl from "@mui/material/FormControl";
@@ -11,24 +12,10 @@ import MenuItem from "@mui/material/MenuItem";
 import useGetClients from "../../hooks/useGetClients";
 import useTodayAppointments from "../../hooks/useTodayAppointments";
 
-const getMonthNamesFromDates = (dateStrings) => {
-  return dateStrings.map((dateString) => {
-    try {
-      const parsedDate = parse(dateString, 'MM/dd/yyyy', new Date());
-      if (isNaN(parsedDate)) throw new Error("Invalid Date");
-      return format(parsedDate, 'MMMM');
-    } catch (error) {
-      console.error("Error parsing date:", dateString, error);
-      return "Invalid Date";
-    }
-  });
-};
-
 export default function ReportTable() {
   const columns = [
     { field: "Srno", headerName: "Sr. NO", width: 100 },
     { field: "date", headerName: "Date", width: 140 },
-    { field: "monthName", headerName: "Month", width: 140 }, // Add month name column
     { field: "name", headerName: "Name", width: 140 },
     { field: "channel", headerName: "Mode", width: 130 },
     { field: "service", headerName: "Service", width: 130 },
@@ -44,34 +31,29 @@ export default function ReportTable() {
   const [selectedMonth, setSelectedMonth] = React.useState("");
 
   React.useEffect(() => {
-    console.log("Today Appointments:", todayAppointments);
-
-    const dateStrings = todayAppointments.map(appointment => format(new Date(appointment.date), "MM/dd/yyyy"));
-    const monthNames = getMonthNamesFromDates(dateStrings);
-
-    const formattedRows = todayAppointments.map((appointment, index) => ({
+    const formattedRows = todayAppointments.map((appointment) => ({
       ...appointment,
       id: appointment._id,
-      date: format(new Date(appointment.date), "MM/dd/yyyy"), // Format date as MM/dd/yyyy
+      date: format(new Date(appointment.date), "MM/yyyy"), // Format date as MM/yyyy
       time: format(new Date(appointment.time), "HH:mm a"),
-      monthName: monthNames[index], // Add month name
     }));
-    console.log("Formatted Rows:", formattedRows);
     setRows(formattedRows);
     setFilteredAppointments(formattedRows); // Initialize filtered appointments with all data
-  }, [todayAppointments]);
+  }, [rows]);
 
   const handleMonthChange = (event) => {
-    const month = event.target.value;
-    setSelectedMonth(month);
-    filterAppointments(month);
+    const monthYear = event.target.value;
+    setSelectedMonth(monthYear);
+    filterAppointments(monthYear);
   };
 
-  const filterAppointments = (month) => {
-    if (!month) {
+  const filterAppointments = (monthYear) => {
+    if (!monthYear) {
       setFilteredAppointments(rows); // If no month selected, show all appointments
     } else {
-      const filtered = rows.filter(row => row.monthName === month);
+      const filtered = rows.filter((row) =>
+        isSameMonth(new Date(row.date), new Date(monthYear))
+      );
       setFilteredAppointments(filtered);
     }
   };
@@ -106,18 +88,18 @@ export default function ReportTable() {
             inputProps={{ "aria-label": "Select Month" }}
           >
             <MenuItem value="">All Months</MenuItem>
-            <MenuItem value="January">January</MenuItem>
-            <MenuItem value="February">February</MenuItem>
-            <MenuItem value="March">March</MenuItem>
-            <MenuItem value="April">April</MenuItem>
-            <MenuItem value="May">May</MenuItem>
-            <MenuItem value="June">June</MenuItem>
-            <MenuItem value="July">July</MenuItem>
-            <MenuItem value="August">August</MenuItem>
-            <MenuItem value="September">September</MenuItem>
-            <MenuItem value="October">October</MenuItem>
-            <MenuItem value="November">November</MenuItem>
-            <MenuItem value="December">December</MenuItem>
+            <MenuItem value="01/2023">January</MenuItem>
+            <MenuItem value="02/2023">February</MenuItem>
+            <MenuItem value="03/2023">March</MenuItem>
+            <MenuItem value="04/2023">April</MenuItem>
+            <MenuItem value="05/2023">May</MenuItem>
+            <MenuItem value="06/2023">June</MenuItem>
+            <MenuItem value="07/2023">July</MenuItem>
+            <MenuItem value="08/2023">August</MenuItem>
+            <MenuItem value="09/2023">September</MenuItem>
+            <MenuItem value="10/2023">October</MenuItem>
+            <MenuItem value="11/2023">November</MenuItem>
+            <MenuItem value="12/2023">December</MenuItem>
           </Select>
         </FormControl>
       </Box>
