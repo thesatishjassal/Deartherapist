@@ -22,6 +22,7 @@ import FormControl from "@mui/material/FormControl";
 import Select from "@mui/material/Select";
 import MenuItem from "@mui/material/MenuItem";
 import Container from "@mui/material/Container";
+import ReportTable from "../components/ReportTable";
 
 const DailyReport = () => {
   // const user = useProtectedRoute();
@@ -171,43 +172,7 @@ const DailyReport = () => {
               </Box>
 
               {/* Invoice Body */}
-              <Box>
-                <ThemeProvider theme={theme}>
-                  <Box sx={{ p: 2 }}>
-                    <FormControl sx={{ minWidth: 120, mb: 2 }}>
-                      <Select
-                        value={selectedMonth}
-                        onChange={handleMonthChange}
-                        displayEmpty
-                        inputProps={{ "aria-label": "Select Month" }}
-                      >
-                        <MenuItem value="">All Months</MenuItem>
-                        <MenuItem value="01/2023">January</MenuItem>
-                        <MenuItem value="02/2023">February</MenuItem>
-                        <MenuItem value="03/2023">March</MenuItem>
-                        <MenuItem value="04/2023">April</MenuItem>
-                        <MenuItem value="05/2023">May</MenuItem>
-                        <MenuItem value="06/2023">June</MenuItem>
-                        <MenuItem value="07/2023">July</MenuItem>
-                        <MenuItem value="08/2023">August</MenuItem>
-                        <MenuItem value="09/2023">September</MenuItem>
-                        <MenuItem value="10/2023">October</MenuItem>
-                        <MenuItem value="11/2023">November</MenuItem>
-                        <MenuItem value="12/2023">December</MenuItem>
-                      </Select>
-                    </FormControl>
-                  </Box>
-                  <div style={{ height: 400, width: "100%" }}>
-                    <DataGrid
-                      rows={filteredAppointments}
-                      columns={columns}
-                      pageSize={10}
-                      rowsPerPageOptions={[5, 10, 20]}
-                      components={{ Toolbar: GridToolbar }}
-                    />
-                  </div>
-                </ThemeProvider>
-              </Box>
+       <ReportTable />
               <Box
                 sx={{
                   mt: 40,
