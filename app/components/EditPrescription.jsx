@@ -158,7 +158,7 @@ const Editprescription = ({
         open={open}
       >
         <DialogTitle sx={{ m: 0, p: 2 }} id="customized-dialog-title">
-          Add Prescription
+          Edit Prescription
         </DialogTitle>
         <IconButton
           aria-label="close"
