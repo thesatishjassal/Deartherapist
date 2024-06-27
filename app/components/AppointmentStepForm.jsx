@@ -48,7 +48,9 @@ const validationSchema = Yup.object({
   channel: Yup.string().required("Session type is required"),
   facilitatedBy: Yup.string().required("Facilitated by is required"),
   service: Yup.string().required("Service is required"),
-  amount: Yup.number().required("Mobile is required"),
+  amount: Yup.number()
+    .required("Amount is required")
+    .positive("Amount must be positive"),
 });
 
 export default function HorizontalLinearStepper() {
@@ -77,8 +79,8 @@ export default function HorizontalLinearStepper() {
     initialValues: {
       mobileNumber: "",
       name: "",
-      date: "",
-      time: "",
+      date: null,
+      time: null,
       channel: "",
       facilitatedBy: "",
       service: "",
@@ -188,6 +190,14 @@ export default function HorizontalLinearStepper() {
 
   const validatePersonalDetailStep = (mobileNumber, clientId) => {
     setIsNextDisabled(!(mobileNumber || clientId));
+  };
+
+  const handleAmountChange = (event) => {
+    formik.setFieldValue("amount", event.target.value);
+  };
+
+  const handleAmountBlur = (event) => {
+    formik.setFieldTouched("amount", true);
   };
 
   const PersonalDetailStep = () => (
@@ -402,13 +412,13 @@ export default function HorizontalLinearStepper() {
         </Grid>
         <Grid item xs={12} sm={12} md={6}>
           <TextField
-            id="amount"
-            name="amount"
+            id="amount-control"
             label="Amount"
             fullWidth
             variant="outlined"
-            {...formik.getFieldProps("amount")}
-            error={formik.touched.amount && Boolean(formik.errors.amount)}
+            onChange={(e) => formik.setFieldValue("amount", e.target.value)}
+            name="amount"
+            error={formik.touched.amount}
             helperText={formik.touched.amount && formik.errors.amount}
           />
         </Grid>
