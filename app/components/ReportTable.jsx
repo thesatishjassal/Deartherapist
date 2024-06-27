@@ -13,8 +13,14 @@ import useTodayAppointments from "../../hooks/useTodayAppointments";
 
 const getMonthNamesFromDates = (dateStrings) => {
   return dateStrings.map((dateString) => {
-    const parsedDate = parse(dateString, 'MM/dd/yyyy', new Date());
-    return format(parsedDate, 'MMMM');
+    try {
+      const parsedDate = parse(dateString, 'MM/dd/yyyy', new Date());
+      if (isNaN(parsedDate)) throw new Error("Invalid Date");
+      return format(parsedDate, 'MMMM');
+    } catch (error) {
+      console.error("Error parsing date:", dateString, error);
+      return "Invalid Date";
+    }
   });
 };
 
