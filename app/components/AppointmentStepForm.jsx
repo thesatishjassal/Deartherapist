@@ -413,12 +413,12 @@ export default function HorizontalLinearStepper() {
         <Grid item xs={12} sm={12} md={6}>
           <TextField
             id="amount-control"
+            name="amount"
             label="Amount"
             fullWidth
             variant="outlined"
-            onChange={(e) => formik.setFieldValue("amount", e.target.value)}
-            name="amount"
-            error={formik.touched.amount}
+            {...formik.getFieldProps("amount")}
+            error={formik.touched.amount && Boolean(formik.errors.amount)}
             helperText={formik.touched.amount && formik.errors.amount}
           />
         </Grid>
