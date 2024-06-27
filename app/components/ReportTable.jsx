@@ -11,6 +11,13 @@ import MenuItem from "@mui/material/MenuItem";
 import useGetClients from "../../hooks/useGetClients";
 import useTodayAppointments from "../../hooks/useTodayAppointments";
 
+const getMonthNamesFromDates = (dateStrings) => {
+  return dateStrings.map((dateString) => {
+    const parsedDate = parse(dateString, 'MM/dd/yyyy', new Date());
+    return format(parsedDate, 'MMMM');
+  });
+};
+
 export default function ReportTable() {
   const columns = [
     { field: "Srno", headerName: "Sr. NO", width: 100 },
@@ -29,13 +36,6 @@ export default function ReportTable() {
   const [rows, setRows] = React.useState([]);
   const [filteredAppointments, setFilteredAppointments] = React.useState([]);
   const [selectedMonth, setSelectedMonth] = React.useState("");
-  
-  const getMonthNamesFromDates = (dateStrings) => {
-    return dateStrings.map((dateString) => {
-      const parsedDate = parse(dateString, 'MM/dd/yyyy', new Date());
-      return format(parsedDate, 'MMMM');
-    });
-  };
 
   React.useEffect(() => {
     console.log("Today Appointments:", todayAppointments);
@@ -46,7 +46,7 @@ export default function ReportTable() {
     const formattedRows = todayAppointments.map((appointment, index) => ({
       ...appointment,
       id: appointment._id,
-      date: format(new Date(appointment.date), "MM/dd/yyyy"), // Format date as MM/yyyy
+      date: format(new Date(appointment.date), "MM/dd/yyyy"), // Format date as MM/dd/yyyy
       time: format(new Date(appointment.time), "HH:mm a"),
       monthName: monthNames[index], // Add month name
     }));
@@ -56,18 +56,16 @@ export default function ReportTable() {
   }, [todayAppointments]);
 
   const handleMonthChange = (event) => {
-    const monthYear = event.target.value;
-    setSelectedMonth(monthYear);
-    filterAppointments(monthYear);
+    const month = event.target.value;
+    setSelectedMonth(month);
+    filterAppointments(month);
   };
 
-  const filterAppointments = (monthYear) => {
-    if (!monthYear) {
+  const filterAppointments = (month) => {
+    if (!month) {
       setFilteredAppointments(rows); // If no month selected, show all appointments
     } else {
-      const filtered = rows.filter((row) =>
-        isSameMonth(new Date(row.date), new Date(monthYear))
-      );
+      const filtered = rows.filter(row => row.monthName === month);
       setFilteredAppointments(filtered);
     }
   };
@@ -101,14 +99,14 @@ export default function ReportTable() {
             displayEmpty
             inputProps={{ "aria-label": "Select Month" }}
           >
-          <MenuItem value="">All Months</MenuItem>
+            <MenuItem value="">All Months</MenuItem>
             <MenuItem value="January">January</MenuItem>
             <MenuItem value="February">February</MenuItem>
             <MenuItem value="March">March</MenuItem>
-            <MenuItem value="04/2023">April</MenuItem>
+            <MenuItem value="April">April</MenuItem>
             <MenuItem value="May">May</MenuItem>
             <MenuItem value="June">June</MenuItem>
-            <MenuItem value="07/2023">July</MenuItem>
+            <MenuItem value="July">July</MenuItem>
             <MenuItem value="August">August</MenuItem>
             <MenuItem value="September">September</MenuItem>
             <MenuItem value="October">October</MenuItem>
