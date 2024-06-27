@@ -33,12 +33,21 @@ export default function ReportTable() {
 
   React.useEffect(() => {
     console.log("Today Appointments:", todayAppointments);
-    const formattedRows = todayAppointments.map((appointment) => ({
-      ...appointment,
-      id: appointment._id,
-      date: format(new Date(appointment.date), "MM/yyyy"), // Format date as MM/yyyy
-      time: format(new Date(appointment.time), "HH:mm a"),
-    }));
+    const formattedRows = todayAppointments.map((appointment) => {
+      const appointmentDate = new Date(appointment.date);
+      const appointmentTime = new Date(appointment.time);
+      
+      console.log("Appointment Date:", appointmentDate);
+      console.log("Appointment Time:", appointmentTime);
+
+      return {
+        ...appointment,
+        id: appointment._id,
+        date: isNaN(appointmentDate.getTime()) ? "Invalid Date" : format(appointmentDate, "MM/yyyy"), // Format date as MM/yyyy
+        time: isNaN(appointmentTime.getTime()) ? "Invalid Time" : format(appointmentTime, "HH:mm a"),
+      };
+    });
+
     console.log("Formatted Rows:", formattedRows);
     setRows(formattedRows);
     setFilteredAppointments(formattedRows); // Initialize filtered appointments with all data
