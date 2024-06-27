@@ -43,7 +43,7 @@ export default function ReportTable() {
 
   const handleMonthChange = (event) => {
     const monthYear = event.target.value;
-    console.log(monthYear)
+    console.log(event)
     setSelectedMonth(monthYear);
     filterAppointments(monthYear);
   };
