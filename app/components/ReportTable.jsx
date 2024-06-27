@@ -43,6 +43,7 @@ export default function ReportTable() {
 
   const handleMonthChange = (event) => {
     const monthYear = event.target.value;
+    console.log(monthYear)
     setSelectedMonth(monthYear);
     filterAppointments(monthYear);
   };
@@ -54,6 +55,7 @@ export default function ReportTable() {
       const filtered = rows.filter((row) =>
         isSameMonth(new Date(row.date), new Date(monthYear))
       );
+      console.log(filtered)
       setFilteredAppointments(filtered);
     }
   };
