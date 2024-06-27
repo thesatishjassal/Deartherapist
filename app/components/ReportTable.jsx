@@ -1,7 +1,8 @@
 import * as React from "react";
 import { DataGrid, GridToolbar } from "@mui/x-data-grid";
 import { createTheme, ThemeProvider } from "@mui/material/styles";
-import { format, parse, isSameMonth } from "date-fns"; // Import isSameMonth function from date-fns
+import { format, isSameMonth } from "date-fns"; // Import isSameMonth function from date-fns
+import { parse, format, isSameMonth } from "date-fns";
 import Box from "@mui/material/Box";
 import Typography from "@mui/material/Typography";
 import FormControl from "@mui/material/FormControl";
@@ -13,8 +14,9 @@ import useTodayAppointments from "../../hooks/useTodayAppointments";
 
 export default function ReportTable() {
   const columns = [
-    { field: "Srno", headerName: "Sr.NO", width: 100 },
+    { field: "Srno", headerName: "Sr. NO", width: 100 },
     { field: "date", headerName: "Date", width: 140 },
+    { field: "monthName", headerName: "Month", width: 140 }, // Add month name column
     { field: "name", headerName: "Name", width: 140 },
     { field: "channel", headerName: "Mode", width: 130 },
     { field: "service", headerName: "Service", width: 130 },
@@ -28,13 +30,14 @@ export default function ReportTable() {
   const [rows, setRows] = React.useState([]);
   const [filteredAppointments, setFilteredAppointments] = React.useState([]);
   const [selectedMonth, setSelectedMonth] = React.useState("");
-  
+
   const getMonthNamesFromDates = (dateStrings) => {
     return dateStrings.map((dateString) => {
       const parsedDate = parse(dateString, 'MM/dd/yyyy', new Date());
       return format(parsedDate, 'MMMM');
     });
   };
+
   React.useEffect(() => {
     const dateStrings = todayAppointments.map(appointment => appointment.date);
     const monthNames = getMonthNamesFromDates(dateStrings);
@@ -42,7 +45,7 @@ export default function ReportTable() {
     const formattedRows = todayAppointments.map((appointment, index) => ({
       ...appointment,
       id: appointment._id,
-      date: format(new Date(appointment.date), "DD/MM/yy"), // Format date as MM/yyyy
+      date: format(new Date(appointment.date), "MM/yyyy"), // Format date as MM/yyyy
       time: format(new Date(appointment.time), "HH:mm a"),
       monthName: monthNames[index], // Add month name
     }));
@@ -96,7 +99,7 @@ export default function ReportTable() {
             displayEmpty
             inputProps={{ "aria-label": "Select Month" }}
           >
-            <MenuItem value="">All Months</MenuItem>
+          <MenuItem value="">All Months</MenuItem>
             <MenuItem value="January">January</MenuItem>
             <MenuItem value="February">February</MenuItem>
             <MenuItem value="March">March</MenuItem>
