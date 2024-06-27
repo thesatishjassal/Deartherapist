@@ -39,12 +39,12 @@ export default function ReportTable() {
 
   React.useEffect(() => {
     const dateStrings = todayAppointments.map(appointment => appointment.date);
-    const monthNames = getMonthNamesFromDates(dateStrings);
+    const monthNames = getMonthNamesFromDates(format(new Date(dateStrings), "MM/dd/yyyy"),);
 
     const formattedRows = todayAppointments.map((appointment, index) => ({
       ...appointment,
       id: appointment._id,
-      date: format(new Date(appointment.date), "MM/yyyy"), // Format date as MM/yyyy
+      date: format(new Date(appointment.date), "MM/dd/yyyy"), // Format date as MM/yyyy
       time: format(new Date(appointment.time), "HH:mm a"),
       monthName: monthNames[index], // Add month name
     }));
