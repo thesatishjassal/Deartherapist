@@ -5,7 +5,6 @@ import { jsPDF } from "jspdf";
 import html2canvas from "html2canvas";
 import Typography from "@mui/material/Typography";
 import Image from "next/image";
-import ReportTable from "../components/ReportTable";
 import Grid from "@mui/material/Grid"; // Grid version 1
 import Button from "@mui/material/Button";
 import DownloadIcon from "@mui/icons-material/Download";
