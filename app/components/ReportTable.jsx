@@ -39,7 +39,7 @@ export default function ReportTable() {
     }));
     setRows(formattedRows);
     setFilteredAppointments(formattedRows); // Initialize filtered appointments with all data
-  }, [rows]);
+  }, [todayAppointments]); // Use todayAppointments instead of rows to trigger the effect
 
   const handleMonthChange = (event) => {
     const monthYear = event.target.value;
@@ -88,18 +88,18 @@ export default function ReportTable() {
             inputProps={{ "aria-label": "Select Month" }}
           >
             <MenuItem value="">All Months</MenuItem>
-            <MenuItem value="01/2023">January</MenuItem>
-            <MenuItem value="02/2023">February</MenuItem>
-            <MenuItem value="03/2023">March</MenuItem>
+            <MenuItem value="January">January</MenuItem>
+            <MenuItem value="February">February</MenuItem>
+            <MenuItem value="March">March</MenuItem>
             <MenuItem value="04/2023">April</MenuItem>
-            <MenuItem value="05/2023">May</MenuItem>
-            <MenuItem value="06/2023">June</MenuItem>
+            <MenuItem value="May">May</MenuItem>
+            <MenuItem value="June">June</MenuItem>
             <MenuItem value="07/2023">July</MenuItem>
-            <MenuItem value="08/2023">August</MenuItem>
-            <MenuItem value="09/2023">September</MenuItem>
-            <MenuItem value="10/2023">October</MenuItem>
-            <MenuItem value="11/2023">November</MenuItem>
-            <MenuItem value="12/2023">December</MenuItem>
+            <MenuItem value="August">August</MenuItem>
+            <MenuItem value="September">September</MenuItem>
+            <MenuItem value="October">October</MenuItem>
+            <MenuItem value="November">November</MenuItem>
+            <MenuItem value="December">December</MenuItem>
           </Select>
         </FormControl>
       </Box>
