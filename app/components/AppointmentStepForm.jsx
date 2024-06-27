@@ -225,144 +225,191 @@ export default function HorizontalLinearStepper() {
             id="client-Id"
             options={contacts && contacts.clientIds}
             onChange={handleclientIds}
+            value={selectedClientId}
             renderInput={(params) => (
-              <TextField
-                fullWidth
-                {...params}
-                label="Select Client ID"
-                error={
-                  formik.touched.selectedClientId &&
-                  Boolean(formik.errors.selectedClientId)
-                }
-                helperText={
-                  formik.touched.selectedClientId &&
-                  formik.errors.selectedClientId
-                }
-              />
+              <TextField fullWidth {...params} label="Select Client Id" />
             )}
           />
         </Grid>
+
         <Grid item xs={12} sm={12} md={12}>
-          <TextField
-            fullWidth
-            id="name"
-            name="name"
-            label="Name"
-            value={formik.values.name}
-            onChange={formik.handleChange}
-            error={formik.touched.name && Boolean(formik.errors.name)}
-            helperText={formik.touched.name && formik.errors.name}
-          />
+          <Card>
+            <List sx={{ width: "100%" }} className="themeBg">
+              {loadingClients ? (
+                <p>Wait...</p>
+              ) : (
+                filteredClients &&
+                filteredClients.map((client) => (
+                  <ListItem
+                    key={client.id}
+                    className="selectedUser"
+                    alignItems="flex-start"
+                  >
+                    <ListItemAvatar>
+                      <Avatar
+                        alt="Remy Sharp"
+                        src={
+                          client.gender === "male"
+                            ? "/images/avatar-man.jpg"
+                            : "/images/girl_avatar.webp"
+                        }
+                      />
+                    </ListItemAvatar>
+                    <ListItemText
+                      primary={client.name}
+                      secondary={
+                        <React.Fragment>
+                          <Typography
+                            sx={{ display: "inline" }}
+                            component="span"
+                            variant="body2"
+                          >
+                            {client.email} | {client.gender}
+                          </Typography>
+                        </React.Fragment>
+                      }
+                    />
+                  </ListItem>
+                ))
+              )}
+            </List>
+          </Card>
         </Grid>
       </Grid>
     </Box>
   );
 
-  const ServiceDetailStep = () => (
+  const MedicalDetailStep = () => (
     <Box sx={{ width: "100%", px: 1, py: 3 }}>
       <Grid container rowSpacing={3} columnSpacing={{ xs: 1, sm: 2, md: 3 }}>
-        <Grid item xs={12} sm={12} md={12}>
+        <Grid item xs={12} sm={12} md={6}>
           <LocalizationProvider dateAdapter={AdapterDayjs}>
-            <DemoContainer components={["DatePicker"]}>
-              <DatePicker
-                label="Select Date"
-                fullWidth
-                id="date"
-                name="date"
-                value={formik.values.date}
-                onChange={(value) => formik.setFieldValue("date", value)}
-                error={formik.touched.date && Boolean(formik.errors.date)}
-                helperText={formik.touched.date && formik.errors.date}
-              />
-            </DemoContainer>
+            <DatePicker
+              label="Pick a Date"
+              value={formik.values.date}
+              onChange={(newValue) => {
+                formik.setFieldValue("date", newValue);
+                formik.setFieldTouched("date", true, true);
+              }}
+              renderInput={(params) => (
+                <TextField
+                  {...params}
+                  value={format(day, "dd/MM/yyyy")} // Format example: day/month/year
+                  fullWidth
+                  error={formik.touched.date && Boolean(formik.errors.date)}
+                  helperText={formik.touched.date && formik.errors.date}
+                />
+              )}
+            />
           </LocalizationProvider>
         </Grid>
-        <Grid item xs={12} sm={12} md={12}>
+        <Grid item xs={12} sm={12} md={6}>
           <LocalizationProvider dateAdapter={AdapterDayjs}>
-            <DemoContainer components={["TimePicker"]}>
-              <TimePicker
-                label="Select Time"
-                fullWidth
-                id="time"
-                name="time"
-                value={formik.values.time}
-                onChange={(value) => formik.setFieldValue("time", value)}
-                error={formik.touched.time && Boolean(formik.errors.time)}
-                helperText={formik.touched.time && formik.errors.time}
-              />
-            </DemoContainer>
+            <TimePicker
+              label="Pick a Time"
+              value={formik.values.time}
+              onChange={(newTime) => {
+                formik.setFieldValue("time", newTime);
+                formik.setFieldTouched("time", true, true);
+              }}
+              renderInput={(params) => (
+                <TextField
+                  {...params}
+                  fullWidth
+                  error={formik.touched.time && Boolean(formik.errors.time)}
+                  helperText={formik.touched.time && formik.errors.time}
+                />
+              )}
+              ampm={false} // 24-hour format
+              format="HH:mm" // Format example: hour:minute:second
+            />
           </LocalizationProvider>
         </Grid>
-        <Grid item xs={12} sm={12} md={12}>
-          <FormControl fullWidth>
-            <InputLabel id="demo-simple-select-label">
-              Select Session Type
-            </InputLabel>
+
+        <Grid item xs={12} sm={12} md={6}>
+          <FormControl
+            fullWidth
+            error={
+              formik.touched.facilitatedBy &&
+              Boolean(formik.errors.facilitatedBy)
+            }
+          >
+            <InputLabel id="facilitated-by">Facilitated By</InputLabel>
             <Select
-              labelId="demo-simple-select-label"
-              id="channel"
-              name="channel"
-              label="Select Session Type"
-              value={formik.values.channel}
-              onChange={formik.handleChange}
-              error={formik.touched.channel && Boolean(formik.errors.channel)}
-            >
-              <MenuItem value={"inperson"}>Inperson</MenuItem>
-              <MenuItem value={"online"}>Online</MenuItem>
-            </Select>
-          </FormControl>
-        </Grid>
-        <Grid item xs={12} sm={12} md={12}>
-          <FormControl fullWidth>
-            <InputLabel id="demo-simple-select-label">
-              Select Facilitated By
-            </InputLabel>
-            <Select
-              labelId="demo-simple-select-label"
-              id="facilitatedBy"
-              name="facilitatedBy"
-              label="Select Facilitated By"
+              labelId="facilitated-by"
+              id="facilitated-by-control"
               value={formik.values.facilitatedBy}
-              onChange={formik.handleChange}
-              error={
-                formik.touched.facilitatedBy &&
-                Boolean(formik.errors.facilitatedBy)
+              label="Facilitated By"
+              onChange={(e) =>
+                formik.setFieldValue("facilitatedBy", e.target.value)
               }
             >
-              <MenuItem value={"Mr.x"}>Mr.X</MenuItem>
-              <MenuItem value={"Mr.y"}>Mr.Y</MenuItem>
+              <MenuItem value="SHAVETA BHARDWAJ">Dr. SHAVETA BHARDWAJ</MenuItem>
+              <MenuItem value="Counselor">Counselor</MenuItem>
             </Select>
+            {formik.touched.facilitatedBy && formik.errors.facilitatedBy && (
+              <Typography color="error">
+                {formik.errors.facilitatedBy}
+              </Typography>
+            )}
           </FormControl>
         </Grid>
-        <Grid item xs={12} sm={12} md={12}>
-          <FormControl fullWidth>
-            <InputLabel id="demo-simple-select-label">
-              Select Service
-            </InputLabel>
-            <Select
-              labelId="demo-simple-select-label"
-              id="service"
-              name="service"
-              label="Select Service"
-              value={formik.values.service}
-              onChange={formik.handleChange}
-              error={formik.touched.service && Boolean(formik.errors.service)}
-            >
-              <MenuItem value={"Physical health"}>Physical health</MenuItem>
-              <MenuItem value={"Mental health"}>Mental health</MenuItem>
-              <MenuItem value={"Dental health"}>Dental health</MenuItem>
-            </Select>
-          </FormControl>
-        </Grid>
-        <Grid item xs={12} sm={12} md={12}>
-          <TextField
+        <Grid item xs={12} sm={12} md={6}>
+          <FormControl
             fullWidth
-            id="amount"
-            name="amount"
+            error={formik.touched.channel && Boolean(formik.errors.channel)}
+          >
+            <InputLabel id="session-type">Mode</InputLabel>
+            <Select
+              labelId="session-type"
+              id="session-type-control"
+              value={formik.values.channel}
+              label="Session Type"
+              onChange={(e) => formik.setFieldValue("channel", e.target.value)}
+            >
+              <MenuItem value="online">Online</MenuItem>
+              <MenuItem value="offline">Offline</MenuItem>
+            </Select>
+            {formik.touched.channel && formik.errors.channel && (
+              <Typography color="error">{formik.errors.channel}</Typography>
+            )}
+          </FormControl>
+        </Grid>
+        <Grid item xs={12} sm={12} md={6}>
+          <FormControl
+            fullWidth
+            error={formik.touched.service && Boolean(formik.errors.service)}
+          >
+            <InputLabel id="service">Service</InputLabel>
+            <Select
+              labelId="service"
+              id="service-control"
+              value={formik.values.service}
+              label="Service"
+              onChange={(e) => formik.setFieldValue("service", e.target.value)}
+            >
+              <MenuItem value="Counselling Session">
+                Counselling Session
+              </MenuItem>
+              <MenuItem value="Couple Session">Couple Session</MenuItem>
+              <MenuItem value="Therapy">Therapy</MenuItem>
+              <MenuItem value="Astrology Session">Astrology Session</MenuItem>
+              <MenuItem value="Tarot Card Reading">Tarot Card Reading</MenuItem>
+              <MenuItem value="Other">Other</MenuItem>
+            </Select>
+            {formik.touched.service && formik.errors.service && (
+              <Typography color="error">{formik.errors.service}</Typography>
+            )}
+          </FormControl>
+        </Grid>
+        <Grid item xs={12} sm={12} md={6}>
+          <TextField
+            id="amount-control"
             label="Amount"
-            type="number"
+            fullWidth
+            variant="outlined"
             value={formik.values.amount}
-            onChange={formik.handleChange}
+            onChange={(e) => formik.setFieldValue("amount", e.target.value)}
             error={formik.touched.amount && Boolean(formik.errors.amount)}
             helperText={formik.touched.amount && formik.errors.amount}
           />
@@ -371,76 +418,65 @@ export default function HorizontalLinearStepper() {
     </Box>
   );
 
-  const isMobile = useMediaQuery(theme.breakpoints.down("sm"));
-  const containerStyles = isMobile ? { mt: 2, px: 2 } : { mt: 5, px: 10 };
-
   return (
-    <Box sx={{ width: "100%", ...containerStyles }}>
-      <Stepper activeStep={activeStep}>
-        {steps.map((label, index) => {
-          const stepProps = {};
-          const labelProps = {};
-          if (isStepOptional(index)) {
-            labelProps.optional = (
-              <Typography variant="caption">Optional</Typography>
-            );
-          }
-          if (isStepSkipped(index)) {
-            stepProps.completed = false;
-          }
-          return (
-            <Step key={label} {...stepProps}>
-              <StepLabel {...labelProps}>{label}</StepLabel>
-            </Step>
-          );
-        })}
-      </Stepper>
-      {activeStep === steps.length ? (
-        <React.Fragment>
-          {isFinished ? (
-            <>
-              {showAlert && (
-                <Alert severity="error" onClose={() => setShowAlert(false)}>
-                  {alertMessage}
-                </Alert>
-              )}
-              {showSuccess && (
-                <Alert severity="success" onClose={() => setShowSuccess(false)}>
-                  {successMessage}
-                </Alert>
-              )}
-            </>
-          ) : (
-            <Typography sx={{ mt: 2, mb: 1 }}>
-              Submitting form, please wait...
-            </Typography>
-          )}
-          <Box sx={{ display: "flex", flexDirection: "row", pt: 2 }}>
-            <Box sx={{ flex: "1 1 auto" }} />
-            <Button onClick={handleReset}>Reset</Button>
-          </Box>
-        </React.Fragment>
-      ) : (
-        <React.Fragment>
-          {activeStep === 0 && <PersonalDetailStep />}
-          {activeStep === 1 && <ServiceDetailStep />}
-          <Box sx={{ display: "flex", flexDirection: "row", pt: 2 }}>
-            <Button
-              color="inherit"
-              disabled={activeStep === 0}
-              onClick={handleBack}
-              sx={{ mr: 1 }}
-            >
-              Back
-            </Button>
-            <Box sx={{ flex: "1 1 auto" }} />
-            <Button onClick={handleNext} disabled={isNextDisabled}>
-              {activeStep === steps.length - 1 ? "Finish" : "Next"}
-            </Button>
-          </Box>
-        </React.Fragment>
+    <Box sx={{ width: "100%" }}>
+      {showAlert && (
+        <Alert severity="error" onClose={() => setShowAlert(false)}>
+          {alertMessage}
+        </Alert>
       )}
-      <Backdrop sx={{ color: "#fff", zIndex: (theme) => theme.zIndex.drawer + 1 }} open={loading}>
+      {showSuccess && (
+        <Alert severity="success" onClose={() => setShowSuccess(false)}>
+          {successMessage}
+        </Alert>
+      )}
+      {isFinished ? (
+        <Box sx={{ textAlign: "center", mt: 2 }}>
+          {/* <Typography variant="h6" gutterBottom>
+            All steps completed
+          </Typography>
+          <Button onClick={handleReset}>Reset</Button> */}
+        </Box>
+      ) : (
+        <>
+          <Stepper activeStep={activeStep}>
+            {steps.map((label, index) => {
+              const stepProps = {};
+              const labelProps = {};
+              if (isStepSkipped(index)) {
+                stepProps.completed = false;
+              }
+              return (
+                <Step key={label} {...stepProps}>
+                  <StepLabel {...labelProps}>{label}</StepLabel>
+                </Step>
+              );
+            })}
+          </Stepper>
+          <React.Fragment>
+            {activeStep === 0 && <PersonalDetailStep />}
+            {activeStep === 1 && <MedicalDetailStep />}
+            <Box sx={{ display: "flex", flexDirection: "row", pt: 2 }}>
+              <Button
+                color="inherit"
+                disabled={activeStep === 0}
+                onClick={handleBack}
+                sx={{ mr: 1 }}
+              >
+                Back
+              </Button>
+              <Box sx={{ flex: "1 1 auto" }} />
+              <Button onClick={handleNext}>
+                {activeStep === steps.length - 1 ? "Finish" : "Next"}
+              </Button>
+            </Box>
+          </React.Fragment>
+        </>
+      )}
+      <Backdrop
+        sx={{ color: "#fff", zIndex: (theme) => theme.zIndex.drawer + 1 }}
+        open={loading}
+      >
         <CircularProgress color="inherit" />
       </Backdrop>
     </Box>
