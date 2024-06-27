@@ -417,8 +417,7 @@ export default function HorizontalLinearStepper() {
             fullWidth
             variant="outlined"
             value={formik.values.amount}
-            onChange={handleAmountChange}
-            onBlur={handleAmountBlur}
+            onChange={(e) => formik.setFieldValue("amount", e.target.value)}
             name="amount"
             error={formik.touched.amount && Boolean(formik.errors.amount)}
             helperText={formik.touched.amount && formik.errors.amount}
