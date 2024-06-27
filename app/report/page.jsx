@@ -1,14 +1,16 @@
-"use client";
+"use client"
 
 import * as React from "react";
 import { jsPDF } from "jspdf";
 import html2canvas from "html2canvas";
 import Typography from "@mui/material/Typography";
 import Image from "next/image";
+import ReportTable from "../components/ReportTable";
 import Grid from "@mui/material/Grid"; // Grid version 1
 import Button from "@mui/material/Button";
 import DownloadIcon from "@mui/icons-material/Download";
 import { CircularProgress } from "@mui/material";
+import useProtectedRoute from "../../hooks/useProtectedRoute";
 import Divider from "@mui/material/Divider";
 import { DataGrid, GridToolbar } from "@mui/x-data-grid";
 import { createTheme, ThemeProvider } from "@mui/material/styles";
@@ -19,11 +21,15 @@ import useTodayAppointments from "../../hooks/useTodayAppointments";
 import FormControl from "@mui/material/FormControl";
 import Select from "@mui/material/Select";
 import MenuItem from "@mui/material/MenuItem";
-import Container from "@mui/material/Container";
+import Container from '@mui/material/Container';
 
 const DailyReport = () => {
-  // const user = useProtectedRoute();
-  const invoiceRef = React.useRef();
+  const user = useProtectedRoute();
+
+  if (!user) {
+    return null; // Optionally render a loading state or a redirect message
+  }  const invoiceRef = React.useRef();
+  
   // State variables
   const [rows, setRows] = React.useState([]);
   const [filteredAppointments, setFilteredAppointments] = React.useState([]);
@@ -131,10 +137,6 @@ const DailyReport = () => {
     },
   });
 
-  // if (!user) {
-  //   return null; // Optionally render a loading state or a redirect message
-  // }
-
   if (clientsError) {
     return <Typography variant="h6">Error loading clients data.</Typography>;
   }
@@ -218,18 +220,14 @@ const DailyReport = () => {
               >
                 <Box></Box>
                 <Box>
-                  <Typography variant="h6">
-                    Total Amount: {totalAmount}
-                  </Typography>
+                  <Typography variant="h6">Total Amount: {totalAmount}</Typography>
                   <Divider
                     sx={{
                       margin: "15px auto",
                     }}
                   />
                   <Typography component="p">Sign</Typography>
-                  <Typography component="strong">
-                    Dr. Shaveta Bhardwaj
-                  </Typography>
+                  <Typography component="strong">Dr. Shaveta Bhardwaj</Typography>
                 </Box>
               </Box>
             </Box>
@@ -262,7 +260,7 @@ const DailyReport = () => {
             </Button>
           </Box>
         </Grid>
-      </Grid>''
+      </Grid>
     </Container>
   );
 };
