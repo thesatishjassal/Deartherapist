@@ -1,7 +1,7 @@
 import * as React from "react";
 import { DataGrid, GridToolbar } from "@mui/x-data-grid";
 import { createTheme, ThemeProvider } from "@mui/material/styles";
-import { format, format, isSameMonth } from "date-fns"; // Import isSameMonth function from date-fns
+import { format, parse, isSameMonth } from "date-fns"; // Import isSameMonth function from date-fns
 import Box from "@mui/material/Box";
 import Typography from "@mui/material/Typography";
 import FormControl from "@mui/material/FormControl";
