@@ -40,13 +40,13 @@ export default function ReportTable() {
   React.useEffect(() => {
     const dateStrings = todayAppointments.map(appointment => appointment.date);
     const monthNames = getMonthNamesFromDates(dateStrings);
-    
+
     const formattedRows = todayAppointments.map((appointment, index) => ({
       ...appointment,
       id: appointment._id,
       date: format(new Date(appointment.date), "MM/yyyy"), // Format date as MM/yyyy
       time: format(new Date(appointment.time), "HH:mm a"),
-      monthName: monthNames[], // Add month name
+      monthName: monthNames[index], // Add month name
     }));
     setRows(formattedRows);
     setFilteredAppointments(formattedRows); // Initialize filtered appointments with all data
