@@ -174,9 +174,6 @@ const DailyReport = () => {
               <Box>
                 <ThemeProvider theme={theme}>
                   <Box sx={{ p: 2 }}>
-                    <Typography variant="h6" sx={{ mb: 2 }}>
-                      Appointments Report
-                    </Typography>
                     <FormControl sx={{ minWidth: 120, mb: 2 }}>
                       <Select
                         value={selectedMonth}
