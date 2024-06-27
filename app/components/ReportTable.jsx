@@ -1,10 +1,11 @@
 import * as React from "react";
 import { DataGrid, GridToolbar } from "@mui/x-data-grid";
 import { createTheme, ThemeProvider } from "@mui/material/styles";
-import { format, isSameMonth } from "date-fns"; // Import isSameMonth function from date-fns
+import { format, isSameMonth, parse } from "date-fns"; // Import parse function from date-fns
 
 import Box from "@mui/material/Box";
 import Typography from "@mui/material/Typography";
+import InputLabel from "@mui/material/InputLabel";
 import FormControl from "@mui/material/FormControl";
 import Select from "@mui/material/Select";
 import MenuItem from "@mui/material/MenuItem";
@@ -31,31 +32,34 @@ export default function ReportTable() {
   const [selectedMonth, setSelectedMonth] = React.useState("");
 
   React.useEffect(() => {
+    console.log("Today Appointments:", todayAppointments);
     const formattedRows = todayAppointments.map((appointment) => ({
       ...appointment,
       id: appointment._id,
       date: format(new Date(appointment.date), "MM/yyyy"), // Format date as MM/yyyy
       time: format(new Date(appointment.time), "HH:mm a"),
     }));
+    console.log("Formatted Rows:", formattedRows);
     setRows(formattedRows);
     setFilteredAppointments(formattedRows); // Initialize filtered appointments with all data
-  }, [todayAppointments]); // Use todayAppointments instead of rows to trigger the effect
+  }, [todayAppointments]);
 
   const handleMonthChange = (event) => {
     const monthYear = event.target.value;
-    console.log(event)
+    console.log("Selected Month:", monthYear);
     setSelectedMonth(monthYear);
     filterAppointments(monthYear);
   };
 
   const filterAppointments = (monthYear) => {
     if (!monthYear) {
+      console.log("No Month Selected, showing all appointments");
       setFilteredAppointments(rows); // If no month selected, show all appointments
     } else {
       const filtered = rows.filter((row) =>
-        isSameMonth(new Date(row.date), new Date(monthYear))
+        isSameMonth(parse(row.date, "MM/yyyy", new Date()), new Date(monthYear))
       );
-      console.log(filtered)
+      console.log("Filtered Appointments:", filtered);
       setFilteredAppointments(filtered);
     }
   };
@@ -82,26 +86,28 @@ export default function ReportTable() {
   return (
     <ThemeProvider theme={theme}>
       <Box sx={{ p: 2 }}>
-        <FormControl sx={{ minWidth: 120, mb: 2 }}>
+        <FormControl fullWidth sx={{ minWidth: 120, mb: 2 }}>
+          <InputLabel id="demo-simple-select-label">Select Month</InputLabel>
           <Select
+            labelId="demo-simple-select-label"
+            id="demo-simple-select"
             value={selectedMonth}
+            label="Select Month"
             onChange={handleMonthChange}
-            displayEmpty
-            inputProps={{ "aria-label": "Select Month" }}
           >
             <MenuItem value="">All Months</MenuItem>
-            <MenuItem value="January">January</MenuItem>
-            <MenuItem value="February">February</MenuItem>
-            <MenuItem value="March">March</MenuItem>
+            <MenuItem value="01/2023">January</MenuItem>
+            <MenuItem value="02/2023">February</MenuItem>
+            <MenuItem value="03/2023">March</MenuItem>
             <MenuItem value="04/2023">April</MenuItem>
-            <MenuItem value="May">May</MenuItem>
-            <MenuItem value="June">June</MenuItem>
+            <MenuItem value="05/2023">May</MenuItem>
+            <MenuItem value="06/2023">June</MenuItem>
             <MenuItem value="07/2023">July</MenuItem>
-            <MenuItem value="August">August</MenuItem>
-            <MenuItem value="September">September</MenuItem>
-            <MenuItem value="October">October</MenuItem>
-            <MenuItem value="November">November</MenuItem>
-            <MenuItem value="December">December</MenuItem>
+            <MenuItem value="08/2023">August</MenuItem>
+            <MenuItem value="09/2023">September</MenuItem>
+            <MenuItem value="10/2023">October</MenuItem>
+            <MenuItem value="11/2023">November</MenuItem>
+            <MenuItem value="12/2023">December</MenuItem>
           </Select>
         </FormControl>
       </Box>
