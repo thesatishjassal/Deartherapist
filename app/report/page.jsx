@@ -114,7 +114,6 @@ const DailyReport = () => {
       0
     );
     setTotalAmount(total); // Set total amount in state
-    console.log(todayAppointments)
   }, [todayAppointments]);
 
   const theme = createTheme({
