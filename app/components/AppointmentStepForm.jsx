@@ -48,8 +48,7 @@ const validationSchema = Yup.object({
   channel: Yup.string().required("Session type is required"),
   facilitatedBy: Yup.string().required("Facilitated by is required"),
   service: Yup.string().required("Service is required"),
-  amount: Yup.string()
-    .required("Amount is required")
+  amount: Yup.number().required("Mobile is required"),
 });
 
 export default function HorizontalLinearStepper() {
@@ -78,8 +77,8 @@ export default function HorizontalLinearStepper() {
     initialValues: {
       mobileNumber: "",
       name: "",
-      date: null,
-      time: null,
+      date: "",
+      time: "",
       channel: "",
       facilitatedBy: "",
       service: "",
