@@ -5,12 +5,10 @@ import { jsPDF } from "jspdf";
 import html2canvas from "html2canvas";
 import Typography from "@mui/material/Typography";
 import Image from "next/image";
-import ReportTable from "../components/ReportTable";
 import Grid from "@mui/material/Grid"; // Grid version 1
 import Button from "@mui/material/Button";
 import DownloadIcon from "@mui/icons-material/Download";
 import { CircularProgress } from "@mui/material";
-import useProtectedRoute from "../../hooks/useProtectedRoute";
 import Divider from "@mui/material/Divider";
 import { DataGrid, GridToolbar } from "@mui/x-data-grid";
 import { createTheme, ThemeProvider } from "@mui/material/styles";
