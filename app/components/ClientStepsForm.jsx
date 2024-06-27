@@ -402,7 +402,6 @@ const HorizontalLinearStepper = () => {
                           <MenuItem value="self-employed">
                             Self Employed
                           </MenuItem>
-                          <MenuItem value="counselor">Counselor</MenuItem>
                           <MenuItem value="homemaker">Homemaker</MenuItem>
                         </Select>
                         {formik.touched.occupation &&
