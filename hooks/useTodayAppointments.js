@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import { format } from "date-fns";
+import { format, parse } from "date-fns";
 
 const useTodayAppointments = (clients) => {
   const [allAppointments, setAllAppointments] = useState([]);
@@ -14,6 +14,7 @@ const useTodayAppointments = (clients) => {
         ...appointment,
         date: format(new Date(appointment.date), "dd-MM-yyyy"),
         time: format(new Date(appointment.time), "HH:mm a"),
+        monthName: format(parse(appointment.date, "dd-MM-yyyy", new Date()), "MMMM"),
       }));
 
       setAllAppointments(formattedAppointments);

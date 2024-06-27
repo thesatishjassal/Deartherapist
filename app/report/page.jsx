@@ -37,6 +37,7 @@ const DailyReport = () => {
   const columns = [
     { field: "Srno", headerName: "Sr. NO", width: 100 },
     { field: "date", headerName: "Date", width: 140 },
+    { field: "monthName", headerName: "Month", width: 140 },
     { field: "name", headerName: "Name", width: 140 },
     { field: "channel", headerName: "Mode", width: 130 },
     { field: "service", headerName: "Service", width: 130 },
@@ -264,7 +265,7 @@ const DailyReport = () => {
             </Button>
           </Box>
         </Grid>
-      </Grid>
+      </Grid>''
     </Container>
   );
 };
