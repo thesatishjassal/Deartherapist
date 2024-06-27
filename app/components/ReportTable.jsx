@@ -29,7 +29,7 @@ export default function ReportTable() {
   const [rows, setRows] = React.useState([]);
   const [filteredAppointments, setFilteredAppointments] = React.useState([]);
   const [selectedMonth, setSelectedMonth] = React.useState("");
-
+  
   const getMonthNamesFromDates = (dateStrings) => {
     return dateStrings.map((dateString) => {
       const parsedDate = parse(dateString, 'MM/dd/yyyy', new Date());
@@ -38,8 +38,10 @@ export default function ReportTable() {
   };
 
   React.useEffect(() => {
-    const dateStrings = todayAppointments.map(appointment => appointment.date);
-    const monthNames = getMonthNamesFromDates(format(new Date(dateStrings), "MM/dd/yyyy"),);
+    console.log("Today Appointments:", todayAppointments);
+
+    const dateStrings = todayAppointments.map(appointment => format(new Date(appointment.date), "MM/dd/yyyy"));
+    const monthNames = getMonthNamesFromDates(dateStrings);
 
     const formattedRows = todayAppointments.map((appointment, index) => ({
       ...appointment,
@@ -48,9 +50,10 @@ export default function ReportTable() {
       time: format(new Date(appointment.time), "HH:mm a"),
       monthName: monthNames[index], // Add month name
     }));
+    console.log("Formatted Rows:", formattedRows);
     setRows(formattedRows);
     setFilteredAppointments(formattedRows); // Initialize filtered appointments with all data
-  }, [rows]);
+  }, [todayAppointments]);
 
   const handleMonthChange = (event) => {
     const monthYear = event.target.value;
