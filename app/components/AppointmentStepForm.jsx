@@ -44,6 +44,7 @@ const steps = ["Search Client", "Personal Details"];
 const validationSchema = Yup.object({
   mobileNumber: Yup.string(),
   date: Yup.date().required("Date is required"),
+  month: Yup.date().required("Month is required"),
   time: Yup.date().required("Time is required"),
   channel: Yup.string().required("Session type is required"),
   facilitatedBy: Yup.string().required("Facilitated by is required"),
@@ -69,17 +70,40 @@ export default function HorizontalLinearStepper() {
   const [showSuccess, setShowSuccess] = React.useState(false);
   const [selectedClientId, setSelectedClientId] = React.useState(null);
   const [isNextDisabled, setIsNextDisabled] = React.useState(true); // New state for disabling the Next button
+  const [currentMonth, setCurrentMonth] = React.useState("");
 
   const apiUrl = `/api/clients`;
 
   const { contacts, wait, error } = useClientContacts(apiUrl);
   const { clients, isLoading: loadingClients, clienterror } = useGetClients(); // Rename isLoading to avoid conflict
 
+  // Function to get the current month name
+  const getCurrentMonthName = () => {
+    const monthNames = [
+      "January",
+      "February",
+      "March",
+      "April",
+      "May",
+      "June",
+      "July",
+      "August",
+      "September",
+      "October",
+      "November",
+      "December",
+    ];
+
+    const currentMonthIndex = new Date().getMonth();
+    return monthNames[currentMonthIndex];
+  };
+
   const formik = useFormik({
     initialValues: {
       mobileNumber: "",
       name: "",
       date: null,
+      month: "",
       time: null,
       channel: "",
       facilitatedBy: "",
@@ -107,6 +131,8 @@ export default function HorizontalLinearStepper() {
         }
         // Handle success response
         // console.log("Form submission successful:", data);
+        setCurrentMonth(getCurrentMonthName());
+        formik.setFieldValue("month", currentMonth);
         setSuccessMessage("Form submitted successfully!");
         setShowSuccess(true);
         setTimeout(() => {
@@ -411,16 +437,20 @@ export default function HorizontalLinearStepper() {
           </FormControl>
         </Grid>
         <Grid item xs={12} sm={12} md={6}>
-          <TextField
-            id="amount-control"
-            label="Amount"
-            fullWidth
-            variant="outlined"
-            onChange={(e) => formik.setFieldValue("amount", e.target.value)}
-            name="amount"
-            error={formik.touched.amount}
-            helperText={formik.touched.amount && formik.errors.amount}
-          />
+          <FormControl fullWidth sx={{ m: 1 }}>
+            <InputLabel htmlFor="outlined-adornment-amount">Amount</InputLabel>
+            <OutlinedInput
+              id="outlined-adornment-amount"
+              onChange={(e) => formik.setFieldValue("amount", e.target.value)}
+              name="amount"
+              startAdornment={
+                <InputAdornment position="start">₹</InputAdornment>
+              }
+              label="Amount"
+              error={formik.touched.amount}
+              helperText={formik.touched.amount && formik.errors.amount}
+            />
+          </FormControl>
         </Grid>
       </Grid>
     </Box>
