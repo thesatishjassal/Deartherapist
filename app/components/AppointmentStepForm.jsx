@@ -38,8 +38,9 @@ import RadioGroup from "@mui/joy/RadioGroup";
 import Person from "@mui/icons-material/Person";
 import People from "@mui/icons-material/People";
 import Apartment from "@mui/icons-material/Apartment";
-import OutlinedInput from "@mui/material/OutlinedInput";
-import InputAdornment from "@mui/material/InputAdornment";
+import OutlinedInput from '@mui/material/OutlinedInput';
+import InputAdornment from '@mui/material/InputAdornment';
+
 
 const steps = ["Search Client", "Personal Details"];
 
@@ -439,19 +440,7 @@ export default function HorizontalLinearStepper() {
           </FormControl>
         </Grid>
         <Grid item xs={12} sm={12} md={6}>
-          <TextField
-            id="amount"
-            name="amount"
-            label="Amount"
-            multiline
-            fullWidth
-            variant="outlined"
-            rows={2}
-            {...formik.getFieldProps("amount")}
-            error={formik.touched.amount && Boolean(formik.errors.amount)}
-            helperText={formik.touched.amount && formik.errors.amount}
-          />
-          {/* <FormControl fullWidth sx={{ m: 1 }}>
+          <FormControl fullWidth sx={{ m: 1 }}>
             <InputLabel htmlFor="outlined-adornment-amount">Amount</InputLabel>
             <OutlinedInput
               id="outlined-adornment-amount"
@@ -464,7 +453,7 @@ export default function HorizontalLinearStepper() {
               error={formik.touched.amount}
               helperText={formik.touched.amount && formik.errors.amount}
             />
-          </FormControl> */}
+          </FormControl>
         </Grid>
       </Grid>
     </Box>
