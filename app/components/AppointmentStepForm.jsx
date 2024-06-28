@@ -440,20 +440,23 @@ export default function HorizontalLinearStepper() {
           </FormControl>
         </Grid>
         <Grid item xs={12} sm={12} md={6}>
-          <FormControl fullWidth sx={{ m: 1 }}>
-            <InputLabel htmlFor="outlined-adornment-amount">Amount</InputLabel>
-            <OutlinedInput
-              id="outlined-adornment-amount"
-              onChange={(e) => formik.setFieldValue("amount", e.target.value)}
-              name="amount"
-              startAdornment={
-                <InputAdornment position="start">₹</InputAdornment>
-              }
-              label="Amount"
-              error={formik.touched.amount}
-              helperText={formik.touched.amount && formik.errors.amount}
-            />
-          </FormControl>
+        <FormControl fullWidth>
+          <InputLabel htmlFor="outlined-adornment-amount">Amount</InputLabel>
+          <OutlinedInput
+            id="outlined-adornment-amount"
+            onChange={(e) => formik.setFieldValue("amount", e.target.value)}
+            onBlur={() => formik.setFieldTouched("amount", true)}
+            value={formik.values.amount}
+            name="amount"
+            startAdornment={<InputAdornment position="start">₹</InputAdornment>}
+            label="Amount"
+            error={formik.touched.amount && Boolean(formik.errors.amount)}
+            helperText={formik.touched.amount && formik.errors.amount}
+          />
+          {formik.touched.amount && formik.errors.amount && (
+            <Typography color="error">{formik.errors.amount}</Typography>
+          )}
+        </FormControl>
         </Grid>
       </Grid>
     </Box>
