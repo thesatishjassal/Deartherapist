@@ -38,6 +38,9 @@ import RadioGroup from "@mui/joy/RadioGroup";
 import Person from "@mui/icons-material/Person";
 import People from "@mui/icons-material/People";
 import Apartment from "@mui/icons-material/Apartment";
+import OutlinedInput from '@mui/material/OutlinedInput';
+import InputAdornment from '@mui/material/InputAdornment';
+
 
 const steps = ["Search Client", "Personal Details"];
 
