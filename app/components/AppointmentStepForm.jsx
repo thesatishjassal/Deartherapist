@@ -52,9 +52,7 @@ const validationSchema = Yup.object({
   channel: Yup.string().required("Session type is required"),
   facilitatedBy: Yup.string().required("Facilitated by is required"),
   service: Yup.string().required("Service is required"),
-  amount: Yup.number()
-    .required("Amount is required")
-    .positive("Amount must be positive"),
+  amount: Yup.string(),
 });
 
 export default function HorizontalLinearStepper() {
@@ -444,17 +442,17 @@ export default function HorizontalLinearStepper() {
           <InputLabel htmlFor="outlined-adornment-amount">Amount</InputLabel>
           <OutlinedInput
             id="outlined-adornment-amount"
-            onChange={(e) => formik.setFieldValue("service", e.target.value)}
-            onBlur={() => formik.setFieldTouched("service", true)}
-            value={formik.values.service}
-            name="service"
+            onChange={(e) => formik.setFieldValue("amount", e.target.value)}
+            onBlur={() => formik.setFieldTouched("amount", true)}
+            value={formik.values.amount}
+            name="amount"
             startAdornment={<InputAdornment position="start">₹</InputAdornment>}
-            label="service"
-            error={formik.touched.service && Boolean(formik.errors.service)}
-            helperText={formik.touched.service && formik.errors.service}
+            label="amount"
+            error={formik.touched.amount && Boolean(formik.errors.amount)}
+            helperText={formik.touched.amount && formik.errors.amount}
           />
-          {formik.touched.service && formik.errors.service && (
-            <Typography color="error">{formik.errors.service}</Typography>
+          {formik.touched.amount && formik.errors.amount && (
+            <Typography color="error">{formik.errors.amount}</Typography>
           )}
         </FormControl>
         </Grid>
