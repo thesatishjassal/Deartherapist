@@ -444,17 +444,17 @@ export default function HorizontalLinearStepper() {
           <InputLabel htmlFor="outlined-adornment-amount">Amount</InputLabel>
           <OutlinedInput
             id="outlined-adornment-amount"
-            onChange={(e) => formik.setFieldValue("amount", e.target.value)}
-            onBlur={() => formik.setFieldTouched("amount", true)}
-            value={formik.values.amount}
-            name="amount"
+            onChange={(e) => formik.setFieldValue("service", e.target.value)}
+            onBlur={() => formik.setFieldTouched("service", true)}
+            value={formik.values.service}
+            name="service"
             startAdornment={<InputAdornment position="start">₹</InputAdornment>}
-            label="Amount"
-            error={formik.touched.amount && Boolean(formik.errors.amount)}
-            helperText={formik.touched.amount && formik.errors.amount}
+            label="service"
+            error={formik.touched.service && Boolean(formik.errors.service)}
+            helperText={formik.touched.service && formik.errors.service}
           />
-          {formik.touched.amount && formik.errors.amount && (
-            <Typography color="error">{formik.errors.amount}</Typography>
+          {formik.touched.service && formik.errors.service && (
+            <Typography color="error">{formik.errors.service}</Typography>
           )}
         </FormControl>
         </Grid>
