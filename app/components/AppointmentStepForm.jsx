@@ -38,9 +38,8 @@ import RadioGroup from "@mui/joy/RadioGroup";
 import Person from "@mui/icons-material/Person";
 import People from "@mui/icons-material/People";
 import Apartment from "@mui/icons-material/Apartment";
-import OutlinedInput from '@mui/material/OutlinedInput';
-import InputAdornment from '@mui/material/InputAdornment';
-
+import OutlinedInput from "@mui/material/OutlinedInput";
+import InputAdornment from "@mui/material/InputAdornment";
 
 const steps = ["Search Client", "Personal Details"];
 
@@ -78,27 +77,6 @@ export default function HorizontalLinearStepper() {
   const { contacts, wait, error } = useClientContacts(apiUrl);
   const { clients, isLoading: loadingClients, clienterror } = useGetClients(); // Rename isLoading to avoid conflict
 
-  // Function to get the current month name
-  const getCurrentMonthName = () => {
-    const monthNames = [
-      "January",
-      "February",
-      "March",
-      "April",
-      "May",
-      "June",
-      "July",
-      "August",
-      "September",
-      "October",
-      "November",
-      "December",
-    ];
-
-    const currentMonthIndex = new Date().getMonth();
-    return monthNames[currentMonthIndex];
-  };
-
   const formik = useFormik({
     initialValues: {
       mobileNumber: "",
@@ -132,7 +110,7 @@ export default function HorizontalLinearStepper() {
         }
         // Handle success response
         console.log("Form submission successful:", data);
-        setCurrentMonth(getCurrentMonthName());
+
         formik.setFieldValue("month", currentMonth);
         setSuccessMessage("Form submitted successfully!");
         setShowSuccess(true);
@@ -147,6 +125,27 @@ export default function HorizontalLinearStepper() {
       }
     },
   });
+
+  // Function to get the current month name
+  const getCurrentMonthName = () => {
+    const monthNames = [
+      "January",
+      "February",
+      "March",
+      "April",
+      "May",
+      "June",
+      "July",
+      "August",
+      "September",
+      "October",
+      "November",
+      "December",
+    ];
+
+    const currentMonthIndex = new Date().getMonth();
+    return monthNames[currentMonthIndex];
+  };
 
   const isStepOptional = (step) => {
     return step === 1;
@@ -197,6 +196,8 @@ export default function HorizontalLinearStepper() {
       sortedClients.length > 0 ? sortedClients[0].name : ""
     );
     validatePersonalDetailStep(value, selectedClientId); // Validate on change
+    setCurrentMonth(getCurrentMonthName());
+    console.log(currentMonth)
   };
 
   const handleclientIds = (event, value) => {
@@ -430,23 +431,25 @@ export default function HorizontalLinearStepper() {
           </FormControl>
         </Grid>
         <Grid item xs={12} sm={12} md={6}>
-        <FormControl fullWidth>
-          <InputLabel htmlFor="outlined-adornment-amount">Amount</InputLabel>
-          <OutlinedInput
-            id="outlined-adornment-amount"
-            onChange={(e) => formik.setFieldValue("amount", e.target.value)}
-            onBlur={() => formik.setFieldTouched("amount", true)}
-            value={formik.values.amount}
-            name="amount"
-            startAdornment={<InputAdornment position="start">₹</InputAdornment>}
-            label="amount"
-            error={formik.touched.amount && Boolean(formik.errors.amount)}
-            helperText={formik.touched.amount && formik.errors.amount}
-          />
-          {formik.touched.amount && formik.errors.amount && (
-            <Typography color="error">{formik.errors.amount}</Typography>
-          )}
-        </FormControl>
+          <FormControl fullWidth>
+            <InputLabel htmlFor="outlined-adornment-amount">Amount</InputLabel>
+            <OutlinedInput
+              id="outlined-adornment-amount"
+              onChange={(e) => formik.setFieldValue("amount", e.target.value)}
+              onBlur={() => formik.setFieldTouched("amount", true)}
+              value={formik.values.amount}
+              name="amount"
+              startAdornment={
+                <InputAdornment position="start">₹</InputAdornment>
+              }
+              label="amount"
+              error={formik.touched.amount && Boolean(formik.errors.amount)}
+              helperText={formik.touched.amount && formik.errors.amount}
+            />
+            {formik.touched.amount && formik.errors.amount && (
+              <Typography color="error">{formik.errors.amount}</Typography>
+            )}
+          </FormControl>
         </Grid>
       </Grid>
     </Box>
