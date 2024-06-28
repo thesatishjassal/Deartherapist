@@ -47,7 +47,7 @@ const steps = ["Search Client", "Personal Details"];
 const validationSchema = Yup.object({
   mobileNumber: Yup.string(),
   date: Yup.date().required("Date is required"),
-  month: Yup.date().required("Month is required"),
+  month: Yup.string(),
   time: Yup.date().required("Time is required"),
   channel: Yup.string().required("Session type is required"),
   facilitatedBy: Yup.string().required("Facilitated by is required"),
@@ -131,13 +131,13 @@ export default function HorizontalLinearStepper() {
           );
         }
         // Handle success response
-        // console.log("Form submission successful:", data);
+        console.log("Form submission successful:", data);
         setCurrentMonth(getCurrentMonthName());
         formik.setFieldValue("month", currentMonth);
         setSuccessMessage("Form submitted successfully!");
         setShowSuccess(true);
         setTimeout(() => {
-          // console.log("Form Data:", values);
+          console.log("Form Data:", values);
           setIsFinished(true);
           setLoading(false); // Stop loading
         }, 2000);
