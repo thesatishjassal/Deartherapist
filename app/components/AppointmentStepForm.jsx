@@ -104,6 +104,8 @@ export default function HorizontalLinearStepper() {
 
   const formik = useFormik({
     initialValues: {
+      Srno: "", 
+      appointmentID: "",
       mobileNumber: "",
       name: "",
       date: null,
