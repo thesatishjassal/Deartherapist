@@ -79,10 +79,13 @@ const DailyReport = () => {
   };
 
   useEffect(() => {
-    // Initialize filtered appointments with all data
-    setFilteredAppointments(todayAppointments);
+    const formattedRows = todayAppointments.map((appointment) => ({
+      ...appointment,
+      id: appointment._id,
+    }));
+    setFilteredAppointments(formattedRows);
     calculateTotalAmount(todayAppointments);
-    console.log(todayAppointments)
+    console.log(formattedRows);
   }, [filteredAppointments]);
 
   const calculateTotalAmount = (appointments) => {
