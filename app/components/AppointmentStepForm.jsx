@@ -203,18 +203,15 @@ export default function HorizontalLinearStepper() {
     formik.setFieldValue(
       "Srno",
       sortedClients.length > 0
-        ? isNaN(parseInt(sortedClients[0].ClientID.replace(/^dt/, ""), 10))
-          ? ""
-          : parseInt(sortedClients[0].ClientID.replace(/^dt/, ""), 10)
-        : ""
+        ? Math.max(...sortedClients.map((client) => client.Srno)) + 1
+        : 1
     );
-
     formik.setFieldValue(
       "appointmentID",
       sortedClients.length > 0 ? sortedClients[0].ClientID : ""
     );
     formik.setFieldValue("month", currentMonth);
-    console.log(formik.values.Srno);
+    console.log(formik.values.month);
     validatePersonalDetailStep(value, selectedClientId); // Validate on change
   };
 
@@ -234,18 +231,15 @@ export default function HorizontalLinearStepper() {
     formik.setFieldValue(
       "Srno",
       sortedClients.length > 0
-        ? isNaN(parseInt(sortedClients[0].ClientID.replace(/^dt/, ""), 10))
-          ? ""
-          : parseInt(sortedClients[0].ClientID.replace(/^dt/, ""), 10)
-        : ""
+        ? Math.max(...sortedClients.map((client) => client.Srno)) + 1
+        : 1
     );
-
     formik.setFieldValue(
       "appointmentID",
       sortedClients.length > 0 ? sortedClients[0].ClientID : ""
     );
     formik.setFieldValue("month", currentMonth);
-    console.log(formik.values.appointmentID);
+    console.log(formik.values.month);
     validatePersonalDetailStep(formik.values.mobileNumber, value); // Validate on change
   };
 
