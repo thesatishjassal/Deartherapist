@@ -102,7 +102,6 @@ export default function HorizontalLinearStepper() {
       try {
         const response = await fetch(apiUrl, requestOptions);
         const data = await response.json();
-
         if (!response.ok) {
           setShowAlert(true);
           throw new Error(
@@ -111,8 +110,7 @@ export default function HorizontalLinearStepper() {
         }
         // Handle success response
         console.log("Form submission successful:", data);
-
-     
+        console.log(values)
         setSuccessMessage("Form submitted successfully!");
         setShowSuccess(true);
         setTimeout(() => {
@@ -223,7 +221,7 @@ export default function HorizontalLinearStepper() {
       setCurrentMonth(getCurrentMonthName());
       console.log(getCurrentMonthName());
       formik.setFieldValue("month", currentMonth);
-      console.log(values)
+     
   }, [currentMonth]);
 
   const PersonalDetailStep = () => (
