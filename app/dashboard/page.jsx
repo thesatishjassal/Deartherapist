@@ -27,10 +27,10 @@ export default function Dashboard() {
     <Card className="main__dashboard">
       <CardContent>
         <Typography gutterBottom variant="h5" component="div" className="mb-4">
-          {user && user.role == "admin" ? "Welcome 👋 Dr. Shaveta Bhardwaj" : ""}
-          {user && user.role == "counselor" ? "Welcome 👋 Counselor" : ""}
+          {user && user.role == "admin" ? "Welcome Dr. Shaveta Bhardwaj" : ""}
+          {user && user.role == "counselor" ? "Welcome Counselor" : ""}
           {user && user.role == "receptionist"
-            ? " Welcome 👋 Receptionist"
+            ? " Welcome Receptionist"
             : ""}
         </Typography>
       </CardContent>
