@@ -201,10 +201,6 @@ export default function HorizontalLinearStepper() {
       sortedClients.length > 0 ? sortedClients[0].name : ""
     );
     formik.setFieldValue(
-      "Srno",
-      sortedClients.length > 0 ? sortedClients[0].Srno : ""
-    );
-    formik.setFieldValue(
       "appointmentID",
       sortedClients.length > 0 ? sortedClients[0].ClientID : ""
     );
@@ -225,10 +221,6 @@ export default function HorizontalLinearStepper() {
     formik.setFieldValue(
       "name",
       sortedClients.length > 0 ? sortedClients[0].name : ""
-    );
-    formik.setFieldValue(
-      "Srno",
-      sortedClients.length > 0 ? sortedClients[0].Srno : ""
     );
     formik.setFieldValue(
       "appointmentID",
