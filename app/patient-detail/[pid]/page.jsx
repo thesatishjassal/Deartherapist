@@ -42,7 +42,7 @@ const PatientDetails = ({ params }) => {
   const [prescriptionId, setPrescriptionId] = useState(null); // State to store prescriptionId for Addprescription
   const [isModalOpen, setIsModalOpen] = useState(false); // State to control modal open/close
 
-  const apiUrl = `/api/clients` ; // Replace with your actual API URL
+  const apiUrl = `/api/clients`; // Replace with your actual API URL
   const { pid } = params;
   const { client, clientisLoading, error } = useGetClientById(apiUrl, pid);
   const { appointments, loading, meetserror } = useAppointments(pid);
@@ -441,7 +441,6 @@ const PatientDetails = ({ params }) => {
                                 <strong>Download File: </strong>{" "}
                                 <Link
                                   href={`/uploads/${prescription.file.name}`}
-                                  download
                                 >
                                   {prescription.file.name}
                                 </Link>

@@ -1,6 +1,6 @@
 "use client";
 
-import * as React from "react";
+import React, { useEffect } from "react";
 import { jsPDF } from "jspdf";
 import html2canvas from "html2canvas";
 import Typography from "@mui/material/Typography";
@@ -36,7 +36,6 @@ const DailyReport = () => {
   const columns = [
     { field: "Srno", headerName: "Sr. NO", width: 100 },
     { field: "date", headerName: "Date", width: 140 },
-    { field: "month", headerName: "Month", width: 140 },
     { field: "name", headerName: "Name", width: 140 },
     { field: "channel", headerName: "Mode", width: 130 },
     { field: "service", headerName: "Service", width: 130 },
@@ -79,45 +78,42 @@ const DailyReport = () => {
     }
   };
 
-  const handleMonthChange = (event) => {
-    const monthYear = event.target.value;
-    setSelectedMonth(monthYear);
-    filterAppointments(monthYear);
-  };
-
-  const filterAppointments = (monthYear) => {
-    if (!monthYear) {
-      setFilteredAppointments(rows); // If no month selected, show all appointments
-    } else {
-      const filtered = rows.filter((row) =>
-        isSameMonth(new Date(row.date), new Date(monthYear))
-      );
-      setFilteredAppointments(filtered);
-      // Calculate total amount for filtered appointments
-      const total = filtered.reduce(
-        (sum, appointment) => sum + (appointment.amount || 0),
-        0
-      );
-      setTotalAmount(total); // Update total amount in state
-    }
-  };
-
-  React.useEffect(() => {
+  useEffect(() => {
     const formattedRows = todayAppointments.map((appointment) => ({
       ...appointment,
       id: appointment._id,
     }));
     setRows(formattedRows);
     setFilteredAppointments(formattedRows); // Initialize filtered appointments with all data
+    calculateTotalAmount(formattedRows);
+  }, [todayAppointments]);
 
-    // Calculate total amount
-    const total = formattedRows.reduce(
+  const calculateTotalAmount = (appointments) => {
+    const total = appointments.reduce(
       (sum, appointment) => sum + (appointment.amount || 0),
       0
     );
-    setTotalAmount(total); // Set total amount in state
-  }, [todayAppointments]);
+    setTotalAmount(total);
+  };
 
+  const handleMonthChange = (event) => {
+    const monthName = event.target.value;
+    setSelectedMonth(monthName);
+    filterAppointments(monthName);
+  };
+
+  const filterAppointments = (monthName) => {
+    if (!monthName) {
+      setFilteredAppointments(rows); // If no month selected, show all appointments
+      calculateTotalAmount(rows);
+    } else {
+      const filtered = rows.filter(
+        (row) => getMonthName(row.date) === monthName
+      );
+      setFilteredAppointments(filtered);
+      calculateTotalAmount(filtered);
+    }
+  };
   const theme = createTheme({
     components: {
       MuiDataGrid: {
@@ -132,10 +128,6 @@ const DailyReport = () => {
       },
     },
   });
-
-  // if (!user) {
-  //   return null; // Optionally render a loading state or a redirect message
-  // }
 
   if (clientsError) {
     return <Typography variant="h6">Error loading clients data.</Typography>;
