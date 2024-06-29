@@ -85,8 +85,7 @@ const DailyReport = () => {
     }));
     setFilteredAppointments(formattedRows);
     calculateTotalAmount(todayAppointments);
-    console.log(formattedRows);
-  }, [filteredAppointments]);
+  }, []);
 
   const calculateTotalAmount = (appointments) => {
     const total = appointments.reduce(
@@ -98,19 +97,8 @@ const DailyReport = () => {
 
   const handleMonthChange = (event) => {
     const monthName = event.target.value;
-    setSelectedMonth(monthName);
-    filterAppointments(monthName);
-  };
-
-  const filterAppointments = (monthName) => {
-    if (!monthName) {
-      setFilteredAppointments(todayAppointments); // Show all appointments if no month selected
-    } else {
-      const filtered = todayAppointments.filter(
-        (row) => row.month === monthName
-      );
-      setFilteredAppointments(filtered);
-    }
+    const filtered = todayAppointments.filter((row) => row.month === monthName);
+    setFilteredAppointments(filtered);
   };
 
   const getRowId = (row) => row._id; // Define a function to get the row id
