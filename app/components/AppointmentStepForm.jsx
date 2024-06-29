@@ -102,7 +102,7 @@ export default function HorizontalLinearStepper() {
   React.useEffect(() => {
     setCurrentMonth(getCurrentMonthName());
     console.log(getCurrentMonthName());
-  }, []);
+  }, [currentMonth]);
 
   const formik = useFormik({
     initialValues: {
