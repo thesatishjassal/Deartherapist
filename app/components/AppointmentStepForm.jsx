@@ -206,7 +206,7 @@ export default function HorizontalLinearStepper() {
     );
     formik.setFieldValue(
       "appointmentID",
-      sortedClients.length > 0 ? sortedClients[0].appointmentID : ""
+      sortedClients.length > 0 ? sortedClients[0].ClientID : ""
     );
     formik.setFieldValue("month", currentMonth);
     console.log(formik.values.month);
@@ -232,7 +232,7 @@ export default function HorizontalLinearStepper() {
     );
     formik.setFieldValue(
       "appointmentID",
-      sortedClients.length > 0 ? sortedClients[0].appointmentID : ""
+      sortedClients.length > 0 ? sortedClients[0].ClientID : ""
     );
     formik.setFieldValue("month", currentMonth);
     console.log(formik.values.month);
