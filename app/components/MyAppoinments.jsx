@@ -67,8 +67,14 @@ export default function MyAppointments() {
   const todayAppointments = useTodayAppointments(clients);
   const [rows, setRows] = React.useState([]);
 
+  // const fetchAppointments = React.useCallback(() => {
+  //   setRows(todayAppointments);
+  // }, [todayAppointments]);
+
   const fetchAppointments = React.useCallback(() => {
-    setRows(todayAppointments);
+    // Sort todayAppointments by date in descending order
+    const sortedAppointments = [...todayAppointments].sort((a, b) => new Date(b.date) - new Date(a.date));
+    setRows(sortedAppointments);
   }, [todayAppointments]);
 
   React.useEffect(() => {
