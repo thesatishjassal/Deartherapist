@@ -30,7 +30,17 @@ const DailyReport = () => {
 
   const { clients, isLoading: isCLoading, error: clientsError } = useGetClients();
   const todayAppointments = useTodayAppointments(clients);
-
+  // Columns for DataGrid
+  const columns = [
+    { field: "Srno", headerName: "Sr. NO", width: 100 },
+    { field: "date", headerName: "Date", width: 140 },
+    { field: "name", headerName: "Name", width: 140 },
+    { field: "channel", headerName: "Mode", width: 130 },
+    { field: "service", headerName: "Service", width: 130 },
+    { field: "facilitatedBy", headerName: "Facilitated By", width: 130 },
+    { field: "amount", headerName: "Amount", width: 100 },
+  ];
+  
   const handleDownloadPdf = async () => {
     try {
       setLoading(true); // Start loading indicator
