@@ -76,13 +76,38 @@ export default function HorizontalLinearStepper() {
 
   const { contacts, wait, error } = useClientContacts(apiUrl);
   const { clients, isLoading: loadingClients, clienterror } = useGetClients(); // Rename isLoading to avoid conflict
+  // Function to get the current month name
+  const getCurrentMonthName = () => {
+    const monthNames = [
+      "January",
+      "February",
+      "March",
+      "April",
+      "May",
+      "June",
+      "July",
+      "August",
+      "September",
+      "October",
+      "November",
+      "December",
+    ];
+
+    const currentMonthIndex = new Date().getMonth();
+    return monthNames[currentMonthIndex];
+  };
+
+  React.useEffect(() => {
+    setCurrentMonth(getCurrentMonthName());
+    console.log(getCurrentMonthName());
+  }, [currentMonth]);
 
   const formik = useFormik({
     initialValues: {
       mobileNumber: "",
       name: "",
       date: null,
-      month: getCurrentMonthName(),  // Set initial month value
+      month: getCurrentMonthName(), // Set initial month value
       time: null,
       channel: "",
       facilitatedBy: "",
@@ -110,7 +135,7 @@ export default function HorizontalLinearStepper() {
         }
         // Handle success response
         console.log("Form submission successful:", data);
-        console.log(values)
+        console.log(values);
         setSuccessMessage("Form submitted successfully!");
         setShowSuccess(true);
         setTimeout(() => {
@@ -124,27 +149,6 @@ export default function HorizontalLinearStepper() {
       }
     },
   });
-
-  // Function to get the current month name
-  const getCurrentMonthName = () => {
-    const monthNames = [
-      "January",
-      "February",
-      "March",
-      "April",
-      "May",
-      "June",
-      "July",
-      "August",
-      "September",
-      "October",
-      "November",
-      "December",
-    ];
-
-    const currentMonthIndex = new Date().getMonth();
-    return monthNames[currentMonthIndex];
-  };
 
   const isStepOptional = (step) => {
     return step === 1;
@@ -216,11 +220,6 @@ export default function HorizontalLinearStepper() {
   const validatePersonalDetailStep = (mobileNumber, clientId) => {
     setIsNextDisabled(!(mobileNumber || clientId));
   };
-
-  React.useEffect(() => {
-      setCurrentMonth(getCurrentMonthName());
-      console.log(getCurrentMonthName());
-  }, [currentMonth]);
 
   const PersonalDetailStep = () => (
     <Box sx={{ width: "100%", px: 1, py: 3 }}>
