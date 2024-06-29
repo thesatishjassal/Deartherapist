@@ -53,7 +53,6 @@ const icon = <CheckBoxOutlineBlankIcon fontSize="small" />;
 const checkedIcon = <CheckBoxIcon fontSize="small" />;
 
 const validationSchema = Yup.object({
-  // appointmentID: Yup.string().required("Appointment ID is required"),
   service: Yup.string(),
   suggestions: Yup.string(),
   symptoms: Yup.string(),
@@ -74,66 +73,96 @@ const Editprescription = ({
   const [alertMessage, setAlertMessage] = useState("");
   const [successMessage, setSuccessMessage] = useState("");
   const [savedData, setsavedData] = useState("");
+  const [prescriptionData, setPrescriptionData] = useState(null); // State to hold prescription data
   const { appointments, meetloading, error } = useAppointments(clientId);
   console.log(clientId, appointmentId, prescriptionId);
-  const formik = useFormik({
-    initialValues: {
-      appointmentID: "",
-      service: "",
-      suggestions: "",
-      symptoms: "",
-      followUp: "",
-      diagnoses: [],
-      file: null,
-    },
 
-      validationSchema: validationSchema,
-      onSubmit: async (values) => {
-        try {
-          setLoading(true);
-  
-          // Filter out empty values before submitting
-          const filteredValues = Object.keys(values).reduce((acc, key) => {
-            if (values[key] !== "") {
-              acc[key] = values[key];
-            }
-            return acc;
-          }, {});
-  
-          let apiUrl = `/api/clients/${clientId}/appointments/${appointmentId}/prescriptions/${prescriptionId}`;
-          const requestOptions = {
-            method: "PATCH",
-            headers: {
-              "Content-Type": "application/json",
-            },
-            body: JSON.stringify(filteredValues), // Send non-empty form values as JSON
-          };
-          const response = await fetch(apiUrl, requestOptions);
-          const data = await response.json();
-  
-          if (!response.ok) {
-            setOpenError(true);
-            setAlertMessage(data.error || `An error occurred: ${response.status}`);
-            throw new Error(data.error || `An error occurred: ${response.status}`);
-          }
-  
-          // Construct success message with updated field
-          const updatedField = Object.keys(filteredValues).join(", ");
-          setSuccessMessage(
-            `Prescription Updated successfully! Updated fields: ${updatedField}`
+  // Effect to fetch prescription data when prescriptionId changes
+  useEffect(() => {
+    const fetchPrescriptionData = async () => {
+      try {
+        const apiUrl = `/api/clients/${clientId}/appointments/${appointmentId}/prescriptions/${prescriptionId}`;
+        const response = await fetch(apiUrl);
+        if (!response.ok) {
+          throw new Error(
+            `Failed to fetch prescription data: ${response.status}`
           );
-          setOpenSuccess(true);
-  
-          setTimeout(() => {
-            handleClose(); // Close the modal after successful submission
-          }, 2000);
-        } catch (error) {
-          console.error("Error submitting form:", error);
-        } finally {
-          setLoading(false);
         }
-      },
-    });
+        const data = await response.json();
+        setPrescriptionData(data); // Set fetched prescription data
+      } catch (error) {
+        console.error("Error fetching prescription data:", error);
+        // Handle error state or alert the user
+      }
+    };
+
+    if (open && prescriptionId) {
+      fetchPrescriptionData();
+    }
+  }, [open, clientId, appointmentId, prescriptionId]);
+
+  // Formik setup
+  const formik = useFormik({
+    enableReinitialize: true, // Enable to reset form values when initialValues change
+    initialValues: {
+      // appointmentID: "", // Adjust if needed
+      service: prescriptionData?.service || "",
+      suggestions: prescriptionData?.suggestions || "",
+      symptoms: prescriptionData?.symptoms || "",
+      followUp: prescriptionData?.followUp || "",
+      diagnoses: prescriptionData?.diagnoses || [],
+      // file: null,
+    },
+    validationSchema: validationSchema,
+    onSubmit: async (values) => {
+      try {
+        setLoading(true);
+
+        const filteredValues = Object.keys(values).reduce((acc, key) => {
+          if (values[key] !== "") {
+            acc[key] = values[key];
+          }
+          return acc;
+        }, {});
+
+        let apiUrl = `/api/clients/${clientId}/appointments/${appointmentId}/prescriptions/${prescriptionId}`;
+        const requestOptions = {
+          method: "PATCH",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify(filteredValues), // Send non-empty form values as JSON
+        };
+        const response = await fetch(apiUrl, requestOptions);
+        const data = await response.json();
+
+        if (!response.ok) {
+          setOpenError(true);
+          setAlertMessage(
+            data.error || `An error occurred: ${response.status}`
+          );
+          throw new Error(
+            data.error || `An error occurred: ${response.status}`
+          );
+        }
+
+        const updatedField = Object.keys(filteredValues).join(", ");
+        setSuccessMessage(
+          `Prescription Updated successfully! Updated fields: ${updatedField}`
+        );
+        setOpenSuccess(true);
+
+        setTimeout(() => {
+          handleClose();
+        }, 2000);
+      } catch (error) {
+        console.error("Error submitting form:", error);
+      } finally {
+        setLoading(false);
+      }
+    },
+  });
+
   const handleFileChange = (event) => {
     formik.setFieldValue("file", event.currentTarget.files[0]);
   };
