@@ -111,7 +111,7 @@ const ClientsTable = () => {
         Srno: index + 1,
         date: format(new Date(client.date), "yyyy-MM-dd"),
       }));
-      setRows(formattedRows.sort((a, b) => new Date(b.timestamp) - new Date(a.timestamp)));
+      setRows(formattedRows);
       setIsLoading(false);
     }
   }, [clients, isTLoading]);
@@ -126,7 +126,7 @@ const ClientsTable = () => {
           Srno: index + 1,
           date: format(new Date(client.date), "yyyy-MM-dd"),
         }));
-        setRows(formattedRows);
+        setRows(formattedRows.sort((a, b) => new Date(b.timestamp) - new Date(a.timestamp)));
         setIsLoading(false);
       } catch (error) {
         console.error("Error fetching clients:", error);
