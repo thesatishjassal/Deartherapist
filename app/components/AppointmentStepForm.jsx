@@ -117,7 +117,7 @@ export default function HorizontalLinearStepper() {
     validationSchema: validationSchema,
     onSubmit: async (values) => {
       setLoading(true); // Start loading
-      values.month = currentMonth;
+      // values.month = currentMonth;
       const apiUrl = `/api/clients/${appointmentID}/appointments`;
       const requestOptions = {
         method: "POST",
@@ -198,6 +198,7 @@ export default function HorizontalLinearStepper() {
       "name",
       sortedClients.length > 0 ? sortedClients[0].name : ""
     );
+    formik.setFieldValue("month", currentMonth);
     validatePersonalDetailStep(value, selectedClientId); // Validate on change
   };
 
@@ -214,6 +215,7 @@ export default function HorizontalLinearStepper() {
       "name",
       sortedClients.length > 0 ? sortedClients[0].name : ""
     );
+    formik.setFieldValue("month", currentMonth);
     validatePersonalDetailStep(formik.values.mobileNumber, value); // Validate on change
   };
 
