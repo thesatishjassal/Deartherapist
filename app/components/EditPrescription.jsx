@@ -86,52 +86,54 @@ const Editprescription = ({
       diagnoses: [],
       file: null,
     },
-    validationSchema: validationSchema,
-    onSubmit: async (values) => {
-      try {
-        setLoading(true);
 
-        let apiUrl = `/api/clients/${clientId}/appointments/${appointmentId}/prescriptions/${prescriptionId}`;
-        const requestOptions = {
-          method: "PATCH",
-          headers: {
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify(values), // Send formik values directly as JSON
-        };
-        const response = await fetch(apiUrl, requestOptions);
-        const data = await response.json();
-
-        if (!response.ok) {
-          setOpenError(true);
-          setAlertMessage(
-            data.error || `An error occurred: ${response.status}`
+      validationSchema: validationSchema,
+      onSubmit: async (values) => {
+        try {
+          setLoading(true);
+  
+          // Filter out empty values before submitting
+          const filteredValues = Object.keys(values).reduce((acc, key) => {
+            if (values[key] !== "") {
+              acc[key] = values[key];
+            }
+            return acc;
+          }, {});
+  
+          let apiUrl = `/api/clients/${clientId}/appointments/${appointmentId}/prescriptions/${prescriptionId}`;
+          const requestOptions = {
+            method: "PATCH",
+            headers: {
+              "Content-Type": "application/json",
+            },
+            body: JSON.stringify(filteredValues), // Send non-empty form values as JSON
+          };
+          const response = await fetch(apiUrl, requestOptions);
+          const data = await response.json();
+  
+          if (!response.ok) {
+            setOpenError(true);
+            setAlertMessage(data.error || `An error occurred: ${response.status}`);
+            throw new Error(data.error || `An error occurred: ${response.status}`);
+          }
+  
+          // Construct success message with updated field
+          const updatedField = Object.keys(filteredValues).join(", ");
+          setSuccessMessage(
+            `Prescription Updated successfully! Updated fields: ${updatedField}`
           );
-          throw new Error(
-            data.error || `An error occurred: ${response.status}`
-          );
+          setOpenSuccess(true);
+  
+          setTimeout(() => {
+            handleClose(); // Close the modal after successful submission
+          }, 2000);
+        } catch (error) {
+          console.error("Error submitting form:", error);
+        } finally {
+          setLoading(false);
         }
-
-        // Construct success message with updated field
-        const updatedField = Object.keys(values).find(
-          (key) => values[key] !== formik.initialValues[key]
-        );
-        setSuccessMessage(
-          `Prescription Updated successfully! Updated field: ${updatedField}`
-        );
-        setOpenSuccess(true);
-
-        setTimeout(() => {
-          handleClose(); // Close the modal after successful submission
-        }, 2000);
-      } catch (error) {
-        console.error("Error submitting form:", error);
-      } finally {
-        setLoading(false);
-      }
-    },
-  });
-
+      },
+    });
   const handleFileChange = (event) => {
     formik.setFieldValue("file", event.currentTarget.files[0]);
   };
