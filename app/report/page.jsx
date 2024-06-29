@@ -111,6 +111,8 @@ const DailyReport = () => {
     }
   };
 
+  const getRowId = (row) => row._id; // Define a function to get the row id
+
   const theme = createTheme({
     components: {
       MuiDataGrid: {
@@ -202,6 +204,7 @@ const DailyReport = () => {
                       pageSize={10}
                       rowsPerPageOptions={[5, 10, 20]}
                       components={{ Toolbar: GridToolbar }}
+                      getRowId={getRowId} // Specify the function to get row id
                     />
                   </div>
                 </ThemeProvider>
