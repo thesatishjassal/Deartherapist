@@ -196,8 +196,6 @@ export default function HorizontalLinearStepper() {
       sortedClients.length > 0 ? sortedClients[0].name : ""
     );
     validatePersonalDetailStep(value, selectedClientId); // Validate on change
-    setCurrentMonth(getCurrentMonthName());
-    console.log(currentMonth);
   };
 
   const handleclientIds = (event, value) => {
@@ -219,6 +217,16 @@ export default function HorizontalLinearStepper() {
   const validatePersonalDetailStep = (mobileNumber, clientId) => {
     setIsNextDisabled(!(mobileNumber || clientId));
   };
+
+  React.useEffect(() => {
+    const interval = setInterval(() => {
+      setCurrentMonth(getCurrentMonthName());
+      console.log(getCurrentMonthName());
+      formik.setFieldValue("month", currentMonth);
+    }, 1000);
+
+    return () => clearInterval(interval);
+  }, []);
 
   const PersonalDetailStep = () => (
     <Box sx={{ width: "100%", px: 1, py: 3 }}>
