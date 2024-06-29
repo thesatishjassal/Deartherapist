@@ -72,7 +72,7 @@ export default function MyAppointments() {
       return new Date(b.createdAt) - new Date(a.createdAt);
     });
     setRows(sortedAppointments);
-  }, [todayAppointments]);
+  }, []);
 
   React.useEffect(() => {
     fetchAppointments();
