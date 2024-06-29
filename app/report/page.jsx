@@ -78,14 +78,18 @@ const DailyReport = () => {
     }
   };
 
-  useEffect(() => {
-    const formattedRows = todayAppointments.map((appointment) => ({
-      ...appointment,
-      id: appointment._id,
-    }));
-    setFilteredAppointments(formattedRows);
-    calculateTotalAmount(todayAppointments);
-  }, [formattedRows]);
+  useEffect(
+    (todayAppointments) => {
+      const formattedRows = todayAppointments.map((appointment) => ({
+        ...appointment,
+        id: appointment._id,
+      }));
+      setFilteredAppointments(formattedRows);
+      calculateTotalAmount(todayAppointments);
+      console.log(formattedRows);
+    },
+    [formattedRows]
+  );
 
   const calculateTotalAmount = (appointments) => {
     const total = appointments.reduce(
