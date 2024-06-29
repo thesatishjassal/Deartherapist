@@ -107,7 +107,7 @@ export default function HorizontalLinearStepper() {
       mobileNumber: "",
       name: "",
       date: null,
-      month: getCurrentMonthName(), // Set initial month value
+      month: "", // Set initial month value
       time: null,
       channel: "",
       facilitatedBy: "",
