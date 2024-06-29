@@ -53,9 +53,9 @@ const ActionsMenu = ({ rowId }) => {
 export default function MyAppointments() {
   const columns = [
     { field: "Srno", headerName: "Sr No", width: 150 },
-    { field: "appointmentID", headerName: "Appointment ID", width: 150 },
+    { field: "ClientID", headerName: "Client ID", width: 150 },
+    { field: "name", headerName: "Client Name", width: 130 },
     { field: "date", headerName: "Date", width: 130 },
-    { field: "time", headerName: "Time", width: 120 },
     { field: "channel", headerName: "Channel", width: 180 },
     { field: "service", headerName: "Service", width: 180 },
     { field: "facilitatedBy", headerName: "Facilitated By", width: 180 },
