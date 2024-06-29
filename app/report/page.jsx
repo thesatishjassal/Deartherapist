@@ -50,24 +50,6 @@ const DailyReport = () => {
   } = useGetClients();
   const todayAppointments = useTodayAppointments(clients);
 
-  const getMonthName = (date) => {
-    const monthNames = [
-      "January",
-      "February",
-      "March",
-      "April",
-      "May",
-      "June",
-      "July",
-      "August",
-      "September",
-      "October",
-      "November",
-      "December",
-    ];
-    return monthNames[new Date(date).getMonth()];
-  };
-
   const handleDownloadPdf = async () => {
     try {
       setLoading(true); // Start loading indicator
@@ -97,14 +79,10 @@ const DailyReport = () => {
   };
 
   useEffect(() => {
-    const formattedRows = todayAppointments.map((appointment) => ({
-      ...appointment,
-      id: appointment._id,
-    }));
-    setRows(formattedRows);
-    setFilteredAppointments(formattedRows); // Initialize filtered appointments with all data
-    calculateTotalAmount(formattedRows);
-  }, [todayAppointments]);
+    // Initialize filtered appointments with all data
+    setFilteredAppointments(todayAppointments);
+    calculateTotalAmount(todayAppointments);
+  }, []);
 
   const calculateTotalAmount = (appointments) => {
     const total = appointments.reduce(
@@ -122,16 +100,17 @@ const DailyReport = () => {
 
   const filterAppointments = (monthName) => {
     if (!monthName) {
-      setFilteredAppointments(rows); // If no month selected, show all appointments
-      calculateTotalAmount(rows);
+      setFilteredAppointments(todayAppointments); // If no month selected, show all appointments
+      calculateTotalAmount(todayAppointments);
     } else {
-      const filtered = rows.filter(
-        (row) => getMonthName(row.date) === monthName
+      const filtered = todayAppointments.filter(
+        (row) => row.month === monthName
       );
       setFilteredAppointments(filtered);
       calculateTotalAmount(filtered);
     }
   };
+
   const theme = createTheme({
     components: {
       MuiDataGrid: {
