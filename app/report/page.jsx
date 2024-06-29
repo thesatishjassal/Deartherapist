@@ -69,7 +69,8 @@ const DailyReport = () => {
     }
   };
 
-  useEffect(() => {
+useEffect(() => {
+  if (todayAppointments.length > 0) {
     const formattedRows = todayAppointments.map((appointment) => ({
       ...appointment,
       id: appointment._id,
@@ -77,32 +78,34 @@ const DailyReport = () => {
     setRows(formattedRows);
     setFilteredAppointments(formattedRows); // Initialize filtered appointments with all data
     calculateTotalAmount(formattedRows);
-  }, [todayAppointments]);
+  }
+}, [todayAppointments]);
 
-  const calculateTotalAmount = (appointments) => {
-    const total = appointments.reduce(
-      (sum, appointment) => sum + (appointment.amount || 0),
-      0
-    );
-    setTotalAmount(total); // Set total amount in state
-  };
+const calculateTotalAmount = (appointments) => {
+  const total = appointments.reduce(
+    (sum, appointment) => sum + (appointment.amount || 0),
+    0
+  );
+  setTotalAmount(total); // Set total amount in state
+};
 
-  const handleMonthChange = (event) => {
-    const monthName = event.target.value;
-    setSelectedMonth(monthName);
-    filterAppointments(monthName);
-  };
+const handleMonthChange = (event) => {
+  const monthName = event.target.value;
+  setSelectedMonth(monthName);
+  filterAppointments(monthName);
+};
 
-  const filterAppointments = (monthName) => {
-    if (!monthName) {
-      setFilteredAppointments(rows); // If no month selected, show all appointments
-      calculateTotalAmount(rows); // Calculate total amount for all appointments
-    } else {
-      const filtered = rows.filter((row) => row.month === monthName);
-      setFilteredAppointments(filtered); // Set filtered appointments for selected month
-      calculateTotalAmount(filtered); // Calculate total amount for filtered appointments
-    }
-  };
+const filterAppointments = (monthName) => {
+  if (!monthName) {
+    setFilteredAppointments(rows); // If no month selected, show all appointments
+    calculateTotalAmount(rows); // Calculate total amount for all appointments
+  } else {
+    const filtered = rows.filter((row) => row.month === monthName);
+    setFilteredAppointments(filtered); // Set filtered appointments for selected month
+    calculateTotalAmount(filtered); // Calculate total amount for filtered appointments
+  }
+};
+
 
   const getRowId = (row) => row._id; // Define a function to get the row id
 
