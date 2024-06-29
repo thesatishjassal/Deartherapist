@@ -85,7 +85,7 @@ const DailyReport = () => {
     }));
     setFilteredAppointments(formattedRows);
     calculateTotalAmount(todayAppointments);
-  }, []);
+  }, [formattedRows]);
 
   const calculateTotalAmount = (appointments) => {
     const total = appointments.reduce(
