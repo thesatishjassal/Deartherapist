@@ -107,6 +107,7 @@ export default function HorizontalLinearStepper() {
   const formik = useFormik({
     initialValues: {
       Srno: "",
+      ClientID: "",
       appointmentID: "",
       mobileNumber: "",
       name: "",
@@ -187,7 +188,7 @@ export default function HorizontalLinearStepper() {
     setIsFinished(false);
     formik.resetForm();
   };
- 
+
   const handleMobileNumber = (event, value) => {
     formik.setFieldValue("mobileNumber", value);
     setclientMobile(value);
@@ -204,8 +205,12 @@ export default function HorizontalLinearStepper() {
     );
     formik.setFieldValue("Srno", todayAppointments.length + 1);
     formik.setFieldValue(
-      "appointmentID",
+      "ClientID",
       sortedClients.length > 0 ? sortedClients[0].ClientID : ""
+    );
+    formik.setFieldValue(
+      "appointmentID",
+      `Ap${100 + todayAppointments.length + 1}`
     );
     formik.setFieldValue("month", currentMonth);
     console.log(formik.values.month);
@@ -228,8 +233,12 @@ export default function HorizontalLinearStepper() {
     formik.setFieldValue("Srno", todayAppointments.length + 1);
 
     formik.setFieldValue(
-      "appointmentID",
+      "ClientID",
       sortedClients.length > 0 ? sortedClients[0].ClientID : ""
+    );
+    formik.setFieldValue(
+      "appointmentID",
+      `Ap${100 + todayAppointments.length + 1}`
     );
     formik.setFieldValue("month", currentMonth);
     console.log(formik.values.month);
