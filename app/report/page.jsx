@@ -100,14 +100,12 @@ const DailyReport = () => {
 
   const filterAppointments = (monthName) => {
     if (!monthName) {
-      setFilteredAppointments(todayAppointments); // If no month selected, show all appointments
-      calculateTotalAmount(todayAppointments);
+      setFilteredAppointments(todayAppointments); // Show all appointments if no month selected
     } else {
       const filtered = todayAppointments.filter(
         (row) => row.month === monthName
       );
       setFilteredAppointments(filtered);
-      calculateTotalAmount(filtered);
     }
   };
 
