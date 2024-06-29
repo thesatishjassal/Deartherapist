@@ -92,6 +92,7 @@ export default function HorizontalLinearStepper() {
     validationSchema: validationSchema,
     onSubmit: async (values) => {
       setLoading(true); // Start loading
+      values.month = currentMonth;
       const apiUrl = `/api/clients/${appointmentID}/appointments`;
       const requestOptions = {
         method: "POST",
@@ -111,7 +112,7 @@ export default function HorizontalLinearStepper() {
         // Handle success response
         console.log("Form submission successful:", data);
 
-        formik.setFieldValue("month", currentMonth);
+     
         setSuccessMessage("Form submitted successfully!");
         setShowSuccess(true);
         setTimeout(() => {
