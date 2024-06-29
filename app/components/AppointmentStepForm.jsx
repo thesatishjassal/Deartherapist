@@ -198,8 +198,16 @@ export default function HorizontalLinearStepper() {
       "name",
       sortedClients.length > 0 ? sortedClients[0].name : ""
     );
+    formik.setFieldValue(
+      "Srno",
+      sortedClients.length > 0 ? sortedClients[0].Srno : ""
+    );
+    formik.setFieldValue(
+      "appointmentID",
+      sortedClients.length > 0 ? sortedClients[0].appointmentID : ""
+    );
     formik.setFieldValue("month", currentMonth);
-    console.log(formik.values.month)
+    console.log(formik.values.month);
     validatePersonalDetailStep(value, selectedClientId); // Validate on change
   };
 
@@ -216,8 +224,16 @@ export default function HorizontalLinearStepper() {
       "name",
       sortedClients.length > 0 ? sortedClients[0].name : ""
     );
+    formik.setFieldValue(
+      "Srno",
+      sortedClients.length > 0 ? sortedClients[0].Srno : ""
+    );
+    formik.setFieldValue(
+      "appointmentID",
+      sortedClients.length > 0 ? sortedClients[0].appointmentID : ""
+    );
     formik.setFieldValue("month", currentMonth);
-    console.log(formik.values.month)
+    console.log(formik.values.month);
     validatePersonalDetailStep(formik.values.mobileNumber, value); // Validate on change
   };
 
