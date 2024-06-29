@@ -40,7 +40,7 @@ const DailyReport = () => {
     { field: "facilitatedBy", headerName: "Facilitated By", width: 130 },
     { field: "amount", headerName: "Amount", width: 100 },
   ];
-
+  
   const handleDownloadPdf = async () => {
     try {
       setLoading(true); // Start loading indicator
@@ -78,6 +78,14 @@ const DailyReport = () => {
     setFilteredAppointments(formattedRows); // Initialize filtered appointments with all data
     calculateTotalAmount(formattedRows);
   }, [todayAppointments]);
+
+  const calculateTotalAmount = (appointments) => {
+    const total = appointments.reduce(
+      (sum, appointment) => sum + (appointment.amount || 0),
+      0
+    );
+    setTotalAmount(total); // Set total amount in state
+  };
 
   const handleMonthChange = (event) => {
     const monthName = event.target.value;
