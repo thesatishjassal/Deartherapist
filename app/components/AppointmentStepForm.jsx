@@ -197,7 +197,7 @@ export default function HorizontalLinearStepper() {
     );
     validatePersonalDetailStep(value, selectedClientId); // Validate on change
     setCurrentMonth(getCurrentMonthName());
-    console.log(currentMonth)
+    console.log(currentMonth);
   };
 
   const handleclientIds = (event, value) => {
@@ -436,9 +436,10 @@ export default function HorizontalLinearStepper() {
             <OutlinedInput
               id="outlined-adornment-amount"
               onChange={(e) => formik.setFieldValue("amount", e.target.value)}
-              onBlur={() => formik.setFieldTouched("amount", true)}
+              // onBlur={() => formik.setFieldTouched("amount", true)}
               value={formik.values.amount}
               name="amount"
+              autoFocus
               startAdornment={
                 <InputAdornment position="start">₹</InputAdornment>
               }
