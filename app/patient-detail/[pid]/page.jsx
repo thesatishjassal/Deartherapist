@@ -392,7 +392,9 @@ const PatientDetails = ({ params }) => {
                       >
                         <Box>
                           <Typography component="p">
-                            <strong>Service: </strong> {appointment.service}
+                            {appointment.prescriptions.map((prescription, index) => (
+                              <strong>Service: {prescription.service}</strong>  
+                            ))}
                           </Typography>
                         </Box>
                         <Box>
