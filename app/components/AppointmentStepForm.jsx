@@ -219,14 +219,10 @@ export default function HorizontalLinearStepper() {
   };
 
   React.useEffect(() => {
-    const interval = setInterval(() => {
       setCurrentMonth(getCurrentMonthName());
       console.log(getCurrentMonthName());
       formik.setFieldValue("month", currentMonth);
-    }, 1000);
-
-    return () => clearInterval(interval);
-  }, []);
+  }, [currentMonth]);
 
   const PersonalDetailStep = () => (
     <Box sx={{ width: "100%", px: 1, py: 3 }}>
