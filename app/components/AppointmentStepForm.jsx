@@ -185,7 +185,11 @@ export default function HorizontalLinearStepper() {
     setIsFinished(false);
     formik.resetForm();
   };
+  let Srno = 0; // Initial Srno value
 
+  function getNextSrno() {
+    return Srno++;
+  }
   const handleMobileNumber = (event, value) => {
     formik.setFieldValue("mobileNumber", value);
     setclientMobile(value);
@@ -200,12 +204,7 @@ export default function HorizontalLinearStepper() {
       "name",
       sortedClients.length > 0 ? sortedClients[0].name : ""
     );
-    formik.setFieldValue(
-      "Srno",
-      sortedClients.length > 0
-        ? Math.max(...sortedClients.map((client) => client.Srno)) + 1
-        : 1
-    );
+    formik.setFieldValue("Srno", getNextSrno());
     formik.setFieldValue(
       "appointmentID",
       sortedClients.length > 0 ? sortedClients[0].ClientID : ""
@@ -228,12 +227,8 @@ export default function HorizontalLinearStepper() {
       "name",
       sortedClients.length > 0 ? sortedClients[0].name : ""
     );
-    formik.setFieldValue(
-      "Srno",
-      sortedClients.length > 0
-        ? Math.max(...sortedClients.map((client) => client.Srno)) + 1
-        : 1
-    );
+    formik.setFieldValue("Srno", getNextSrno());
+
     formik.setFieldValue(
       "appointmentID",
       sortedClients.length > 0 ? sortedClients[0].ClientID : ""
