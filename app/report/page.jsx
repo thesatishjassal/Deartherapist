@@ -1,11 +1,10 @@
 "use client";
-
-import React, { useEffect } from "react";
+import React, { useState, useEffect } from "react";
 import { jsPDF } from "jspdf";
 import html2canvas from "html2canvas";
 import Typography from "@mui/material/Typography";
 import Image from "next/image";
-import Grid from "@mui/material/Grid"; // Grid version 1
+import Grid from "@mui/material/Grid";
 import Button from "@mui/material/Button";
 import DownloadIcon from "@mui/icons-material/Download";
 import { CircularProgress } from "@mui/material";
@@ -13,7 +12,6 @@ import useProtectedRoute from "../../hooks/useProtectedRoute";
 import Divider from "@mui/material/Divider";
 import { DataGrid, GridToolbar } from "@mui/x-data-grid";
 import { createTheme, ThemeProvider } from "@mui/material/styles";
-import { format, isSameMonth } from "date-fns";
 import Box from "@mui/material/Box";
 import useGetClients from "../../hooks/useGetClients";
 import useTodayAppointments from "../../hooks/useTodayAppointments";
@@ -23,38 +21,21 @@ import MenuItem from "@mui/material/MenuItem";
 import Container from "@mui/material/Container";
 
 const DailyReport = () => {
-  // const user = useProtectedRoute();
-  const invoiceRef = React.useRef();
   // State variables
-  const [rows, setRows] = React.useState([]);
-  const [filteredAppointments, setFilteredAppointments] = React.useState([]);
-  const [selectedMonth, setSelectedMonth] = React.useState("");
-  const [totalAmount, setTotalAmount] = React.useState(0);
-  const [isLoading, setLoading] = React.useState(false);
+  const [rows, setRows] = useState([]);
+  const [filteredAppointments, setFilteredAppointments] = useState([]);
+  const [selectedMonth, setSelectedMonth] = useState("");
+  const [totalAmount, setTotalAmount] = useState(0);
+  const [isLoading, setLoading] = useState(false);
 
-  // Columns for DataGrid
-  const columns = [
-    { field: "Srno", headerName: "Sr. NO", width: 100 },
-    { field: "date", headerName: "Date", width: 140 },
-    { field: "name", headerName: "Name", width: 140 },
-    { field: "channel", headerName: "Mode", width: 130 },
-    { field: "service", headerName: "Service", width: 130 },
-    { field: "facilitatedBy", headerName: "Facilitated By", width: 130 },
-    { field: "amount", headerName: "Amount", width: 100 },
-  ];
-
-  const {
-    clients,
-    isLoading: isCLoading,
-    error: clientsError,
-  } = useGetClients();
+  const { clients, isLoading: isCLoading, error: clientsError } = useGetClients();
   const todayAppointments = useTodayAppointments(clients);
 
   const handleDownloadPdf = async () => {
     try {
       setLoading(true); // Start loading indicator
       // Generate PDF
-      const element = invoiceRef.current;
+      const element = document.getElementById("invoice-content");
       const canvas = await html2canvas(element, {
         scale: 4, // Increase resolution
         useCORS: true, // Handle cross-origin images
@@ -78,31 +59,39 @@ const DailyReport = () => {
     }
   };
 
-  useEffect(
-    (todayAppointments) => {
-      const formattedRows = todayAppointments.map((appointment) => ({
-        ...appointment,
-        id: appointment._id,
-      }));
-      setFilteredAppointments(formattedRows);
-      calculateTotalAmount(todayAppointments);
-      console.log(formattedRows);
-    },
-    [formattedRows]
-  );
+  useEffect(() => {
+    const formattedRows = todayAppointments.map((appointment) => ({
+      ...appointment,
+      id: appointment._id,
+    }));
+    setRows(formattedRows);
+    setFilteredAppointments(formattedRows); // Initialize filtered appointments with all data
+    calculateTotalAmount(formattedRows);
+  }, [todayAppointments]);
 
   const calculateTotalAmount = (appointments) => {
     const total = appointments.reduce(
       (sum, appointment) => sum + (appointment.amount || 0),
       0
     );
-    setTotalAmount(total);
+    setTotalAmount(total); // Set total amount in state
   };
 
   const handleMonthChange = (event) => {
     const monthName = event.target.value;
-    const filtered = todayAppointments.filter((row) => row.month === monthName);
-    setFilteredAppointments(filtered);
+    setSelectedMonth(monthName);
+    filterAppointments(monthName);
+  };
+
+  const filterAppointments = (monthName) => {
+    if (!monthName) {
+      setFilteredAppointments(rows); // If no month selected, show all appointments
+      calculateTotalAmount(rows); // Calculate total amount for all appointments
+    } else {
+      const filtered = rows.filter((row) => row.month === monthName);
+      setFilteredAppointments(filtered); // Set filtered appointments for selected month
+      calculateTotalAmount(filtered); // Calculate total amount for filtered appointments
+    }
   };
 
   const getRowId = (row) => row._id; // Define a function to get the row id
@@ -132,8 +121,7 @@ const DailyReport = () => {
         <Grid item xs={12} sm={12} md={9}>
           <Box sx={{ padding: 2 }}>
             <Box
-              ref={invoiceRef}
-              className="invoice-content"
+              id="invoice-content"
               sx={{
                 width: "100%",
                 maxWidth: "800px",
@@ -231,7 +219,6 @@ const DailyReport = () => {
         </Grid>
         <Grid item xs={12} sm={12} md={3}>
           <Box
-            className="invoice-content"
             sx={{
               margin: "30px auto",
               padding: 3,
