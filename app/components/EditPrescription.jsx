@@ -84,7 +84,7 @@ const Editprescription = ({
       symptoms: "",
       followUp: "",
       diagnoses: [],
-      file: null, 
+      file: null,
     },
     validationSchema: validationSchema,
     onSubmit: async (values) => {
@@ -122,7 +122,13 @@ const Editprescription = ({
           );
         }
 
-        setSuccessMessage("Prescription Updated successfully!");
+        // Construct success message with updated field
+        const updatedField = Object.keys(values).find(
+          (key) => values[key] !== formik.initialValues[key]
+        );
+        setSuccessMessage(
+          `Prescription Updated successfully! Updated field: ${updatedField}`
+        );
         setOpenSuccess(true);
         setTimeout(() => {
           // console.log("Form Data:", values);
