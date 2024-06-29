@@ -82,8 +82,8 @@ const DailyReport = () => {
     // Initialize filtered appointments with all data
     setFilteredAppointments(todayAppointments);
     calculateTotalAmount(todayAppointments);
-    console.log(filteredAppointments)
-  }, []);
+    console.log(todayAppointments)
+  }, [filteredAppointments]);
 
   const calculateTotalAmount = (appointments) => {
     const total = appointments.reduce(
