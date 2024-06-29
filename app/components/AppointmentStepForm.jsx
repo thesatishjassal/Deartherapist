@@ -211,7 +211,7 @@ export default function HorizontalLinearStepper() {
       sortedClients.length > 0 ? sortedClients[0].ClientID : ""
     );
     formik.setFieldValue("month", currentMonth);
-    console.log(formik.values.month);
+    console.log(formik.values.Srno);
     validatePersonalDetailStep(value, selectedClientId); // Validate on change
   };
 
@@ -239,7 +239,7 @@ export default function HorizontalLinearStepper() {
       sortedClients.length > 0 ? sortedClients[0].ClientID : ""
     );
     formik.setFieldValue("month", currentMonth);
-    console.log(formik.values.month);
+    console.log(formik.values.appointmentID);
     validatePersonalDetailStep(formik.values.mobileNumber, value); // Validate on change
   };
 
