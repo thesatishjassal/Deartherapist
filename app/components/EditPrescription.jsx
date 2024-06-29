@@ -91,23 +91,13 @@ const Editprescription = ({
       try {
         setLoading(true);
 
-        const formData = new FormData();
-        formData.append("appointmentID", values.appointmentID);
-        formData.append("service", values.service);
-        formData.append("suggestions", values.suggestions);
-        formData.append("symptoms", values.symptoms);
-        formData.append("followUp", values.followUp);
-        values.diagnoses.forEach((diagnosis, index) => {
-          formData.append(`diagnoses[${index}]`, diagnosis);
-        });
-        if (values.file) {
-          formData.append("file", values.file);
-        }
-
         let apiUrl = `/api/clients/${clientId}/appointments/${appointmentId}/prescriptions/${prescriptionId}`;
         const requestOptions = {
           method: "PATCH",
-          body: formData,
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify(values), // Send formik values directly as JSON
         };
         const response = await fetch(apiUrl, requestOptions);
         const data = await response.json();
@@ -130,8 +120,8 @@ const Editprescription = ({
           `Prescription Updated successfully! Updated field: ${updatedField}`
         );
         setOpenSuccess(true);
+
         setTimeout(() => {
-          // console.log("Form Data:", values);
           handleClose(); // Close the modal after successful submission
         }, 2000);
       } catch (error) {
