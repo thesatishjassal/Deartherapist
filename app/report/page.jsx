@@ -50,6 +50,24 @@ const DailyReport = () => {
   } = useGetClients();
   const todayAppointments = useTodayAppointments(clients);
 
+  const getMonthName = (date) => {
+    const monthNames = [
+      "January",
+      "February",
+      "March",
+      "April",
+      "May",
+      "June",
+      "July",
+      "August",
+      "September",
+      "October",
+      "November",
+      "December",
+    ];
+    return monthNames[new Date(date).getMonth()];
+  };
+
   const handleDownloadPdf = async () => {
     try {
       setLoading(true); // Start loading indicator
@@ -177,18 +195,24 @@ const DailyReport = () => {
                         inputProps={{ "aria-label": "Select Month" }}
                       >
                         <MenuItem value="">All Months</MenuItem>
-                        <MenuItem value="January">January</MenuItem>
-                        <MenuItem value="February">February</MenuItem>
-                        <MenuItem value="March">March</MenuItem>
-                        <MenuItem value="April">April</MenuItem>
-                        <MenuItem value="May">May</MenuItem>
-                        <MenuItem value="June">June</MenuItem>
-                        <MenuItem value="July">July</MenuItem>
-                        <MenuItem value="August">August</MenuItem>
-                        <MenuItem value="September">September</MenuItem>
-                        <MenuItem value="October">October</MenuItem>
-                        <MenuItem value="November">November</MenuItem>
-                        <MenuItem value="December">December</MenuItem>
+                        {[
+                          "January",
+                          "February",
+                          "March",
+                          "April",
+                          "May",
+                          "June",
+                          "July",
+                          "August",
+                          "September",
+                          "October",
+                          "November",
+                          "December",
+                        ].map((month) => (
+                          <MenuItem key={month} value={month}>
+                            {month}
+                          </MenuItem>
+                        ))}
                       </Select>
                     </FormControl>
                   </Box>
