@@ -111,7 +111,7 @@ const ClientsTable = () => {
         Srno: index + 1,
         date: format(new Date(client.date), "yyyy-MM-dd"),
       }));
-      setRows(formattedRows.slice().reverse());
+      setRows(formattedRows.sort((a, b) => new Date(b.timestamp) - new Date(a.timestamp)));
       setIsLoading(false);
     }
   }, [clients, isTLoading]);
