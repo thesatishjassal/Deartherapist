@@ -75,7 +75,7 @@ const Editprescription = ({
   const [successMessage, setSuccessMessage] = useState("");
   const [savedData, setsavedData] = useState("");
   const { appointments, meetloading, error } = useAppointments(clientId);
-  // console.log(clientId, appointmentId, prescriptionId);
+  console.log(clientId, appointmentId, prescriptionId);
   const formik = useFormik({
     initialValues: {
       appointmentID: "",
