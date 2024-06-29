@@ -52,7 +52,7 @@ const ActionsMenu = ({ rowId }) => {
 
 export default function MyAppointments() {
   const columns = [
-    { field: "Srno", headerName: "Sr No", width: 150 },
+    { field: "Apno", headerName: "Sr No", width: 150 },
     { field: "ClientID", headerName: "Client ID", width: 150 },
     { field: "name", headerName: "Client Name", width: 130 },
     { field: "date", headerName: "Date", width: 130 },
