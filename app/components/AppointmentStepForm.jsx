@@ -104,7 +104,7 @@ export default function HorizontalLinearStepper() {
 
   const formik = useFormik({
     initialValues: {
-      Srno: "", 
+      Srno: "",
       appointmentID: "",
       mobileNumber: "",
       name: "",
@@ -201,6 +201,12 @@ export default function HorizontalLinearStepper() {
       sortedClients.length > 0 ? sortedClients[0].name : ""
     );
     formik.setFieldValue(
+      "Srno",
+      sortedClients.length > 0
+        ? sortedClients[0].ClientID.replace("dt", "")
+        : ""
+    );
+    formik.setFieldValue(
       "appointmentID",
       sortedClients.length > 0 ? sortedClients[0].ClientID : ""
     );
@@ -221,6 +227,12 @@ export default function HorizontalLinearStepper() {
     formik.setFieldValue(
       "name",
       sortedClients.length > 0 ? sortedClients[0].name : ""
+    );
+    formik.setFieldValue(
+      "Srno",
+      sortedClients.length > 0
+        ? sortedClients[0].ClientID.replace("dt", "")
+        : ""
     );
     formik.setFieldValue(
       "appointmentID",
