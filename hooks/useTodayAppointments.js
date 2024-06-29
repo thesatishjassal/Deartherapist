@@ -19,7 +19,7 @@ const useTodayAppointments = (clients) => {
       }));
 
       // Sort appointments by date in descending order (latest first)
-      formattedAppointments.sort((a, b) => new Date(b.date) - new Date(a.date));
+      formattedAppointments.sort({ createdAt: -1 });
 
       setAllAppointments(formattedAppointments);
     }
