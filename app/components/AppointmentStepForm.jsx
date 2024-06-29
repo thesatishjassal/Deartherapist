@@ -203,7 +203,7 @@ export default function HorizontalLinearStepper() {
     formik.setFieldValue(
       "Srno",
       sortedClients.length > 0
-        ? sortedClients[0].ClientID.replace("dt", "")
+        ? parseInt(sortedClients[0].ClientID.replace(/^dt/, ""), 10)
         : ""
     );
     formik.setFieldValue(
@@ -231,7 +231,7 @@ export default function HorizontalLinearStepper() {
     formik.setFieldValue(
       "Srno",
       sortedClients.length > 0
-        ? sortedClients[0].ClientID.replace("dt", "")
+        ? parseInt(sortedClients[0].ClientID.replace(/^dt/, ""), 10)
         : ""
     );
     formik.setFieldValue(
