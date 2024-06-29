@@ -223,6 +223,7 @@ export default function HorizontalLinearStepper() {
       setCurrentMonth(getCurrentMonthName());
       console.log(getCurrentMonthName());
       formik.setFieldValue("month", currentMonth);
+      console.log(values)
   }, [currentMonth]);
 
   const PersonalDetailStep = () => (
