@@ -40,6 +40,7 @@ import People from "@mui/icons-material/People";
 import Apartment from "@mui/icons-material/Apartment";
 import OutlinedInput from "@mui/material/OutlinedInput";
 import InputAdornment from "@mui/material/InputAdornment";
+import useTodayAppointments from "../../hooks/useTodayAppointments";
 
 const steps = ["Search Client", "Personal Details"];
 
@@ -76,6 +77,7 @@ export default function HorizontalLinearStepper() {
 
   const { contacts, wait, error } = useClientContacts(apiUrl);
   const { clients, isLoading: loadingClients, clienterror } = useGetClients(); // Rename isLoading to avoid conflict
+  const todayAppointments = useTodayAppointments(clients);
   // Function to get the current month name
   const getCurrentMonthName = () => {
     const monthNames = [
@@ -185,11 +187,7 @@ export default function HorizontalLinearStepper() {
     setIsFinished(false);
     formik.resetForm();
   };
-  let Srno = 0; // Initial Srno value
-
-  function getNextSrno() {
-    return Srno++;
-  }
+ 
   const handleMobileNumber = (event, value) => {
     formik.setFieldValue("mobileNumber", value);
     setclientMobile(value);
@@ -204,7 +202,7 @@ export default function HorizontalLinearStepper() {
       "name",
       sortedClients.length > 0 ? sortedClients[0].name : ""
     );
-    formik.setFieldValue("Srno", getNextSrno());
+    formik.setFieldValue("Srno", todayAppointments.length + 1);
     formik.setFieldValue(
       "appointmentID",
       sortedClients.length > 0 ? sortedClients[0].ClientID : ""
@@ -227,7 +225,7 @@ export default function HorizontalLinearStepper() {
       "name",
       sortedClients.length > 0 ? sortedClients[0].name : ""
     );
-    formik.setFieldValue("Srno", getNextSrno());
+    formik.setFieldValue("Srno", todayAppointments.length + 1);
 
     formik.setFieldValue(
       "appointmentID",
