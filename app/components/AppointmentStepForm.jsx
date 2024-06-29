@@ -82,7 +82,7 @@ export default function HorizontalLinearStepper() {
       mobileNumber: "",
       name: "",
       date: null,
-      month: "",
+      month: getCurrentMonthName(),  // Set initial month value
       time: null,
       channel: "",
       facilitatedBy: "",
@@ -220,8 +220,6 @@ export default function HorizontalLinearStepper() {
   React.useEffect(() => {
       setCurrentMonth(getCurrentMonthName());
       console.log(getCurrentMonthName());
-      formik.setFieldValue("month", currentMonth);
-     
   }, [currentMonth]);
 
   const PersonalDetailStep = () => (
