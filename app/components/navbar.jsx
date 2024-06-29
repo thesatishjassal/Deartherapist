@@ -148,7 +148,7 @@ function NavigationBar() {
                   className="username"
                   sx={{ marginRight: 1 }}
                 >
-                  {user && user.role == "admin" ? "Dr. Shaveta" : ""}
+                  {user && user.role == "admin" ? "Dr. Shaveta Bhardwaj" : ""}
                   {user && user.role == "counselor" ? "Counselor" : ""}
                   {user && user.role == "receptionist" ? "Receptionist" : ""}
                 </Typography>
