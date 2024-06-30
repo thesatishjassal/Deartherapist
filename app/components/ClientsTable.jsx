@@ -126,7 +126,11 @@ const ClientsTable = () => {
           Srno: index + 1,
           date: format(new Date(client.date), "yyyy-MM-dd"),
         }));
-        setRows(formattedRows.sort((a, b) => new Date(b.timestamp) - new Date(a.timestamp)));
+        setRows(
+          formattedRows.sort(
+            (a, b) => new Date(b.timestamp) - new Date(a.timestamp)
+          )
+        );
         setIsLoading(false);
       } catch (error) {
         console.error("Error fetching clients:", error);
@@ -252,8 +256,12 @@ const ClientsTable = () => {
     { field: "name", headerName: "Name", width: 200 },
     { field: "gender", headerName: "Gender", width: 100 },
     { field: "age", headerName: "Age", width: 90 },
-    { field: "mobile", headerName: "Mobile No", width: 130 },
-    { field: "country", headerName: "Country", width: 120 },
+    ...(user && user.role === "counselor"
+      ? []
+      : [
+          { field: "mobile", headerName: "Mobile No", width: 130 },
+          { field: "country", headerName: "Country", width: 120 },
+        ]),
     {
       field: "actions",
       headerName: "Actions",
@@ -271,7 +279,12 @@ const ClientsTable = () => {
   return (
     <div style={{ width: "100%" }}>
       <Toolbar>
-        <Typography variant="h6" component="div" sx={{ flexGrow: 1 }}  className="hidemobile">
+        <Typography
+          variant="h6"
+          component="div"
+          sx={{ flexGrow: 1 }}
+          className="hidemobile"
+        >
           My Clients
         </Typography>
         <TextField
