@@ -502,7 +502,7 @@ const PatientDetails = ({ params }) => {
                 sx={{
                   mt: 40,
                   display: "flex",
-                  justifyContent: "space-between",
+                  justifyContent: "end",
                 }}
               >
                 <Box>
