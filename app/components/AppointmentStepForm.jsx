@@ -401,7 +401,7 @@ export default function HorizontalLinearStepper() {
                 formik.setFieldValue("facilitatedBy", e.target.value)
               }
             >
-              <MenuItem value="Dr.SHAVETA BHARDWAJ">Dr.Shaveta Bhardwaj</MenuItem>
+              <MenuItem value="Dr.Shaveta Bhardwaj">Dr.Shaveta Bhardwaj</MenuItem>
               <MenuItem value="Counselor">Counselor</MenuItem>
             </Select>
             {formik.touched.facilitatedBy && formik.errors.facilitatedBy && (
