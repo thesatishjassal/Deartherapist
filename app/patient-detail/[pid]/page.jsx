@@ -30,6 +30,7 @@ import RedirectToWhatsApp from "../../components/RedirectToWhatsApp";
 import { IconButton } from "@mui/material";
 import EditIcon from "@mui/icons-material/Edit";
 import { Link } from "@mui/material";
+import useAuth from "../../../hooks/useAuth"; // Adjust the import path as needed
 
 const PatientDetails = ({ params }) => {
   const invoiceRef = useRef();
@@ -46,6 +47,7 @@ const PatientDetails = ({ params }) => {
   const { pid } = params;
   const { client, clientisLoading, error } = useGetClientById(apiUrl, pid);
   const { appointments, loading, meetserror } = useAppointments(pid);
+  const { user, handleLogout } = useAuth();
 
   const handleEdit = (clientId, appointmentId, prescriptionId) => {
     setIsModalOpen(true);
@@ -215,14 +217,22 @@ const PatientDetails = ({ params }) => {
                   >
                     {client && client.name}
                   </Typography>
-                  <Typography variant="p" className="address">
-                    {client && client.address},{" "}
-                    <i>{client && client.country}</i>
-                  </Typography>
+                  {user && user.role == "counselor" ? (
+                    ""
+                  ) : (
+                    <Typography variant="p" className="address">
+                      {client && client.address},
+                      <i>{client && client.country}</i>
+                    </Typography>
+                  )}
                   <br />
-                  <Typography variant="p" className="address">
-                    {client && client.mobile} | {client && client.email}
-                  </Typography>
+                  {user && user.role == "counselor" ? (
+                    ""
+                  ) : (
+                    <Typography variant="p" className="address">
+                      {client && client.mobile} | {client && client.email}
+                    </Typography>
+                  )}
                 </Box>
                 <Box
                   sx={{
@@ -265,10 +275,10 @@ const PatientDetails = ({ params }) => {
                         <Box className="spacer" sx={{ flexGrow: 1 }}></Box>
                         <Box>
                           <Typography component="p" className="grey_light">
-                            Gender
+                            Occupation
                           </Typography>
                           <Typography component="strong" variant="h6">
-                            {client && client.gender}
+                            {client && client.occupation}
                           </Typography>
                         </Box>
                       </Box>
@@ -286,19 +296,19 @@ const PatientDetails = ({ params }) => {
                       >
                         <Box>
                           <Typography component="p" className="grey_light">
-                            Occupation
+                            Gender
                           </Typography>
                           <Typography component="strong" variant="h6">
-                            {client && client.occupation}
+                            {client && client.gender}
                           </Typography>
                         </Box>
                         <Box className="spacer" sx={{ flexGrow: 1 }}></Box>
                         <Box>
                           <Typography component="p" className="grey_light">
-                            Marital Status
+                            Personal History
                           </Typography>
                           <Typography component="strong" variant="h6">
-                            {client && client.maritalStatus}
+                            {client && client.personalHistory}
                           </Typography>
                         </Box>
                       </Box>
@@ -316,19 +326,19 @@ const PatientDetails = ({ params }) => {
                       >
                         <Box>
                           <Typography component="p" className="grey_light">
-                            Medical/Psychiatric History
+                            Marital Status
                           </Typography>
                           <Typography component="strong" variant="h6">
-                            {client && client.medicalHistory}
+                            {client && client.maritalStatus}
                           </Typography>
                         </Box>
                         <Box className="spacer" sx={{ flexGrow: 1 }}></Box>
                         <Box>
                           <Typography component="p" className="grey_light">
-                            Find Us
+                            Medical/Psychiatric History
                           </Typography>
                           <Typography component="strong" variant="h6">
-                            {client && client.findUs}
+                            {client && client.medicalHistory}
                           </Typography>
                         </Box>
                       </Box>
@@ -350,10 +360,14 @@ const PatientDetails = ({ params }) => {
                 </Box>
 
                 <Box>
-                  <Typography component="p">
-                    Emergency Contact:{" "}
-                    <strong>{client && client.emergencyContact}</strong>
-                  </Typography>
+                  {user && user.role == "counselor" ? (
+                    ""
+                  ) : (
+                    <Typography component="p">
+                      Emergency Contact:{" "}
+                      <strong>{client && client.emergencyContact}</strong>
+                    </Typography>
+                  )}
                 </Box>
               </Box>
 
@@ -392,9 +406,13 @@ const PatientDetails = ({ params }) => {
                       >
                         <Box>
                           <Typography component="p">
-                            {appointment.prescriptions.map((prescription, index) => (
-                              <strong key={index}>Service: {prescription.service}</strong>  
-                            ))}
+                            {appointment.prescriptions.map(
+                              (prescription, index) => (
+                                <strong key={index}>
+                                  Service: {prescription.service}
+                                </strong>
+                              )
+                            )}
                           </Typography>
                         </Box>
                         <Box>
@@ -411,14 +429,8 @@ const PatientDetails = ({ params }) => {
                         <React.Fragment key={index}>
                           <Box sx={{ padding: 2 }}>
                             <Typography component="p">
-                              <strong>Diagnoses: </strong>{" "}
+                              <strong>Diagnosis: </strong>{" "}
                               {prescription.diagnoses}
-                            </Typography>
-                          </Box>
-                          <Box sx={{ padding: 2 }}>
-                            <Typography component="p">
-                              <strong>Suggestions: </strong>{" "}
-                              {prescription.suggestions}
                             </Typography>
                           </Box>
                           <Divider />
@@ -428,7 +440,13 @@ const PatientDetails = ({ params }) => {
                               {prescription.symptoms}
                             </Typography>
                           </Box>
-
+                          <Divider />
+                          <Box sx={{ padding: 2 }}>
+                            <Typography component="p">
+                              <strong>Suggestions: </strong>{" "}
+                              {prescription.suggestions}
+                            </Typography>
+                          </Box>
                           <Divider />
                           <Box sx={{ padding: 2 }}>
                             <Typography component="p">
@@ -537,14 +555,22 @@ const PatientDetails = ({ params }) => {
                   margin: "15px auto",
                 }}
               >
-                <RedirectToWhatsApp client={client} />
-                <Button
-                  variant="outlined"
-                  href={`mailto:${client && client.email}`}
-                  startIcon={<AttachEmailIcon />}
-                >
-                  Mail
-                </Button>
+                {user && user.role == "counselor" ? (
+                  ""
+                ) : (
+                  <RedirectToWhatsApp client={client} />
+                )}
+                {user && user.role == "counselor" ? (
+                  ""
+                ) : (
+                  <Button
+                    variant="outlined"
+                    href={`mailto:${client && client.email}`}
+                    startIcon={<AttachEmailIcon />}
+                  >
+                    Mail
+                  </Button>
+                )}
               </Box>
               <Button
                 variant="outlined"
