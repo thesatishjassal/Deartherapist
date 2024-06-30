@@ -266,7 +266,7 @@ const ClientsTable = () => {
           { field: "country", headerName: "Country", width: 120 },
         ]),
     {
-      field: "actions",s
+      field: "actions",
       headerName: "Actions",
       width: 120,
       renderCell: (params) => (
