@@ -41,6 +41,7 @@ import Apartment from "@mui/icons-material/Apartment";
 import OutlinedInput from "@mui/material/OutlinedInput";
 import InputAdornment from "@mui/material/InputAdornment";
 import useTodayAppointments from "../../hooks/useTodayAppointments";
+import useAuth from "../../hooks/useAuth"; // Adjust the import path as needed
 
 const steps = ["Search Client", "Personal Details"];
 
@@ -78,7 +79,8 @@ export default function HorizontalLinearStepper() {
   const { contacts, wait, error } = useClientContacts(apiUrl);
   const { clients, isLoading: loadingClients, clienterror } = useGetClients(); // Rename isLoading to avoid conflict
   const todayAppointments = useTodayAppointments(clients);
-  // Function to get the current month name
+  const { user, handleLogout } = useAuth();
+
   const getCurrentMonthName = () => {
     const monthNames = [
       "January",
@@ -401,7 +403,13 @@ export default function HorizontalLinearStepper() {
                 formik.setFieldValue("facilitatedBy", e.target.value)
               }
             >
-              <MenuItem value="Dr.Shaveta Bhardwaj">Dr.Shaveta Bhardwaj</MenuItem>
+              {user && user.role == "counselor" ? (
+                ""
+              ) : (
+                <MenuItem value="Dr.Shaveta Bhardwaj">
+                  Dr.Shaveta Bhardwaj
+                </MenuItem>
+              )}
               <MenuItem value="Counselor">Counselor</MenuItem>
             </Select>
             {formik.touched.facilitatedBy && formik.errors.facilitatedBy && (
