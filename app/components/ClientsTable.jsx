@@ -257,13 +257,16 @@ const ClientsTable = () => {
     { field: "gender", headerName: "Gender", width: 100 },
     { field: "age", headerName: "Age", width: 90 },
     ...(user && user.role === "counselor"
-      ? []
+      ? [
+          { field: "maritalStatus", headerName: "Marital Status", width: 130 },
+          { field: "occupation", headerName: "Occupation", width: 120 },
+        ]
       : [
           { field: "mobile", headerName: "Mobile No", width: 130 },
           { field: "country", headerName: "Country", width: 120 },
         ]),
     {
-      field: "actions",
+      field: "actions",s
       headerName: "Actions",
       width: 120,
       renderCell: (params) => (
