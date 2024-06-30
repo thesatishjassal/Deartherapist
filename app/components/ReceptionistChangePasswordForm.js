@@ -65,8 +65,7 @@ const ReceptionistChangePasswordForm = () => {
             onChange={(e) => setNewPassword(e.target.value)}
           />
           <Button
-            variant="contained"
-            color="primary"
+         className="btn"
             onClick={handleChangePassword}
           >
             Change Password
