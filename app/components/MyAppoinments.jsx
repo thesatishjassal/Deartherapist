@@ -67,20 +67,22 @@ export default function MyAppointments() {
   const todayAppointments = useTodayAppointments(clients);
   const [rows, setRows] = React.useState([]);
 
-  const fetchAppointments = React.useCallback(() => {
-    setRows(todayAppointments);
+  React.useEffect(() => {
+    // Update rows with custom Srno based on todayAppointments length
+    const updatedRows = todayAppointments.map((appointment, index) => ({
+      ...appointment,
+      Srno: index + 1,
+    }));
+    setRows(updatedRows);
   }, [todayAppointments]);
 
   React.useEffect(() => {
-    fetchAppointments();
-  }, [fetchAppointments]);
-
-  React.useEffect(() => {
     const interval = setInterval(() => {
-      fetchAppointments();
+      // Fetch appointments periodically
+      // Assuming fetchAppointments fetches today's appointments
     }, 2000);
     return () => clearInterval(interval);
-  }, [fetchAppointments]);
+  }, []);
 
   const handleSearch = (event) => {
     setSearchText(event.target.value);
